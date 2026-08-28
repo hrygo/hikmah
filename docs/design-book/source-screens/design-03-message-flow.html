@@ -1,0 +1,64 @@
+<style>
+  .path-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:24px; }
+  .path { border:1px solid rgba(100,116,139,.25); border-radius:16px; padding:17px; background:rgba(248,250,252,.72); }
+  .path.direct { border-top:4px solid #059669; }
+  .path.routed { border-top:4px solid #7c3aed; }
+  .path h3 { margin-top:0; }
+  .step-row { display:grid; grid-template-columns:34px 1fr; gap:9px; align-items:start; margin:10px 0; }
+  .num { width:30px; height:30px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:#e2e8f0; color:#334155; font-weight:700; font-size:12px; }
+  .direct .num { background:#d1fae5; color:#047857; }
+  .routed .num { background:#ede9fe; color:#6d28d9; }
+  .step-card { border:1px solid rgba(100,116,139,.22); border-radius:11px; padding:9px 11px; background:white; color:#172033; }
+  .step-card strong { display:block; font-size:13px; }
+  .step-card small { display:block; margin-top:3px; color:#64748b; line-height:1.4; }
+  .observer { border-style:dashed; background:#f8fafc; }
+  .state-line { display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin-top:10px; }
+  .state { padding:6px 9px; border-radius:999px; background:#eff6ff; border:1px solid #bfdbfe; color:#1d4ed8; font-size:12px; }
+  .arrow { color:#64748b; }
+  .interventions { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-top:18px; }
+  .intervene { border:1px solid rgba(2,132,199,.22); border-radius:11px; padding:10px; background:#f0f9ff; }
+  .intervene strong { display:block; font-size:12px; color:#075985; }
+  .intervene small { display:block; color:#64748b; margin-top:3px; line-height:1.35; }
+  .never { margin-top:16px; padding:12px 14px; border:1px solid #fecdd3; border-radius:12px; background:#fff1f2; color:#9f1239; font-size:13px; }
+  @media(max-width:900px){.path-grid{grid-template-columns:1fr}.interventions{grid-template-columns:1fr}}
+</style>
+
+<h2>设计 03 · 消息路由与协作任务流</h2>
+<p class="subtitle">同一频道内有两条严格分离的路径。显式选择永远优先于智能路由。</p>
+
+<div class="path-grid">
+  <div class="path direct">
+    <h3>路径 A · 明确 @专家：直达</h3>
+    <div class="step-row"><div class="num">1</div><div class="step-card"><strong>人类明确 @一名或多名专家</strong><small>解析器只验证这些专家是否属于频道、发言者是否有权调用。</small></div></div>
+    <div class="step-row"><div class="num">2</div><div class="step-card"><strong>Agent Gateway 直接投递</strong><small>消息和线程上下文发送给指定 QwenPaw；被 @ 的每位专家独立响应。</small></div></div>
+    <div class="step-row"><div class="num">3</div><div class="step-card observer"><strong>频道边车仅观察</strong><small>不改写问题、不选择主答、不邀请他人、不总结、不调停；仅记录可审计事件。</small></div></div>
+    <div class="step-row"><div class="num">4</div><div class="step-card"><strong>副作用仍经过独立策略层</strong><small>专家若申请写文件、发消息或修改任务，Policy / Approval Service 单独处理，不视为边车介入。</small></div></div>
+  </div>
+
+  <div class="path routed">
+    <h3>路径 B · 未明确 @：克制协调</h3>
+    <div class="step-row"><div class="num">1</div><div class="step-card"><strong>协作意图门控</strong><small>规则优先判断是否需要 Agent；闲聊、信息广播和人类间讨论默认不触发。</small></div></div>
+    <div class="step-row"><div class="num">2</div><div class="step-card"><strong>选择一名主答专家</strong><small>先按频道规则与专长匹配；仅在歧义时调用轻量模型，必要时只问一个澄清问题。</small></div></div>
+    <div class="step-row"><div class="num">3</div><div class="step-card"><strong>创建 TaskRun 并投递 QwenPaw</strong><small>固定目标、上下文授权、主答席位、预算、超时和当前状态。</small></div></div>
+    <div class="step-row"><div class="num">4</div><div class="step-card"><strong>专家按需邀请补充专家</strong><small>由主答专家通过 AgentScope Team / Invite 语义发起；补充者回给主答，主答负责最终整合。</small></div></div>
+    <div class="step-row"><div class="num">5</div><div class="step-card"><strong>方案 → 审批 → 执行 → 结果</strong><small>Execution Card 展示目标、工具、影响范围、风险与预览；获批后流式执行并形成结果记录。</small></div></div>
+    <div class="step-row"><div class="num">6</div><div class="step-card"><strong>建议沉淀团队知识</strong><small>边车只生成带来源的知识候选；成员确认后才跨频道可用。</small></div></div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:22px">
+  <div class="label">TaskRun 状态机</div>
+  <div class="state-line"><span class="state">OPEN</span><span class="arrow">→</span><span class="state">ROUTED</span><span class="arrow">→</span><span class="state">WORKING</span><span class="arrow">→</span><span class="state">AWAITING_APPROVAL</span><span class="arrow">→</span><span class="state">EXECUTING</span><span class="arrow">→</span><span class="state">COMPLETED</span><span class="arrow">/</span><span class="state">FAILED</span><span class="arrow">/</span><span class="state">CANCELLED</span></div>
+</div>
+
+<div class="interventions">
+  <div class="intervene"><strong>允许介入：无人响应</strong><small>超过频道阈值后提醒或改派一次，不循环催促。</small></div>
+  <div class="intervene"><strong>允许介入：抢答或冲突</strong><small>指定主答、要求补充者转入线程，由主答整合。</small></div>
+  <div class="intervene"><strong>允许介入：审批与治理</strong><small>展示审批、硬规则、定时总结与知识候选。</small></div>
+</div>
+<div class="never"><strong>永不介入：</strong>频道边车不得自行给出专业结论，不得在明确 @专家的路径中组织对话，也不得替人类批准副作用操作。</div>
+
+<div class="options" style="margin-top:22px">
+  <div class="option" data-choice="approve-flow" onclick="toggleSelect(this)"><div class="letter">✓</div><div class="content"><h3>批准本节</h3><p>双路径路由、TaskRun 与边车干预边界符合预期。</p></div></div>
+  <div class="option" data-choice="revise-flow" onclick="toggleSelect(this)"><div class="letter">↺</div><div class="content"><h3>需要调整</h3><p>点击后在对话中说明希望修改的流程。</p></div></div>
+</div>

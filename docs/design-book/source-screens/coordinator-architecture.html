@@ -1,0 +1,93 @@
+<style>
+  .arch-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:24px; }
+  .arch-card { min-height:430px; }
+  .diagram { min-height:250px; padding:18px; display:flex; flex-direction:column; gap:10px; justify-content:center; background:linear-gradient(145deg,rgba(99,102,241,.10),rgba(14,165,233,.06)); }
+  .node { border:1px solid rgba(99,102,241,.38); border-radius:12px; padding:10px 12px; text-align:center; background:rgba(255,255,255,.72); color:#172033; box-shadow:0 6px 18px rgba(15,23,42,.06); }
+  .node strong { display:block; font-size:14px; }
+  .node small { display:block; margin-top:3px; color:#596579; line-height:1.3; }
+  .node.team { border-color:#7c3aed; background:#f5f3ff; }
+  .node.channel { border-color:#0284c7; background:#f0f9ff; }
+  .node.expert { border-color:#059669; background:#ecfdf5; }
+  .node.human { border-color:#d97706; background:#fffbeb; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .arrow { text-align:center; color:#64748b; font-size:18px; line-height:1; }
+  .flow-strip { display:flex; flex-wrap:wrap; align-items:center; gap:8px; padding:14px 16px; border:1px solid rgba(99,102,241,.22); border-radius:14px; background:rgba(99,102,241,.05); }
+  .flow-pill { padding:7px 10px; border-radius:999px; background:rgba(99,102,241,.12); font-size:13px; }
+  .flow-arrow { color:#64748b; }
+  .recommend { display:inline-block; margin-left:8px; padding:3px 8px; border-radius:999px; background:#ede9fe; color:#6d28d9; font-size:12px; vertical-align:middle; }
+  @media (max-width: 980px) { .arch-grid { grid-template-columns:1fr; } .arch-card { min-height:auto; } }
+</style>
+
+<h2>团队与频道本身，也是一名“协调智能体”</h2>
+<p class="subtitle">显式 @ 直接命中专家；没有 @ 时，由协调智能体判断是否响应、选择主答专家，并控制其他专家何时补充。</p>
+
+<div class="arch-grid cards">
+  <div class="card arch-card" data-choice="two-tier" onclick="toggleSelect(this)">
+    <div class="card-image diagram">
+      <div class="node team"><strong>团队协调智能体</strong><small>成员、专家名册、全局规则、跨频道知识</small></div>
+      <div class="arrow">↓</div>
+      <div class="row">
+        <div class="node channel"><strong># 产品频道智能体</strong><small>路由、秩序、摘要、审批</small></div>
+        <div class="node channel"><strong># 技术频道智能体</strong><small>路由、秩序、摘要、审批</small></div>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="row">
+        <div class="node human"><strong>人类成员</strong><small>发言、@、批准、沉淀知识</small></div>
+        <div class="node expert"><strong>专业 Agent</strong><small>主答、受邀补充、分级执行</small></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · 双层协调 <span class="recommend">推荐</span></h3>
+      <p>团队智能体负责跨频道治理；每个频道智能体负责本地协作。边界清楚，也忠实表达“团队/频道自身就是智能体”。</p>
+    </div>
+  </div>
+
+  <div class="card arch-card" data-choice="channel-only" onclick="toggleSelect(this)">
+    <div class="card-image diagram">
+      <div class="row">
+        <div class="node channel"><strong># 产品频道智能体</strong><small>自带规则与专家名册</small></div>
+        <div class="node channel"><strong># 技术频道智能体</strong><small>自带规则与专家名册</small></div>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="row">
+        <div class="node human"><strong>人类成员</strong><small>跨频道身份</small></div>
+        <div class="node expert"><strong>专业 Agent</strong><small>被多个频道分别配置</small></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B · 频道自治</h3>
+      <p>没有团队级智能体，首版更轻；但规则、专家配置与知识晋升容易在频道之间重复或冲突。</p>
+    </div>
+  </div>
+
+  <div class="card arch-card" data-choice="team-only" onclick="toggleSelect(this)">
+    <div class="card-image diagram">
+      <div class="node team"><strong>单一团队协调智能体</strong><small>同时管理所有频道上下文</small></div>
+      <div class="arrow">↓</div>
+      <div class="row">
+        <div class="node"><strong># 产品</strong><small>被动消息容器</small></div>
+        <div class="node"><strong># 技术</strong><small>被动消息容器</small></div>
+      </div>
+      <div class="arrow">↓</div>
+      <div class="row">
+        <div class="node human"><strong>人类成员</strong></div>
+        <div class="node expert"><strong>专业 Agent</strong></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C · 单一团队大脑</h3>
+      <p>运行模型最简单，但团队智能体容易成为瓶颈，也更容易发生跨频道上下文混用。</p>
+    </div>
+  </div>
+</div>
+
+<div class="section" style="margin-top:26px">
+  <div class="label">A + B 响应规则在推荐方案中的路径</div>
+  <div class="flow-strip" style="margin-top:10px">
+    <span class="flow-pill">明确 @专家</span><span class="flow-arrow">→</span><span class="flow-pill">专家直接主答</span>
+    <span style="width:18px"></span>
+    <span class="flow-pill">未明确 @</span><span class="flow-arrow">→</span><span class="flow-pill">频道智能体判断</span><span class="flow-arrow">→</span><span class="flow-pill">选择一名主答专家</span>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:18px">请点击一个架构方案；如果 A 符合你的原意，也可以直接在对话中回复“A”。</p>

@@ -1,0 +1,87 @@
+<style>
+  .governance-grid { display:grid; grid-template-columns:1.08fr .92fr; gap:20px; margin-top:22px; }
+  .panel { border:1px solid rgba(100,116,139,.24); border-radius:16px; padding:17px; background:rgba(248,250,252,.75); }
+  .panel.memory { border-top:4px solid #2563eb; }
+  .panel.action { border-top:4px solid #d97706; }
+  .panel h3 { margin-top:0; }
+  .scope { display:grid; grid-template-columns:132px 1fr; gap:10px; align-items:start; margin:10px 0; padding:10px 11px; border-radius:11px; background:white; border:1px solid rgba(100,116,139,.18); }
+  .scope strong { font-size:12px; color:#1e3a8a; }
+  .scope span { color:#475569; font-size:12px; line-height:1.45; }
+  .scope.private { background:#faf5ff; border-color:#e9d5ff; }
+  .scope.private strong { color:#7e22ce; }
+  .promotion { display:flex; align-items:center; flex-wrap:wrap; gap:7px; margin-top:14px; padding:12px; border-radius:12px; background:#eff6ff; }
+  .stage { padding:6px 9px; border-radius:999px; background:white; border:1px solid #bfdbfe; color:#1d4ed8; font-size:11px; font-weight:700; }
+  .arrow { color:#64748b; font-size:12px; }
+  .decision { display:grid; grid-template-columns:100px 1fr; gap:10px; margin:10px 0; padding:10px 11px; border-radius:11px; background:white; border:1px solid rgba(100,116,139,.18); }
+  .decision .risk { font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:.04em; }
+  .risk.read { color:#047857; }
+  .risk.write { color:#b45309; }
+  .risk.block { color:#be123c; }
+  .decision div:last-child { font-size:12px; color:#475569; line-height:1.45; }
+  .card-preview { margin-top:14px; border:1px solid #fed7aa; border-radius:12px; overflow:hidden; background:white; }
+  .card-title { padding:9px 12px; background:#fff7ed; color:#9a3412; font-size:12px; font-weight:800; }
+  .card-body { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:11px 12px; }
+  .field { color:#64748b; font-size:11px; }
+  .field b { display:block; color:#334155; font-size:12px; margin-top:2px; }
+  .rule { margin-top:10px; padding:10px 12px; border-radius:10px; background:#fff1f2; border:1px solid #fecdd3; color:#9f1239; font-size:12px; line-height:1.45; }
+  .personal-zone { margin-top:18px; border:1px solid #e9d5ff; border-left:4px solid #9333ea; border-radius:14px; padding:14px 16px; background:#faf5ff; }
+  .personal-flow { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:9px; }
+  .personal-node { padding:7px 10px; border-radius:9px; background:white; border:1px solid #e9d5ff; color:#6b21a8; font-size:12px; }
+  .audit-row { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; margin-top:18px; }
+  .audit { padding:10px; border:1px solid rgba(15,118,110,.20); border-radius:10px; background:#f0fdfa; color:#115e59; font-size:11px; text-align:center; }
+  @media(max-width:900px){.governance-grid{grid-template-columns:1fr}.audit-row{grid-template-columns:1fr 1fr}.scope{grid-template-columns:1fr}.card-body{grid-template-columns:1fr}}
+</style>
+
+<h2>设计 04 · 记忆、隐私与执行治理</h2>
+<p class="subtitle">记忆按作用域隔离，知识只能经人审晋升；动作按能力授权，审批绑定到精确执行计划。</p>
+
+<div class="governance-grid">
+  <div class="panel memory">
+    <h3>记忆边界 · 默认不跨频道</h3>
+    <div class="scope"><strong>线程 / 频道记忆</strong><span>普通对话、阶段结论和附件引用留在原频道；专家只收到当前任务所需的最小上下文。</span></div>
+    <div class="scope"><strong>专家稳定记忆</strong><span>专家身份、专业能力、技能版本与安全约束可全团队复用，但由管理员管理，不从聊天中自行改写。</span></div>
+    <div class="scope"><strong>团队知识库</strong><span>仅收录已审阅的知识对象；每条保留来源、作者、适用范围、敏感级别、版本和失效状态。</span></div>
+    <div class="scope private"><strong>个人 Agent 记忆</strong><span>仅所有者可用，本地 QwenPaw 的长期记忆默认留在本机；平台不把它注入团队专家，也不让管理员浏览正文。</span></div>
+
+    <div class="label" style="margin-top:16px">唯一跨频道路径</div>
+    <div class="promotion">
+      <span class="stage">知识候选</span><span class="arrow">→</span><span class="stage">人类审阅</span><span class="arrow">→</span><span class="stage">定范围 / 脱敏</span><span class="arrow">→</span><span class="stage">发布团队知识</span><span class="arrow">→</span><span class="stage">版本化 / 撤回</span>
+    </div>
+    <div class="rule"><strong>硬规则：</strong>模型不得把聊天内容自动升级为全局记忆；“总结”不等于“发布”。没有明确的人类确认，内容就留在原作用域。</div>
+  </div>
+
+  <div class="panel action">
+    <h3>执行治理 · Policy 独立于协调边车</h3>
+    <div class="decision"><div class="risk read">自动执行</div><div>只读检索、分析、草稿和无外部副作用的计算；仍记录工具、输入范围与结果摘要。</div></div>
+    <div class="decision"><div class="risk write">审批或规则放行</div><div>写文件、发消息、变更任务、调用业务系统等副作用；管理员可预先放行边界清晰的低风险动作。</div></div>
+    <div class="decision"><div class="risk block">拒绝执行</div><div>超出 Agent、成员、频道或工具能力范围；目标不明确、参数漂移、凭据缺失或策略冲突时默认拒绝。</div></div>
+
+    <div class="card-preview">
+      <div class="card-title">Execution Card · 人类看到的审批契约</div>
+      <div class="card-body">
+        <div class="field">谁提出<b>主答专家 + 发起成员</b></div>
+        <div class="field">准备做什么<b>工具、目标与精确参数</b></div>
+        <div class="field">影响范围<b>对象数量、外部收件方、可回退性</b></div>
+        <div class="field">执行预览<b>diff / 消息预览 / 变更摘要</b></div>
+      </div>
+    </div>
+    <div class="rule"><strong>审批不可泛化：</strong>批准只绑定当前计划、参数、作用域和有效期；任何实质变化都使审批失效并重新请求。边车和专家均不能代替人类批准。</div>
+  </div>
+</div>
+
+<div class="personal-zone">
+  <strong>个人 Agent 是“隐私隔离区”，不是频道成员</strong>
+  <div class="personal-flow">
+    <span class="personal-node">所有者选择上下文</span><span class="arrow">→</span><span class="personal-node">最小化 Context Envelope</span><span class="arrow">→</span><span class="personal-node">个人 / 本地 QwenPaw 私下处理</span><span class="arrow">→</span><span class="personal-node">结果仅所有者可见</span><span class="arrow">→</span><span class="personal-node">所有者主动“分享到频道”</span>
+  </div>
+</div>
+
+<div class="label" style="margin-top:18px">统一审计事件流（正文按权限可见，绝不记录密钥或模型私有推理）</div>
+<div class="audit-row">
+  <div class="audit">上下文授权</div><div class="audit">路由与 Agent 邀请</div><div class="audit">工具提案与审批</div><div class="audit">执行结果与失败</div><div class="audit">知识晋升与撤回</div>
+</div>
+
+<div class="options" style="margin-top:22px">
+  <div class="option" data-choice="approve-governance" onclick="toggleSelect(this)"><div class="letter">✓</div><div class="content"><h3>批准本节</h3><p>记忆作用域、个人 Agent 隐私、知识晋升和执行审批边界符合预期。</p></div></div>
+  <div class="option" data-choice="revise-governance" onclick="toggleSelect(this)"><div class="letter">↺</div><div class="content"><h3>需要调整</h3><p>点击后在对话中说明希望修改的治理规则。</p></div></div>
+</div>

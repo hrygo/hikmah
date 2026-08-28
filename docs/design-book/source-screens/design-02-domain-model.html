@@ -1,0 +1,67 @@
+<style>
+  .domain-map { display:grid; grid-template-columns:.8fr 1.35fr 1fr; gap:18px; margin-top:24px; align-items:start; }
+  .lane { border:1px solid rgba(100,116,139,.25); border-radius:16px; padding:15px; background:rgba(248,250,252,.72); min-height:520px; }
+  .lane-title { font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:#64748b; margin-bottom:12px; }
+  .entity { border:1px solid rgba(100,116,139,.30); border-radius:12px; padding:11px 12px; background:white; color:#172033; margin-bottom:10px; box-shadow:0 4px 12px rgba(15,23,42,.04); }
+  .entity strong { display:block; font-size:14px; }
+  .entity small { display:block; color:#64748b; margin-top:4px; line-height:1.4; }
+  .entity.human { border-color:#d97706; background:#fffbeb; }
+  .entity.space { border-color:#7c3aed; background:#faf5ff; }
+  .entity.channel { border-color:#0284c7; background:#f0f9ff; margin-left:14px; }
+  .entity.thread { border-color:#0891b2; background:#ecfeff; margin-left:28px; }
+  .entity.sidecar { border-style:dashed; border-color:#64748b; background:#f8fafc; }
+  .entity.expert { border-color:#059669; background:#ecfdf5; }
+  .entity.personal { border-color:#db2777; background:#fdf2f8; }
+  .entity.runtime { border-style:dashed; border-color:#059669; background:white; margin-left:16px; }
+  .link-note { text-align:center; font-size:12px; color:#64748b; margin:-3px 0 8px; }
+  .rule-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+  .rule { padding:13px; border-radius:12px; border:1px solid rgba(99,102,241,.20); background:rgba(99,102,241,.05); }
+  .rule strong { display:block; font-size:13px; color:#4338ca; }
+  .rule p { margin:5px 0 0; color:#64748b; font-size:13px; line-height:1.45; }
+  .scope-row { display:flex; flex-wrap:wrap; gap:6px; margin-top:7px; }
+  .scope { padding:4px 7px; border-radius:999px; background:rgba(15,23,42,.06); font-size:11px; color:#475569; }
+  @media(max-width:920px){.domain-map{grid-template-columns:1fr}.lane{min-height:auto}.rule-grid{grid-template-columns:1fr}}
+</style>
+
+<h2>设计 02 · 领域模型、身份与权限</h2>
+<p class="subtitle">首版只有一个私密团队空间；频道承载长期主题，线程承载具体讨论或任务。三类 Agent 身份彼此隔离。</p>
+
+<div class="domain-map">
+  <div class="lane">
+    <div class="lane-title">人类身份</div>
+    <div class="entity human"><strong>Team Owner</strong><small>创建空间、任命管理员、最终治理权限。</small></div>
+    <div class="entity human"><strong>Admin</strong><small>邀请成员、配置频道、团队专家和自动执行策略。</small></div>
+    <div class="entity human"><strong>Member</strong><small>参与频道、@专家、批准本人有权批准的操作、使用个人 Agent。</small></div>
+    <div class="entity personal"><strong>Personal Agent Binding</strong><small>绑定唯一 Member；可由成员本机 QwenPaw 提供。</small><div class="scope-row"><span class="scope">owner-only</span><span class="scope">selected context</span><span class="scope">private output</span></div></div>
+  </div>
+
+  <div class="lane">
+    <div class="lane-title">协作空间</div>
+    <div class="entity space"><strong>Team Space</strong><small>成员、专家名册、全局规则、团队知识与审计边界。</small></div>
+    <div class="entity sidecar"><strong>Team Coordinator Sidecar</strong><small>团队级轻量全局智能体；默认静默，只处理跨频道治理、名册和知识晋升。</small></div>
+    <div class="entity channel"><strong>Channel</strong><small>主题、成员可见性、专家席位、响应规则与频道记忆。</small></div>
+    <div class="entity sidecar" style="margin-left:14px"><strong>Channel Coordinator Sidecar</strong><small>频道级轻量全局智能体；未明确 @ 时按需路由，处理冲突、审批、总结和沉淀建议。</small></div>
+    <div class="entity thread"><strong>Thread / Task Run</strong><small>消息、参与者、主答专家、执行卡片、审批状态、结果与知识候选。</small></div>
+  </div>
+
+  <div class="lane">
+    <div class="lane-title">共享专家身份</div>
+    <div class="entity expert"><strong>Expert Seat</strong><small>团队拥有的稳定社交身份：名称、头像、专长、职责、可见性和频道权限。</small><div class="scope-row"><span class="scope">team-owned</span><span class="scope">mentionable</span><span class="scope">auditable</span></div></div>
+    <div class="link-note">由一个版本化绑定指向 ↓</div>
+    <div class="entity runtime"><strong>Agent Runtime Binding</strong><small>endpoint、runtime type、capabilities、版本、在线状态；可更换而不改变 Expert Seat。</small></div>
+    <div class="link-note">通常连接 ↓</div>
+    <div class="entity expert"><strong>Server-side QwenPaw</strong><small>专业 Workspace、Skills、Plugins、记忆和工具执行环境。</small></div>
+    <div class="entity" style="margin-top:24px"><strong>Channel Expert Membership</strong><small>把团队 Expert Seat 分配给指定频道，并声明是否可被智能路由、能否主动补充、可读取哪些资源。</small></div>
+  </div>
+</div>
+
+<div class="rule-grid">
+  <div class="rule"><strong>个人 Agent 不是共享成员</strong><p>不能被其他成员 @，不能直接读取或发布频道消息；主人只能转交选定上下文，并人工确认是否分享结果。</p></div>
+  <div class="rule"><strong>协调边车不是专业专家</strong><p>不回答领域问题，不拥有业务工具权限；其输出仅限路由、秩序、审批、总结和知识治理。</p></div>
+  <div class="rule"><strong>权限按能力而非“Agent”整体授予</strong><p>读取频道、回复、检索知识、调用工具、执行副作用分别授权；拒绝默认拥有主人的全部权限。</p></div>
+</div>
+
+<div class="options" style="margin-top:22px">
+  <div class="option" data-choice="approve-domain" onclick="toggleSelect(this)"><div class="letter">✓</div><div class="content"><h3>批准本节</h3><p>领域对象、三类 Agent 身份与权限边界符合预期。</p></div></div>
+  <div class="option" data-choice="revise-domain" onclick="toggleSelect(this)"><div class="letter">↺</div><div class="content"><h3>需要调整</h3><p>点击后在对话中说明希望修改的对象或权限。</p></div></div>
+</div>

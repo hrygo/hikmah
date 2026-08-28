@@ -1,0 +1,78 @@
+<style>
+  .boundary-layout { display:grid; grid-template-columns:minmax(0,1.45fr) minmax(280px,.75fr); gap:20px; margin-top:24px; }
+  .repo-box { border:2px solid #7c3aed; border-radius:18px; padding:20px; background:linear-gradient(145deg,#faf5ff,#f8fafc); }
+  .repo-title { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; }
+  .repo-title strong { font-size:17px; color:#4c1d95; }
+  .tag { padding:4px 9px; border-radius:999px; font-size:12px; background:#ede9fe; color:#6d28d9; }
+  .module-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .module { border:1px solid rgba(124,58,237,.22); border-radius:12px; padding:11px; background:rgba(255,255,255,.82); color:#172033; }
+  .module strong { display:block; font-size:14px; }
+  .module small { display:block; color:#64748b; margin-top:3px; line-height:1.35; }
+  .upstreams { display:flex; flex-direction:column; gap:12px; }
+  .upstream { border:1px solid rgba(2,132,199,.35); border-radius:14px; padding:15px; background:#f0f9ff; color:#172033; }
+  .upstream.paw { border-color:rgba(5,150,105,.4); background:#ecfdf5; }
+  .upstream strong { display:block; }
+  .upstream small { display:block; color:#64748b; margin-top:5px; line-height:1.4; }
+  .connector { border:1px dashed #d97706; border-radius:12px; padding:10px; text-align:center; background:#fffbeb; color:#92400e; font-size:13px; }
+  .ownership { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:20px; }
+  .owner { border:1px solid rgba(100,116,139,.26); border-radius:12px; padding:13px; background:rgba(255,255,255,.75); }
+  .owner h4 { margin:0 0 6px; font-size:14px; }
+  .owner p { margin:0; color:#64748b; font-size:13px; line-height:1.45; }
+  .guardrails { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+  .guard { padding:6px 9px; border-radius:8px; background:#fff1f2; color:#9f1239; border:1px solid #fecdd3; font-size:12px; }
+  .pr-flow { margin-top:20px; border:1px solid rgba(217,119,6,.30); border-radius:14px; background:#fffbeb; padding:14px 16px; }
+  .flow { display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-top:9px; }
+  .step { padding:6px 9px; border-radius:999px; background:white; border:1px solid #fde68a; font-size:12px; color:#78350f; }
+  .arrow { color:#a16207; }
+  @media (max-width:900px){ .boundary-layout{grid-template-columns:1fr}.ownership{grid-template-columns:1fr}.module-grid{grid-template-columns:1fr} }
+</style>
+
+<h2>设计 01 · 系统边界与代码所有权</h2>
+<p class="subtitle">产品是独立仓库；AgentScope 与 QwenPaw 是可升级、可替换的上游运行时，不成为产品仓库中的隐式分支。</p>
+
+<div class="boundary-layout">
+  <div class="repo-box">
+    <div class="repo-title"><strong>独立产品仓库（工作名称：协作平台）</strong><span class="tag">唯一产品代码所有者</span></div>
+    <div class="module-grid">
+      <div class="module"><strong>Community Web / API</strong><small>团队空间、频道、线程、成员和实时交互</small></div>
+      <div class="module"><strong>Collaboration Domain</strong><small>RBAC、专家席位、频道规则、任务与审计</small></div>
+      <div class="module"><strong>Coordination Adapter</strong><small>注册 AgentScope 团队/频道轻量边车，翻译协作事件</small></div>
+      <div class="module"><strong>Agent Gateway / AgentLink</strong><small>专家注册、在线状态、流式事件、权限暂停恢复</small></div>
+      <div class="module"><strong>QwenPaw Adapter</strong><small>服务端专家池与成员本机个人 Agent 的统一契约</small></div>
+      <div class="module"><strong>Knowledge Promotion</strong><small>频道上下文 → 人类确认 → 团队知识；保留来源和权限</small></div>
+    </div>
+    <div class="guardrails">
+      <span class="guard">禁止 vendor 上游源码</span>
+      <span class="guard">禁止 monkey patch 私有实现</span>
+      <span class="guard">禁止直接读写上游数据库</span>
+      <span class="guard">禁止在本地维护长期 fork</span>
+    </div>
+  </div>
+
+  <div class="upstreams">
+    <div class="upstream"><strong>AgentScope 上游</strong><small>固定版本依赖或独立服务；只使用公开 API/SDK/扩展点。承担团队、频道边车和协调运行时。</small></div>
+    <div class="connector">版本化 Coordination Adapter<br>能力探测 · 契约测试 · 失败隔离</div>
+    <div class="upstream paw"><strong>QwenPaw 上游</strong><small>固定版本运行时；通过公开 ACP / Plugin / API 契约接入。承担专业专家与个人 Agent。</small></div>
+    <div class="connector">AgentLink 网络层<br>认证 WebSocket + ACP 语义 + Owner Scope</div>
+  </div>
+</div>
+
+<div class="ownership">
+  <div class="owner"><h4>产品仓库拥有</h4><p>社交领域数据、成员权限、频道规则、审批记录、Agent 注册映射与审计日志。</p></div>
+  <div class="owner"><h4>AgentScope 拥有</h4><p>协调 Agent 的会话、运行状态、Team/Pipeline/MessageBus 语义；产品不依赖其内部表结构。</p></div>
+  <div class="owner"><h4>QwenPaw 拥有</h4><p>Agent 工作区、Skills/Plugins、专业记忆和本地资源；个人 Agent 数据不上传到团队端。</p></div>
+</div>
+
+<div class="pr-flow">
+  <div class="label">必须修改上游时的唯一通道</div>
+  <div class="flow"><span class="step">发现缺失的通用扩展点</span><span class="arrow">→</span><span class="step">在独立分支做最小修改</span><span class="arrow">→</span><span class="step">向对应上游提交 PR</span><span class="arrow">→</span><span class="step">等待发布并固定版本</span><span class="arrow">→</span><span class="step">产品 Adapter 启用新能力</span></div>
+</div>
+
+<div class="options" style="margin-top:22px">
+  <div class="option" data-choice="approve-boundaries" onclick="toggleSelect(this)">
+    <div class="letter">✓</div><div class="content"><h3>批准本节</h3><p>系统边界与代码所有权符合预期。</p></div>
+  </div>
+  <div class="option" data-choice="revise-boundaries" onclick="toggleSelect(this)">
+    <div class="letter">↺</div><div class="content"><h3>需要调整</h3><p>点击后在对话中说明希望修改的边界。</p></div>
+  </div>
+</div>

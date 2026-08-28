@@ -1,0 +1,106 @@
+<style>
+  .topology { display:grid; grid-template-columns:1fr 70px 1fr; gap:12px; align-items:stretch; margin-top:22px; }
+  .zone { border:1px solid rgba(100,116,139,.24); border-radius:16px; padding:16px; background:rgba(248,250,252,.78); }
+  .zone.server { border-top:4px solid #2563eb; }
+  .zone.local { border-top:4px solid #9333ea; }
+  .zone h3 { margin-top:0; }
+  .unit { margin:9px 0; padding:9px 11px; border-radius:10px; background:white; border:1px solid rgba(100,116,139,.18); }
+  .unit strong { display:block; font-size:12px; color:#1e293b; }
+  .unit small { display:block; margin-top:3px; color:#64748b; line-height:1.4; }
+  .link { display:flex; flex-direction:column; align-items:center; justify-content:center; color:#64748b; text-align:center; font-size:11px; }
+  .link .line { width:100%; border-top:2px dashed #94a3b8; margin:9px 0; position:relative; }
+  .link .line:after { content:'›'; position:absolute; right:-1px; top:-15px; color:#64748b; font-size:24px; }
+  .guard { margin-top:16px; padding:11px 13px; border-radius:11px; border:1px solid #bae6fd; background:#f0f9ff; color:#075985; font-size:12px; line-height:1.5; }
+  .triple { display:grid; grid-template-columns:1fr 1fr 1fr; gap:14px; margin-top:18px; }
+  .box { border:1px solid rgba(100,116,139,.22); border-radius:14px; padding:14px; background:white; }
+  .box h3 { margin:0 0 10px; font-size:14px; }
+  .box ul { margin:0; padding-left:18px; }
+  .box li { margin:6px 0; color:#475569; font-size:12px; line-height:1.4; }
+  .failure { border-top:4px solid #dc2626; }
+  .testing { border-top:4px solid #059669; }
+  .mvp { border-top:4px solid #d97706; }
+  .split-scope { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:12px; }
+  .scope-card { border-radius:11px; padding:11px; font-size:12px; line-height:1.45; }
+  .scope-card.in { background:#ecfdf5; border:1px solid #a7f3d0; color:#065f46; }
+  .scope-card.out { background:#f8fafc; border:1px solid #cbd5e1; color:#475569; }
+  .scope-card strong { display:block; margin-bottom:5px; }
+  .book { margin-top:18px; display:grid; grid-template-columns:150px 1fr; gap:14px; align-items:center; border:1px solid #fde68a; border-left:5px solid #ca8a04; border-radius:14px; padding:14px 16px; background:#fefce8; }
+  .book-icon { text-align:center; font-size:42px; }
+  .book h3 { margin:0 0 5px; color:#854d0e; }
+  .book p { margin:3px 0; color:#713f12; font-size:12px; line-height:1.45; }
+  @media(max-width:900px){.topology{grid-template-columns:1fr}.link{min-height:52px}.link .line{width:55%}.triple{grid-template-columns:1fr}.split-scope{grid-template-columns:1fr}.book{grid-template-columns:1fr}.book-icon{display:none}}
+</style>
+
+<h2>设计 05 · 运行拓扑、可靠性与 MVP</h2>
+<p class="subtitle">共享协作运行在团队服务器；个人 QwenPaw 由成员本地托管并主动出站连接。上游仓库保持零侵入。</p>
+
+<div class="topology">
+  <div class="zone server">
+    <h3>私有团队服务器</h3>
+    <div class="unit"><strong>产品应用与控制平面</strong><small>Team Space、频道、线程、成员、ACL、TaskRun、知识与审计。</small></div>
+    <div class="unit"><strong>AgentScope 协调运行时</strong><small>团队 / 频道轻量边车、专家协作编排与任务生命周期；异常时可降级。</small></div>
+    <div class="unit"><strong>Agent Gateway + Policy</strong><small>统一身份、能力令牌、上下文信封、协议适配、审批和执行记录。</small></div>
+    <div class="unit"><strong>共享 QwenPaw 专家池</strong><small>按 Expert Seat 隔离工作区、技能和权限；由团队管理员配置。</small></div>
+  </div>
+
+  <div class="link">
+    <span>出站长连接</span><div class="line"></div><span>短期能力令牌<br>最小上下文</span>
+  </div>
+
+  <div class="zone local">
+    <h3>成员设备</h3>
+    <div class="unit"><strong>个人 QwenPaw</strong><small>成员自行运行、升级与配置；长期记忆和私有技能默认留在本机。</small></div>
+    <div class="unit"><strong>AgentLink Client</strong><small>只需主动连接服务器，不开放本机入站端口；断线后显示离线而非静默代答。</small></div>
+    <div class="unit"><strong>Owner-only 私密会话</strong><small>结果只返回所有者；分享到频道必须由所有者执行明确发布动作。</small></div>
+  </div>
+</div>
+
+<div class="guard"><strong>上游代码边界：</strong>产品只依赖 AgentScope 与 QwenPaw 的公开接口并通过自有 Adapter 隔离版本差异。缺失能力先在产品侧适配；确需修改时，仅提交可复用的最小上游 PR，产品等待正式发布并固定版本，不维护私有 fork。</div>
+
+<div class="triple">
+  <div class="box failure">
+    <h3>失效与降级</h3>
+    <ul>
+      <li>显式 @ 的专家离线：明确告知，不擅自换专家。</li>
+      <li>协调边车故障：显式 @ 仍直达；未 @ 时请人类选择。</li>
+      <li>消息以幂等键去重；仅幂等只读操作可有限重试。</li>
+      <li>副作用执行不盲目重试；状态不明时进入人工核验。</li>
+      <li>Policy、身份或审计不可用时，写操作 fail closed。</li>
+    </ul>
+  </div>
+  <div class="box testing">
+    <h3>验证体系</h3>
+    <ul>
+      <li>单元：ACL、策略、TaskRun 状态机、审批失效规则。</li>
+      <li>契约：对固定版本 AgentScope / QwenPaw 做 Adapter 测试。</li>
+      <li>集成：@直达、无 @ 路由、专家邀请、审批与知识晋升。</li>
+      <li>隐私：跨频道泄漏、个人 Agent 越权、能力令牌重放。</li>
+      <li>端到端：离线重连、部分失败、取消和审计回放。</li>
+    </ul>
+  </div>
+  <div class="box mvp">
+    <h3>MVP 成功闭环</h3>
+    <ul>
+      <li>3–20 人邀请制 Team Space、频道与线程。</li>
+      <li>共享专家席位 + 所有者专属本地个人 Agent。</li>
+      <li>显式 @ 直达与未 @ 的轻量单主答路由。</li>
+      <li>只读自动执行、副作用审批卡与完整审计。</li>
+      <li>人审知识晋升；可完成一条真实团队任务。</li>
+    </ul>
+  </div>
+</div>
+
+<div class="split-scope">
+  <div class="scope-card in"><strong>MVP 内</strong>私有小团队协作、文本消息、附件引用、专家协作、基础知识库、管理与审计。</div>
+  <div class="scope-card out"><strong>MVP 外</strong>公开社区、专家市场、跨组织联邦、计费、移动原生客户端、复杂无代码工作流、聊天自动沉淀全局记忆。</div>
+</div>
+
+<div class="book">
+  <div class="book-icon">▤</div>
+  <div><h3>最终“编制成册”交付</h3><p><strong>Markdown 规范：</strong>可评审、可 diff、可版本管理的设计事实源。</p><p><strong>独立 HTML 设计册：</strong>汇编全部批准页面，加入封面、目录、章节导航、决策索引和打印样式；离开画布服务器也能直接打开。</p><p><strong>源材料：</strong>保留每张原始画布 HTML 和批准记录，便于追溯设计演进。</p></div>
+</div>
+
+<div class="options" style="margin-top:22px">
+  <div class="option" data-choice="approve-runtime-mvp" onclick="toggleSelect(this)"><div class="letter">✓</div><div class="content"><h3>批准本节</h3><p>运行拓扑、降级策略、验证范围、MVP 和成册交付符合预期。</p></div></div>
+  <div class="option" data-choice="revise-runtime-mvp" onclick="toggleSelect(this)"><div class="letter">↺</div><div class="content"><h3>需要调整</h3><p>点击后在对话中说明希望修改的内容。</p></div></div>
+</div>

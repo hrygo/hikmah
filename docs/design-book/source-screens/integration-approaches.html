@@ -1,0 +1,87 @@
+<style>
+  .approach-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:18px; margin-top:24px; }
+  .stack { min-height:330px; padding:18px; display:flex; flex-direction:column; justify-content:center; gap:9px; background:linear-gradient(145deg,rgba(15,118,110,.08),rgba(99,102,241,.07)); }
+  .layer { border:1px solid rgba(100,116,139,.35); border-radius:11px; padding:10px 12px; background:rgba(255,255,255,.82); color:#172033; text-align:center; }
+  .layer strong { display:block; font-size:14px; }
+  .layer small { display:block; color:#64748b; margin-top:3px; line-height:1.35; }
+  .layer.community { border-color:#7c3aed; background:#f5f3ff; }
+  .layer.scope { border-color:#0284c7; background:#f0f9ff; }
+  .layer.gateway { border-color:#d97706; background:#fffbeb; }
+  .layer.paw { border-color:#059669; background:#ecfdf5; }
+  .layer.local { border-style:dashed; border-color:#0891b2; background:#ecfeff; }
+  .down { text-align:center; color:#64748b; line-height:1; }
+  .split-row { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+  .badge-rec { display:inline-block; margin-left:7px; padding:3px 8px; border-radius:999px; background:#dcfce7; color:#047857; font-size:12px; }
+  .rule-box { margin-top:24px; padding:16px 18px; border:1px solid rgba(99,102,241,.22); border-radius:14px; background:rgba(99,102,241,.05); }
+  .rule-flow { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:10px; }
+  .pill { padding:7px 10px; border-radius:999px; background:rgba(99,102,241,.12); font-size:13px; }
+  .arrow { color:#64748b; }
+  @media (max-width:1000px) { .approach-grid { grid-template-columns:1fr; } .stack { min-height:auto; } }
+</style>
+
+<h2>AgentScope × QwenPaw：三种组合架构</h2>
+<p class="subtitle">目标：团队私有部署；共享专家通常由服务端 QwenPaw 实现；成员可接入本机 QwenPaw 作为仅本人可用的个人 Agent。</p>
+
+<div class="cards approach-grid">
+  <div class="card" data-choice="control-plane-gateway" onclick="toggleSelect(this)">
+    <div class="card-image stack">
+      <div class="layer community"><strong>社区产品层</strong><small>团队空间、频道、线程、成员体验</small></div>
+      <div class="down">↓</div>
+      <div class="layer scope"><strong>AgentScope 协调控制面</strong><small>团队/频道边车、规则、路由、审批、事件与记忆治理</small></div>
+      <div class="down">↓</div>
+      <div class="layer gateway"><strong>Agent Gateway / AgentLink</strong><small>统一身份、流式事件、权限暂停恢复、离线状态；ACP 语义 + 安全网络传输</small></div>
+      <div class="down">↓</div>
+      <div class="split-row">
+        <div class="layer paw"><strong>共享 QwenPaw 专家池</strong><small>服务端运行</small></div>
+        <div class="layer local"><strong>个人本机 QwenPaw</strong><small>出站连接，仅主人可用</small></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A · 控制面 + Agent 网关 <span class="badge-rec">推荐</span></h3>
+      <p>AgentScope 负责协作秩序，QwenPaw 负责专业工作。边界稳定，可同时容纳服务端专家和成员本机个人 Agent。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="qwenpaw-centric" onclick="toggleSelect(this)">
+    <div class="card-image stack">
+      <div class="layer community"><strong>扩展 QwenPaw Console</strong><small>把 ChatGroup / Channel 扩展成团队社区</small></div>
+      <div class="down">↓</div>
+      <div class="layer paw"><strong>QwenPaw Agent OS</strong><small>专家、个人 Agent、Skills、Plugins、Memory</small></div>
+      <div class="down">↓</div>
+      <div class="layer scope"><strong>嵌入 AgentScope SDK</strong><small>只调用 Team / Pipeline / MessageBus 能力</small></div>
+    </div>
+    <div class="card-body">
+      <h3>B · QwenPaw 中心化</h3>
+      <p>界面和插件复用最快，但会把个人 Agent OS 与团队协作领域缠在一起，后续升级两个上游仓库都更困难。</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="neutral-core" onclick="toggleSelect(this)">
+    <div class="card-image stack">
+      <div class="layer community"><strong>全新 Community Core</strong><small>身份、消息、频道、规则、审批、记忆全部自建</small></div>
+      <div class="down">↓</div>
+      <div class="split-row">
+        <div class="layer scope"><strong>AgentScope Adapter</strong><small>协调运行时之一</small></div>
+        <div class="layer paw"><strong>QwenPaw Adapter</strong><small>专家运行时之一</small></div>
+      </div>
+      <div class="down">↓</div>
+      <div class="layer local"><strong>未来任意 Agent Runtime</strong><small>完全供应商中立</small></div>
+    </div>
+    <div class="card-body">
+      <h3>C · 中立社区核心</h3>
+      <p>长期最通用，但首版会重复建设 AgentScope 已具备的大量服务能力，范围和风险最大。</p>
+    </div>
+  </div>
+</div>
+
+<div class="rule-box">
+  <div class="label">推荐方案中的双路径消息流</div>
+  <div class="rule-flow">
+    <span class="pill">明确 @专家</span><span class="arrow">→</span><span class="pill">Gateway 直达 QwenPaw</span><span class="arrow">→</span><span class="pill">频道边车仅观察</span>
+  </div>
+  <div class="rule-flow">
+    <span class="pill">未明确 @</span><span class="arrow">→</span><span class="pill">频道边车按需路由</span><span class="arrow">→</span><span class="pill">一名主答 QwenPaw 专家</span>
+  </div>
+</div>
+
+<p class="subtitle" style="margin-top:18px">请点击一个组合方案。建议选择 A：它让 AgentScope 与 QwenPaw 各自做最擅长的事。</p>
