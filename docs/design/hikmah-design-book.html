@@ -608,15 +608,15 @@
               </ul>
             </div>
             <div class="card">
-              <strong>本轮修订状态</strong>
+              <strong>核心架构决议</strong>
               <ul class="compact">
-                <li>ADR-0001：复用优先原则 Accepted；薄控制层边界待整体复核</li>
-                <li>ADR-0002：Proposed，Foundation Spike</li>
-                <li>Mattermost：技术首选，许可待证</li>
-                <li>Zulip：首要备选</li>
-                <li>Open WebUI：AI 原生对照</li>
-                <li>CircleChat：功能参照，不作稳定底座</li>
-                <li>完整修订版：等待用户复核</li>
+                <li>ADR-0001：复用优先与轻量治理控制层 (Accepted)</li>
+                <li>ADR-0003：选定 Mattermost 作为协作底座与 UI 宿主 (Accepted)</li>
+                <li>协作数据面：Mattermost v11.10+ (Channel / Thread / Team / File)</li>
+                <li>UI 扩展形态：Mattermost Web App Plugin (React 19 / TypeScript)</li>
+                <li>专家与个人运行时：QwenPaw (单 Agent 执行 / Tools / Skills)</li>
+                <li>团队协同与协调：AgentScope (Coordinator Sidecar / Workflows)</li>
+                <li>控制面：Python FastAPI 统一薄治理</li>
               </ul>
             </div>
           </div>
@@ -624,10 +624,11 @@
             <a href="../product/overview.md">正式 Markdown 规范</a>
             <a href="../research/2026-08-28-github-reuse-landscape.md">GitHub 复用调研</a>
             <a href="../decisions/0001-reuse-first-thin-control-plane.md">ADR-0001</a>
-            <a href="../decisions/0002-collaboration-foundation-spike.md">ADR-0002</a>
+            <a href="../decisions/0003-adopt-mattermost-as-collaboration-foundation.md">ADR-0003</a>
             <a href="approval-record.md">批准与修订记录</a>
           </div>
           <p class="subtitle" style="margin-top:20px">历史<a href="../archive/design-sources/README.md">画布源材料</a>继续持久化保存，可能包含已被本版替代的早期架构。视觉册与规范冲突时，以 Markdown 规范和 Accepted ADR 为准。</p>
+
         </section>
 
         <footer>

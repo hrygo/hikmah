@@ -2,7 +2,7 @@
 title: Hikmah GitHub 复用调研与组件决策矩阵
 description: 调研 Hikmah 可复用的协作底座、Agent Runtime、协议、权限、记忆、审批和可观测性组件。
 document_type: research-report
-status: review
+status: active
 created: 2026-08-28
 updated: 2026-08-28
 review_after: 2026-11-28

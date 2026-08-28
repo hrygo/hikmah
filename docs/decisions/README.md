@@ -25,6 +25,8 @@ ADR 记录成本高、难以逆转的技术决定及其理由。旧 ADR 不删�
 | ADR | 状态 | 决定 |
 |---|---|---|
 | [ADR-0001](0001-reuse-first-thin-control-plane.md) | Accepted | 复用优先，只建设 Hikmah 必需的轻量治理控制层 |
-| [ADR-0002](0002-collaboration-foundation-spike.md) | Proposed | 通过同场景 Spike 选择 Collaboration Foundation |
+| [ADR-0002](0002-collaboration-foundation-spike.md) | Superseded / Done | 通过同场景 Spike 评估协作底座候选方案 |
+| [ADR-0003](0003-adopt-mattermost-as-collaboration-foundation.md) | Accepted | 选定 Mattermost 作为 Hikmah 协作底座与 UI 宿主 |
 
 状态生命周期和 metadata 规则见[文档治理规范](../project/documentation-policy.md)。
+

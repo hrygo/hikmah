@@ -40,8 +40,9 @@ Hikmah 是建立在现有协作平台、QwenPaw 和 AgentScope 之上的轻量�
 ## 当前状态
 
 - 复用优先和轻量控制层原则已经接受：[ADR-0001](../decisions/0001-reuse-first-thin-control-plane.md)。
-- Collaboration Foundation 的正式选择仍为 Proposed：[ADR-0002](../decisions/0002-collaboration-foundation-spike.md)。
-- 最新代码级研究推荐 Mattermost 宿主壳 + Hikmah TS Plugin + Python 控制面，但尚未升级为 Accepted ADR：[WebUI 整合调研](../research/2026-08-28-mattermost-zulip-webui-integration.md)。
+- 协作底座已正式选定 Mattermost：[ADR-0003](../decisions/0003-adopt-mattermost-as-collaboration-foundation.md)。
+- 架构形态确立为 **Mattermost 宿主壳 + Hikmah Web App Plugin (TS/React) + Python FastAPI 控制面**（参考 [WebUI 整合调研](../research/2026-08-28-mattermost-zulip-webui-integration.md)）。
+
 
 ## 维护规则
 

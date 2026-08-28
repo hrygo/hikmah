@@ -2,7 +2,7 @@
 title: Hikmah（群贤）产品与技术架构设计
 description: Hikmah 的产品愿景、系统边界、领域模型、Agent 协作规则和 MVP 技术架构事实源。
 document_type: product-spec
-status: review
+status: active
 created: 2026-08-28
 updated: 2026-08-28
 owners:
@@ -21,6 +21,7 @@ related:
   - ../research/2026-08-28-mattermost-zulip-webui-integration.md
   - ../decisions/0001-reuse-first-thin-control-plane.md
   - ../decisions/0002-collaboration-foundation-spike.md
+  - ../decisions/0003-adopt-mattermost-as-collaboration-foundation.md
 ---
 
 # Hikmah（群贤）产品与技术架构设计
@@ -132,18 +133,17 @@ Human Web / Desktop / Mobile Client
 
 Foundation 是协作事实源；AgentScope 和 QwenPaw 是各自运行事实源；Hikmah 不把三者的数据复制成第四套完整状态。
 
-### 4.2 Foundation 选型状态
+### 4.2 协作底座正式选型 (Mattermost)
 
-最终 Foundation 尚未批准，必须先执行 [ADR-0002](../decisions/0002-collaboration-foundation-spike.md) 定义的同场景 Spike：
+团队已正式通过 [ADR-0003](../decisions/0003-adopt-mattermost-as-collaboration-foundation.md) 采纳 **Mattermost (`v11.10.x+`)** 作为 Hikmah 的团队协作底座与 UI 宿主：
 
-| 顺序 | 候选 | 当前定位 |
-|---:|---|---|
-| 1 | Mattermost | 技术首选；QwenPaw 已有原生 Channel；许可/品牌是硬门禁。 |
-| 2 | Zulip | Apache-2.0 首要备选；通过 QwenPaw 公开 Channel Plugin 集成。 |
-| 3 | Open WebUI Channels | AI 原生对照；定制许可证、三类身份和本地 Agent 隔离待证。 |
-| 4 | CircleChat | 功能形态对照；当前只 Borrow，不作为稳定底座。 |
+| 维度 | 正式方案与决议 |
+|---|---|
+| **协作数据面** | 由 Mattermost 统一承载 Team、Channel、Thread、DM、文件上传、全文搜索与基础 RBAC 权限。 |
+| **UI 宿主与扩展** | 采用 **Mattermost Web App Plugin (React 19 / TypeScript)** 注入 RHS 审核面板、Custom Post 富交互卡片与治理工作台。 |
+| **通信与事件集成** | 通过 Mattermost 官方 REST API (v4) 与 WebSocket 事件流实现双向消息编排与 Sidecar 监听，严格遵守非侵入集成原则。 |
+| **双核心 Agent 运行时** | 唯一绑定 **QwenPaw**（团队共享专家席位 & 个人专属助理运行时）与 **AgentScope**（团队/频道 Coordinator Sidecar 协调与多 Agent 复杂工作流编排）。 |
 
-Matrix、Rocket.Chat、Discourse、LibreChat 与 OpenAgents 暂留长名单。选型不能只依赖 Stars 或 README，必须验证安装、核心用户旅程、隐私、许可、运维和兼容升级。
 
 ### 4.3 持续复用门禁
 
@@ -598,11 +598,13 @@ Member Device
 - 执行：只读可自动；副作用审批或 Admin 边界清晰的低风险预授权；始终审计；
 - 上游：原则不修改 AgentScope/QwenPaw；必要修改只提交上游 PR。
 
-### 18.2 本轮架构修订
+### 18.2 核心架构决策
+ 
+- [ADR-0001](../decisions/0001-reuse-first-thin-control-plane.md)：Accepted；复用优先原则，仅建设 Hikmah 特有的轻量治理控制层；
+- [ADR-0002](../decisions/0002-collaboration-foundation-spike.md)：Superseded；协作底座评估标准与 Spike 用例；
+- [ADR-0003](../decisions/0003-adopt-mattermost-as-collaboration-foundation.md)：Accepted；选定 Mattermost 作为协作底座与 UI 宿主；
+- 架构定力：深耕 Mattermost + QwenPaw + AgentScope，不自建通用聊天全栈或多余 Agent 运行时。
 
-- [ADR-0001](../decisions/0001-reuse-first-thin-control-plane.md)：复用优先原则 Accepted；轻量治理控制层是本修订稿的证据推导，等待整体复核；
-- [ADR-0002](../decisions/0002-collaboration-foundation-spike.md)：Proposed；Foundation 候选排序和 Spike 方案等待用户复核；
-- 被撤销的早期实现：自建 Community Web/API、Agent Gateway、AgentLink、独立 Policy/Approval、TaskRun 工作流和通用基础设施。
 
 ## 19. 持久化设计资产
 

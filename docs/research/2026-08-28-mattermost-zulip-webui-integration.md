@@ -2,9 +2,10 @@
 title: Hikmah WebUI 与协作底座整合深度调研
 description: 基于固定 Release 源码评估 Mattermost、Zulip、AgentScope、QwenPaw 与 Hikmah WebUI 的整合路线。
 document_type: research-report
-status: review
+status: active
 created: 2026-08-28
 updated: 2026-08-28
+
 review_after: 2026-11-28
 owners:
   - hikmah-maintainers

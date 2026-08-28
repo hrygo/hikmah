@@ -1,44 +1,46 @@
 # Contributing to Hikmah
 
-感谢你关注 Hikmah（群贤）。项目当前处于设计与复用验证阶段，尚未进入产品代码实现；贡献应先帮助我们收敛正确的边界，再进入实现。
+感谢你关注并参与 Hikmah（群贤）的开发与建设。
 
 ## Before you start
 
-请先阅读：
+请先通读核心架构与治理文档：
 
 - [README](README.md)
-- [产品与技术架构设计](docs/superpowers/specs/2026-08-28-hikmah-design.md)
-- [复用优先调研](docs/research/2026-08-28-github-reuse-landscape.md)
+- [产品与技术架构设计](docs/product/overview.md)
+- [复用优先调研报告](docs/research/2026-08-28-github-reuse-landscape.md)
 - [ADR-0001：复用优先的轻量治理控制层](docs/decisions/0001-reuse-first-thin-control-plane.md)
-- [ADR-0002：Foundation Reuse Spike](docs/decisions/0002-collaboration-foundation-spike.md)
+- [ADR-0003：选定 Mattermost 作为协作底座](docs/decisions/0003-adopt-mattermost-as-collaboration-foundation.md)
 
-Proposed 状态的 ADR 仍是待复核方案，不能当作已批准的实现决定。
+所有贡献与实现均需严格遵循已批准的 Accepted ADR 与产品事实源规范。
 
 ## Contribution principles
 
 1. **Design first.** 涉及公共接口、数据边界、权限、隐私、部署或上游集成的改动，先提交设计说明和验收标准。
 2. **Reuse first.** 新增组件依次评估 Adopt、Integrate、Borrow、Build-gap；没有证据证明前三者不足时，不自建通用基础设施。
-3. **Upstream zero-intrusion.** AgentScope 与 QwenPaw 原则上不修改；通用扩展点只通过对应上游的最小 PR 提交。
+3. **Upstream zero-intrusion.** AgentScope、QwenPaw 与 Mattermost 坚持非侵入集成，原则上不修改上游核心；通用扩展点只通过对应上游的最小 PR 提交。
 4. **Least privilege.** Agent、插件和工具只获得完成任务所需的最小作用域。
 5. **Auditable changes.** 高影响路径必须说明身份、能力、数据来源、审批和审计影响。
 
 ## Workflow
 
 1. 先在 Issue 中说明问题、用户影响和非目标。
-2. 需要架构决策时，在 docs/decisions/ 增加 ADR，并明确状态、替代方案、退出条件和验收门禁。
+2. 需要架构决策时，在 `docs/decisions/` 增加 ADR，并明确状态、替代方案、退出条件和验收门禁。
 3. 需要实现时，为一个独立 Slice 编写 implementation plan，再按小步提交代码。
 4. 在 PR 中链接 Issue、设计文档和验证证据；保持每个提交只包含一个逻辑变化。
 5. 合并前重新检查依赖许可证、敏感信息、权限边界和上游兼容性。
 
 ## Technology baseline
 
-未来产品代码使用：
+Hikmah 官方技术基线：
 
-- Python 3.14、FastAPI、Pydantic v2、SQLAlchemy 2.x、Alembic、uv、Ruff、mypy 和 pytest；
-- React 19.2、TypeScript 6、Vite 8、Node.js 24 LTS、pnpm、TanStack Query、React Router、Vitest 和 Playwright；
-- FastAPI OpenAPI 驱动前端 TypeScript 客户端；流式事件按需要使用 SSE 或 WebSocket。
+- **后端 (Backend)**：Python 3.14+、FastAPI、Pydantic v2、SQLAlchemy 2.x、Alembic、uv、Ruff、mypy (--strict) 和 pytest；
+- **前端 (Frontend)**：React 19.2+、TypeScript 6+、Vite 8+、Node.js 24 LTS、pnpm、TanStack Query、React Router、Vitest 和 Playwright；
+- **协作底座集成 (Foundation)**：Mattermost Web App Plugin (React/TS) + Bot API & WebSocket 事件流；
+- **契约与流式**：FastAPI OpenAPI 驱动前端 TypeScript 客户端；流式事件采用 SSE，双向控制采用 WebSocket。
 
-当前没有可运行的应用测试或构建命令。实现 Slice 后，PR 必须报告适用的 lint、typecheck、unit/integration test 和 end-to-end test 输出，不能用“看起来能工作”替代证据。
+所有代码 PR 必须附带适用的 lint、typecheck、unit/integration test 和 end-to-end test 验证结果，杜绝无测试验证的提交。
+
 
 ## Pull requests
 

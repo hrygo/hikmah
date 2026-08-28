@@ -48,8 +48,8 @@ canonical: false
 | 主题 | 状态 | 事实源 |
 |---|---|---|
 | 复用优先原则 | Accepted | [ADR-0001](decisions/0001-reuse-first-thin-control-plane.md) |
-| Collaboration Foundation 选型 | Proposed | [ADR-0002](decisions/0002-collaboration-foundation-spike.md) |
-| Mattermost WebUI 混合路线 | Review | [WebUI 整合调研](research/2026-08-28-mattermost-zulip-webui-integration.md) |
+| Collaboration Foundation 选型 (Mattermost) | Accepted | [ADR-0003](decisions/0003-adopt-mattermost-as-collaboration-foundation.md) |
+| Mattermost WebUI 混合路线 | Accepted | [WebUI 整合调研](research/2026-08-28-mattermost-zulip-webui-integration.md) |
 | 产品与技术架构 | Review | [产品与技术架构](product/overview.md) |
 | HTML 设计册 | Review | [设计册](design/hikmah-design-book.html) |
 

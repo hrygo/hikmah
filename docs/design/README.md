@@ -26,4 +26,5 @@ related:
 - [设计批准与修订记录](approval-record.md)：记录交互式产品设计阶段的批准结果和修订边界。
 - [历史画布源材料](../archive/design-sources/README.md)：用于追溯设计演进，不作为当前事实源。
 
-正式产品要求以[产品与技术架构](../product/overview.md)和 Accepted ADR 为准。设计册当前处于 Review；最新 Foundation/WebUI 研究尚未全部编入设计册。
+正式产品要求以[产品与技术架构](../product/overview.md)和 Accepted ADR（如 [ADR-0001](../decisions/0001-reuse-first-thin-control-plane.md)、[ADR-0003](../decisions/0003-adopt-mattermost-as-collaboration-foundation.md)）为准。
+

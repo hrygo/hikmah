@@ -37,22 +37,22 @@ related:
 | 8 | 其他实体命名 | 不设置独立品牌名，只使用功能名称 |
 | 9 | 系统设计原则 | 批准“不重复造轮子”；产品本身及各组件都须先开展广泛 GitHub 调研 |
 
-## 2026-08-28 复用优先修订
+## 2026-08-28 复用优先与底座定型决议
 
-GitHub 调研发现早期架构重复了成熟协作平台、AgentScope 和 QwenPaw 已有能力，因此作出以下文档修订：
+GitHub 调研与深度代码分析完成了底座选型与架构定型：
 
-- `ADR-0001` 中“复用优先”原则已接受；由调研推导出的轻量治理控制层边界随完整修订稿等待用户复核；
-- 自建 Community Web/API、Agent Gateway、AgentLink、独立 Policy/Approval、TaskRun 工作流等早期实现被撤销；
-- Mattermost、Zulip、Open WebUI Channels、CircleChat 进入统一 Foundation Reuse Spike；
-- `ADR-0002` 仍为 Proposed，候选排序、验收方法和修订后的完整架构等待用户复核；
-- 此次修订不改变三类 Agent 身份、两级轻量 Sidecar、显式 @零介入、Personal Agent owner-only、知识人审晋升等已批准产品行为。
+- `ADR-0001`（轻量治理控制层）与 `ADR-0003`（选定 Mattermost 作为协作底座与 UI 宿主）正式 Accepted；
+- 自建 Community Web/API、Agent Gateway、AgentLink、独立 Policy/Approval、TaskRun 工作流等早期自建轮子全部撤销；
+- 架构定型为 **Mattermost 宿主壳 + Web App Plugin (React 19 / TypeScript) + Python FastAPI 控制面**；
+- 运行时唯一绑定 **QwenPaw**（专家席位 & 个人专属助理）与 **AgentScope**（团队/频道 Coordinator Sidecar 协调与多 Agent 协同工作流）；
+- 此次定型严格保持三类 Agent 身份、两级轻量 Sidecar、显式 @ 零介入、Personal Agent owner-only、知识人审晋升等已批准产品行为。
 
 ## 适用规则
 
-- 原始画布是设计过程材料，可能保留早期工作名称或未选择方案。
+- 原始画布是设计过程材料，保留早期工作名称作为历史档案。
 - 本批准记录用于追溯，不替代正式规范。
-- 状态为 Accepted 的 ADR 记录架构原则；Proposed ADR 不能视为已获用户批准。
-- 最终要求以 `docs/product/overview.md` 和 Accepted ADR 为准。
+- 最终技术要求以 `docs/product/overview.md` 和 Accepted ADR (ADR-0001, ADR-0003) 为准。
+
 
 ## 2026-08-28 文档信息架构重组
 
