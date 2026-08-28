@@ -1,0 +1,64 @@
+[project]
+name = "hikmah"
+version = "0.1.0"
+description = "Hikmah - Lightweight Human-Agent Collaboration Governance Layer"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "hikmah-api",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.0",
+    "pytest-asyncio>=0.25.0",
+    "pytest-cov>=6.0.0",
+    "mypy>=1.14.0",
+    "ruff>=0.9.0",
+    "types-aiofiles>=24.1.0",
+]
+
+[tool.uv.sources]
+hikmah-api = { workspace = true }
+
+[tool.uv.workspace]
+members = ["apps/api"]
+
+
+[tool.ruff]
+target-version = "py314"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "UP",  # pyupgrade
+    "ARG", # flake8-unused-arguments
+]
+ignore = ["B008"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hikmah"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["apps/api/tests"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"

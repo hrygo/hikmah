@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+# 2026 Best Practice: Principle of Least Privilege
+permissions:
+  contents: read
+
+# 2026 Best Practice: Concurrency control to automatically cancel stale runs
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend Quality (Python 3.14)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+          version: "latest"
+
+      - name: Set up Python 3.14
+        run: uv python install 3.14
+
+      - name: Install dependencies
+        run: uv sync --all-groups
+
+      - name: Run Ruff (Lint & Format Check)
+        run: |
+          uv run ruff check .
+          uv run ruff format --check .
+
+      - name: Run Mypy (Strict Type Check)
+        run: uv run mypy apps/api/src apps/api/tests
+
+      - name: Run Pytest
+        run: uv run pytest apps/api/tests -v --cov=hikmah
+
+  frontend:
+    name: Frontend Quality (Node.js 24)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - name: Set up Node.js 24 LTS
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: "pnpm"
+
+      - name: Approve dependency build scripts
+        run: pnpm approve-builds --all
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type Check (All Workspace Packages)
+        run: pnpm run typecheck
+
+      - name: Run Vitest Unit Tests
+        run: pnpm run test
+
+      - name: Build Web App & Packages
+        run: pnpm run build
