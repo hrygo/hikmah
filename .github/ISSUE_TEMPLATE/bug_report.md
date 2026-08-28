@@ -2,7 +2,7 @@
 name: Bug report
 about: Report a reproducible problem in Hikmah
 title: "[Bug] "
-labels: ""
+labels: ["type: bug", "status: triage"]
 assignees: ""
 ---
 

@@ -2,7 +2,7 @@
 name: Feature or design proposal
 about: Propose a user-centered change or architecture improvement
 title: "[Proposal] "
-labels: ""
+labels: ["type: proposal", "status: triage"]
 assignees: ""
 ---
 

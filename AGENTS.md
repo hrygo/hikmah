@@ -190,4 +190,16 @@ pnpm run build
    - `main` 分支已开启分支保护，严禁 Force Push，所有合并必须走 Pull Request；
    - **PR 标题**：严格遵守 Conventional Commits 格式（如 `feat: ...`, `fix: ...`, `docs: ...`, `chore: ...`, `ci: ...`）；
    - **关联 Issue 强校验**：PR 正文必须显式关联目标 Issue（如 `Fixes #123` 或 `Refs #123`；非功能性小微改动可标注 `[skip-issue]` 并在 PR 中说明原因）。
+5. **Issue 与 PR 标签规范 (Label Taxonomy)**：
+   - 所有创建的 Issue 与 PR 必须严格遵照 [`.github/labels.yml`](.github/labels.yml) 定义的标准体系进行标签归类，禁止擅自创建未定义的非标标签；
+   - **创建 Issue 标签组合建议**：
+     - `Type`（必需，1个）：如 `type: bug` / `type: feat` / `type: proposal` / `type: docs` 等；
+     - `Area`（可选/推荐，1~2个）：如 `area: api` / `area: web` / `area: plugin` / `area: bridge` / `area: infra`；
+     - `Priority`（按需，1个）：如 `priority: high` / `priority: medium`；
+     - `Status`（初始）：默认赋予 `status: triage`，进入处理后推进为 `status: in-progress`。
+   - **创建/管理 PR 标签组合建议**：
+     - `Type`（必需，对齐 PR 性质）：如 `type: feat` / `type: fix` / `type: refactor`；
+     - `Area`（推荐）：涉及的技术模块标签；
+     - `Size`（按需）：由变更行数确定（`size: XS` ~ `size: XL`）；
+     - `PR 状态`：如草稿/进行中打上 `pr: work-in-progress`。
 

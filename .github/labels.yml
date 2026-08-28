@@ -1,0 +1,168 @@
+# GitHub Labels Configuration for Hikmah
+# Schema aligns with standard GitHub label definitions and GitHub Actions label sync tools (e.g. EndBug/label-sync or github-labeler)
+
+# ==========================================
+# 1. Type (类型标签 - 明确工作性质)
+# ==========================================
+- name: "type: bug"
+  color: "d73a4a" # 红色
+  description: "Something is not working or unexpected behavior"
+
+- name: "type: feat"
+  color: "a2eeef" # 亮青色
+  description: "New feature or capability addition"
+
+- name: "type: docs"
+  color: "0075ca" # 深蓝色
+  description: "Documentation updates or additions"
+
+- name: "type: refactor"
+  color: "cfd3d7" # 浅灰
+  description: "Code refactoring without behavioral changes"
+
+- name: "type: test"
+  color: "bfdadc" # 青灰
+  description: "Adding or fixing tests"
+
+- name: "type: chore"
+  color: "fef2c0" # 浅黄
+  description: "Maintenance, toolings, or build configuration"
+
+- name: "type: perf"
+  color: "5319e7" # 紫色
+  description: "Performance improvements"
+
+- name: "type: security"
+  color: "b60205" # 暗红
+  description: "Security vulnerability fix or hardening"
+
+- name: "type: proposal"
+  color: "d4c5f9" # 浅紫
+  description: "Architecture, design proposal or RFC"
+
+# ==========================================
+# 2. Scope / Area (模块与技术域标签)
+# ==========================================
+- name: "area: api"
+  color: "fbca04" # 黄色
+  description: "Backend FastAPI services and endpoints"
+
+- name: "area: web"
+  color: "1d76db" # 蓝色
+  description: "Frontend React App and Web components"
+
+- name: "area: plugin"
+  color: "c2e0c6" # 浅绿
+  description: "Mattermost Web App Plugin integration"
+
+- name: "area: bridge"
+  color: "e99695" # 浅红
+  description: "Mattermost, QwenPaw, and AgentScope bridges"
+
+- name: "area: infra"
+  color: "f9d0c4" # 橙粉
+  description: "Docker Compose, PostgreSQL, CI/CD, Deployment"
+
+- name: "area: docs"
+  color: "0052cc" # 蓝
+  description: "Documentation, ADRs, and guidelines"
+
+# ==========================================
+# 3. Priority (优先级标签)
+# ==========================================
+- name: "priority: critical"
+  color: "b60205" # 深红
+  description: "Critical blocker, immediate attention required"
+
+- name: "priority: high"
+  color: "d93f0b" # 橙红
+  description: "High priority, next up in iteration"
+
+- name: "priority: medium"
+  color: "fbca04" # 黄色
+  description: "Normal priority, standard iteration work"
+
+- name: "priority: low"
+  color: "0e8a16" # 绿色
+  description: "Low priority, nice to have or minor improvement"
+
+# ==========================================
+# 4. Status / Workflow (状态流转标签)
+# ==========================================
+- name: "status: triage"
+  color: "ededed" # 灰色
+  description: "Needs triage and assessment"
+
+- name: "status: ready"
+  color: "0e8a16" # 绿色
+  description: "Ready for implementation"
+
+- name: "status: in-progress"
+  color: "2cbe4e" # 明绿
+  description: "Currently being worked on"
+
+- name: "status: blocked"
+  color: "e11d21" # 警示红
+  description: "Blocked by external dependency or question"
+
+- name: "status: need-review"
+  color: "fbca04" # 黄色
+  description: "Waiting for code or design review"
+
+- name: "status: need-more-info"
+  color: "cc317c" # 洋红
+  description: "Requires more details from author"
+
+# ==========================================
+# 5. PR Review & Size (PR 专用标签)
+# ==========================================
+- name: "pr: approved"
+  color: "0e8a16" # 绿色
+  description: "Changes approved and ready to merge"
+
+- name: "pr: changes-requested"
+  color: "e11d21" # 红色
+  description: "Modifications requested before merge"
+
+- name: "pr: work-in-progress"
+  color: "fef2c0" # 浅黄
+  description: "Draft / Work in progress, do not merge"
+
+- name: "size: XS"
+  color: "c5def5"
+  description: "Tiny change (< 10 lines)"
+
+- name: "size: S"
+  color: "bfdadc"
+  description: "Small change (10 - 50 lines)"
+
+- name: "size: M"
+  color: "f9d0c4"
+  description: "Medium change (50 - 250 lines)"
+
+- name: "size: L"
+  color: "e99695"
+  description: "Large change (250 - 1000 lines)"
+
+- name: "size: XL"
+  color: "d73a4a"
+  description: "Extra large change (> 1000 lines, recommend splitting)"
+
+# ==========================================
+# 6. Community & Onboarding (社区与协作标签)
+# ==========================================
+- name: "good first issue"
+  color: "7057ff" # 紫色
+  description: "Good for newcomers and simple contributions"
+
+- name: "help wanted"
+  color: "008672" # 蓝绿色
+  description: "Extra attention or community contribution needed"
+
+- name: "wontfix"
+  color: "ffffff" # 白色
+  description: "Will not be worked on / out of scope"
+
+- name: "duplicate"
+  color: "cfd3d7" # 灰色
+  description: "This issue or PR already exists"
