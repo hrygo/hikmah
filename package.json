@@ -1,0 +1,22 @@
+{
+  "name": "hikmah",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Hikmah - Lightweight Human-Agent Collaboration Governance Layer",
+
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @hikmah/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test",
+    "lint": "pnpm -r lint"
+  },
+
+  "devDependencies": {
+    "typescript": "^6.0.0"
+  },
+  "packageManager": "pnpm@11.21.0"
+}
+
+

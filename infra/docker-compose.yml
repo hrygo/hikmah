@@ -1,0 +1,66 @@
+services:
+  # PostgreSQL 16 for Mattermost & Hikmah
+  postgres:
+    image: postgres:16-alpine
+    container_name: hikmah-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-mmuser}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-mostest}
+      POSTGRES_DB: ${POSTGRES_DB:-mattermost}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mmuser -d mattermost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Mattermost v11.10 Team Edition
+  mattermost:
+    image: mattermost/mattermost-team-edition:11.10
+    container_name: hikmah-mattermost
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      MM_SQLSETTINGS_DRIVERNAME: postgres
+      MM_SQLSETTINGS_DATASOURCE: postgres://mmuser:mostest@postgres:5432/mattermost?sslmode=disable&connect_timeout=10
+      MM_SERVICESETTINGS_SITEURL: http://localhost:8065
+      MM_PLUGINSETTINGS_ENABLE: "true"
+      MM_PLUGINSETTINGS_ENABLEUPLOADS: "true"
+    volumes:
+      - mattermost_config:/mattermost/config
+      - mattermost_data:/mattermost/data
+      - mattermost_logs:/mattermost/logs
+      - mattermost_plugins:/mattermost/plugins
+      - mattermost_client_plugins:/mattermost/client/plugins
+    ports:
+      - "8065:8065"
+
+  # Hikmah FastAPI Thin Governance Control Plane
+  hikmah-api:
+    build:
+      context: ..
+      dockerfile: apps/api/Dockerfile
+    container_name: hikmah-api
+    restart: unless-stopped
+    depends_on:
+      - mattermost
+    environment:
+      HIKMAH_DATABASE_URL: sqlite+aiosqlite:///./hikmah.db
+      HIKMAH_MATTERMOST_URL: http://mattermost:8065
+      HIKMAH_MATTERMOST_BOT_TOKEN: ${HIKMAH_MATTERMOST_BOT_TOKEN:-}
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_data:
+  mattermost_config:
+  mattermost_data:
+  mattermost_logs:
+  mattermost_plugins:
+  mattermost_client_plugins:
