@@ -1,534 +1,632 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
   <title>Hikmah（群贤）产品与技术架构设计册</title>
   <style>
     :root {
-      --ink:#172033;
-      --muted:#64748b;
-      --line:#dbe3ee;
-      --paper:#ffffff;
-      --canvas:#f5f7fb;
-      --violet:#6d28d9;
-      --violet-soft:#f5f3ff;
-      --blue:#0369a1;
-      --blue-soft:#f0f9ff;
-      --green:#047857;
-      --green-soft:#ecfdf5;
-      --amber:#b45309;
-      --amber-soft:#fffbeb;
-      --rose:#be123c;
-      --rose-soft:#fff1f2;
-      --shadow:0 18px 50px rgba(15,23,42,.08);
+      --ink: #172235;
+      --muted: #667085;
+      --paper: #f7f3ea;
+      --paper-2: #fffdf8;
+      --navy: #14253e;
+      --navy-2: #203858;
+      --gold: #c69438;
+      --gold-soft: #f4e6c6;
+      --jade: #2d7166;
+      --jade-soft: #dcece6;
+      --blue: #355e91;
+      --blue-soft: #e5edf7;
+      --red: #a94b42;
+      --red-soft: #f6e2df;
+      --line: #d9d2c5;
+      --shadow: 0 18px 50px rgba(24, 37, 55, .12);
+      --radius: 18px;
     }
-    * { box-sizing:border-box; }
-    html { scroll-behavior:smooth; }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      margin:0;
-      color:var(--ink);
-      background:var(--canvas);
-      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
-      line-height:1.65;
-    }
-    a { color:inherit; }
-    .shell { display:grid; grid-template-columns:250px minmax(0,1fr); min-height:100vh; }
-    aside {
-      position:sticky;
-      top:0;
-      height:100vh;
-      overflow:auto;
-      padding:28px 22px;
-      background:#111827;
-      color:#e5e7eb;
-    }
-    .brand { font-size:23px; font-weight:800; letter-spacing:.02em; }
-    .brand span { display:block; margin-top:1px; font-size:13px; font-weight:500; color:#a5b4fc; }
-    .edition { margin:18px 0 24px; color:#94a3b8; font-size:12px; }
-    nav a {
-      display:block;
-      padding:8px 10px;
-      margin:3px 0;
-      border-radius:8px;
-      color:#cbd5e1;
-      text-decoration:none;
-      font-size:13px;
-    }
-    nav a:hover { background:#1f2937; color:white; }
-    main { min-width:0; }
-    article { width:min(1120px,calc(100% - 48px)); margin:36px auto 80px; }
-    .cover {
-      min-height:76vh;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      padding:70px;
-      border-radius:28px;
-      color:white;
+      margin: 0;
+      color: var(--ink);
       background:
-        radial-gradient(circle at 80% 18%,rgba(129,140,248,.34),transparent 30%),
-        radial-gradient(circle at 18% 78%,rgba(14,165,233,.22),transparent 34%),
-        linear-gradient(145deg,#111827,#312e81 58%,#0f766e);
-      box-shadow:var(--shadow);
+        radial-gradient(circle at 10% 10%, rgba(198,148,56,.12), transparent 28rem),
+        linear-gradient(135deg, #e9e2d5 0%, #f5f1e8 48%, #e8eee9 100%);
+      font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      line-height: 1.65;
     }
-    .cover .eyebrow { color:#c7d2fe; font-size:13px; letter-spacing:.16em; text-transform:uppercase; }
-    .cover h1 { margin:18px 0 8px; font-size:clamp(54px,9vw,100px); line-height:.96; }
-    .cover .cn { font-size:clamp(28px,4vw,48px); color:#e0e7ff; font-weight:700; }
-    .cover .claim { max-width:720px; margin-top:34px; font-size:20px; color:#dbeafe; }
-    .cover .meta { margin-top:54px; display:flex; flex-wrap:wrap; gap:9px; }
-    .cover .meta span { padding:7px 11px; border:1px solid rgba(255,255,255,.2); border-radius:999px; background:rgba(255,255,255,.08); font-size:12px; }
-    section {
-      margin-top:34px;
-      padding:38px;
-      border:1px solid var(--line);
-      border-radius:22px;
-      background:var(--paper);
-      box-shadow:0 8px 28px rgba(15,23,42,.045);
-      scroll-margin-top:24px;
+
+    a { color: inherit; }
+    .shell { display: grid; grid-template-columns: 270px minmax(0, 1fr); min-height: 100vh; }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 30px 24px;
+      color: #f8f4ea;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.035), transparent 28%),
+        var(--navy);
+      border-right: 1px solid rgba(255,255,255,.08);
+      overflow-y: auto;
     }
-    section h2 { margin:0 0 5px; font-size:28px; }
-    section h3 { margin:24px 0 10px; font-size:17px; }
-    .subtitle { margin:0 0 24px; color:var(--muted); }
-    .label { color:var(--muted); font-size:11px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
-    .callout { margin:18px 0; padding:14px 16px; border-left:4px solid var(--violet); border-radius:10px; background:var(--violet-soft); }
-    .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-    .grid-3 { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-    .grid-4 { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
-    .card { padding:16px; border:1px solid var(--line); border-radius:14px; background:#fff; }
-    .card strong { display:block; margin-bottom:4px; }
-    .card p, .card small { margin:0; color:var(--muted); }
-    .selected { border:2px solid var(--violet); background:var(--violet-soft); }
-    .selected:before { content:"已批准"; display:inline-block; margin-bottom:8px; padding:3px 8px; border-radius:999px; background:#ede9fe; color:var(--violet); font-size:11px; font-weight:800; }
-    .stack { display:flex; flex-direction:column; gap:9px; margin:18px 0; }
-    .node { padding:12px 14px; border:1px solid var(--line); border-radius:11px; background:white; text-align:center; }
-    .node.product { border-color:#c4b5fd; background:var(--violet-soft); }
-    .node.scope { border-color:#bae6fd; background:var(--blue-soft); }
-    .node.gateway { border-color:#fde68a; background:var(--amber-soft); }
-    .node.agent { border-color:#a7f3d0; background:var(--green-soft); }
-    .node.private { border-style:dashed; border-color:#e9d5ff; background:#faf5ff; }
-    .arrow { text-align:center; color:#94a3b8; font-weight:800; }
-    .two-runtime { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .boundary { display:grid; grid-template-columns:1.4fr .8fr; gap:16px; margin-top:18px; }
-    .product-box { padding:18px; border:2px solid var(--violet); border-radius:16px; background:linear-gradient(145deg,#faf5ff,#fff); }
-    .module-grid { display:grid; grid-template-columns:1fr 1fr; gap:9px; margin-top:12px; }
-    .module { padding:10px; border:1px solid #ddd6fe; border-radius:9px; background:white; font-size:12px; }
-    .upstream { display:flex; flex-direction:column; gap:10px; }
-    .upstream .card { background:var(--blue-soft); border-color:#bae6fd; }
-    .upstream .card:last-child { background:var(--green-soft); border-color:#a7f3d0; }
-    .guardrail { display:flex; flex-wrap:wrap; gap:7px; margin-top:13px; }
-    .guardrail span { padding:5px 8px; border:1px solid #fecdd3; border-radius:7px; color:var(--rose); background:var(--rose-soft); font-size:11px; }
-    table { width:100%; border-collapse:collapse; margin:14px 0; font-size:13px; }
-    th,td { padding:10px 12px; border:1px solid var(--line); text-align:left; vertical-align:top; }
-    th { background:#f8fafc; }
-    .domain { display:grid; grid-template-columns:.8fr 1.25fr 1fr; gap:13px; }
-    .lane { padding:13px; border:1px solid var(--line); border-radius:14px; background:#f8fafc; }
-    .entity { margin:9px 0; padding:10px; border:1px solid var(--line); border-radius:10px; background:white; }
-    .entity small { display:block; margin-top:3px; color:var(--muted); }
-    .entity.human { border-color:#fde68a; background:var(--amber-soft); }
-    .entity.space { border-color:#ddd6fe; background:var(--violet-soft); }
-    .entity.channel { margin-left:10px; border-color:#bae6fd; background:var(--blue-soft); }
-    .entity.thread { margin-left:20px; border-color:#a5f3fc; background:#ecfeff; }
-    .entity.sidecar { border-style:dashed; }
-    .entity.expert { border-color:#a7f3d0; background:var(--green-soft); }
-    .entity.personal { border-color:#fbcfe8; background:#fdf2f8; }
-    .paths { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-    .path { padding:16px; border:1px solid var(--line); border-radius:14px; background:#f8fafc; }
-    .path.direct { border-top:4px solid var(--green); }
-    .path.routed { border-top:4px solid var(--violet); }
-    .step { display:grid; grid-template-columns:28px 1fr; gap:8px; align-items:start; margin:10px 0; }
-    .num { width:27px; height:27px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#e2e8f0; font-size:11px; font-weight:800; }
-    .step div:last-child { padding:8px 10px; border:1px solid var(--line); border-radius:9px; background:white; font-size:12px; }
-    .states { display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:13px; }
-    .state { padding:6px 9px; border:1px solid #bfdbfe; border-radius:999px; color:#1d4ed8; background:#eff6ff; font-size:11px; font-weight:700; }
-    .never { margin-top:14px; padding:12px 14px; border:1px solid #fecdd3; border-radius:10px; color:#9f1239; background:var(--rose-soft); }
-    .scope-list { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .scope-item { padding:12px; border:1px solid var(--line); border-radius:10px; }
-    .scope-item strong { display:block; color:#1e3a8a; }
-    .promotion { display:flex; align-items:center; flex-wrap:wrap; gap:6px; margin:14px 0; }
-    .pill { padding:6px 9px; border:1px solid #bfdbfe; border-radius:999px; background:#eff6ff; color:#1d4ed8; font-size:11px; font-weight:700; }
-    .decision { margin:10px 0; padding:11px 12px; border:1px solid var(--line); border-radius:10px; }
-    .decision.auto { border-left:4px solid var(--green); }
-    .decision.approval { border-left:4px solid var(--amber); }
-    .decision.deny { border-left:4px solid var(--rose); }
-    .execution-card { margin-top:14px; border:1px solid #fed7aa; border-radius:12px; overflow:hidden; }
-    .execution-card header { padding:9px 12px; color:#9a3412; background:#fff7ed; font-weight:800; }
-    .execution-card .body { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px; }
-    .field { padding:8px; border-radius:8px; background:#f8fafc; font-size:12px; }
-    .runtime { display:grid; grid-template-columns:1fr 70px 1fr; gap:10px; align-items:stretch; }
-    .zone { padding:15px; border:1px solid var(--line); border-radius:14px; background:#f8fafc; }
-    .zone.server { border-top:4px solid var(--blue); }
-    .zone.local { border-top:4px solid var(--violet); }
-    .connection { display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--muted); text-align:center; font-size:11px; }
-    .connection .dash { width:100%; margin:9px 0; border-top:2px dashed #94a3b8; }
-    .checks { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
-    .checks .card:nth-child(1) { border-top:4px solid #dc2626; }
-    .checks .card:nth-child(2) { border-top:4px solid var(--green); }
-    .checks .card:nth-child(3) { border-top:4px solid var(--amber); }
-    ul.compact { margin:8px 0 0; padding-left:18px; }
-    ul.compact li { margin:5px 0; color:#475569; font-size:12px; }
-    .slices { display:grid; grid-template-columns:repeat(5,1fr); gap:8px; }
-    .slice { position:relative; padding:13px 10px; border:1px solid var(--line); border-radius:11px; background:#f8fafc; }
-    .slice b { display:block; margin-bottom:5px; color:var(--violet); }
-    .slice p { margin:0; color:var(--muted); font-size:11px; }
-    .decision-log td:first-child { width:28%; font-weight:700; }
-    footer { margin-top:28px; color:var(--muted); text-align:center; font-size:12px; }
-    @media(max-width:980px) {
-      .shell { grid-template-columns:1fr; }
-      aside { position:relative; height:auto; }
-      nav { display:grid; grid-template-columns:1fr 1fr; }
-      .cover { padding:42px 30px; min-height:62vh; }
-      .grid-3,.grid-4,.domain,.checks,.slices { grid-template-columns:1fr 1fr; }
-      .boundary,.runtime { grid-template-columns:1fr; }
-      .connection { min-height:55px; }
-      .connection .dash { width:60%; }
+
+    .brand { display: flex; align-items: center; gap: 13px; margin-bottom: 26px; }
+    .mark {
+      display: grid;
+      place-items: center;
+      width: 47px;
+      height: 47px;
+      border: 1px solid rgba(255,255,255,.42);
+      border-radius: 14px;
+      color: var(--gold-soft);
+      background: rgba(255,255,255,.06);
+      font-family: Georgia, serif;
+      font-size: 25px;
+      box-shadow: inset 0 0 0 4px rgba(255,255,255,.025);
     }
-    @media(max-width:680px) {
-      article { width:min(100% - 24px,1120px); margin-top:12px; }
-      section { padding:24px 18px; }
-      .grid-2,.grid-3,.grid-4,.domain,.paths,.scope-list,.checks,.slices,.two-runtime { grid-template-columns:1fr; }
-      .module-grid,.execution-card .body { grid-template-columns:1fr; }
-      nav { grid-template-columns:1fr; }
+    .brand strong { display: block; font-family: Georgia, serif; font-size: 20px; letter-spacing: .04em; }
+    .brand small { color: #cbd3df; }
+    .edition {
+      margin-bottom: 25px;
+      padding: 12px 13px;
+      border: 1px solid rgba(244,230,198,.2);
+      border-radius: 12px;
+      color: #eee4cf;
+      background: rgba(198,148,56,.1);
+      font-size: 12px;
     }
+    nav { display: grid; gap: 5px; }
+    nav a {
+      padding: 8px 11px;
+      border-radius: 9px;
+      color: #cad3df;
+      text-decoration: none;
+      font-size: 13px;
+    }
+    nav a:hover, nav a:focus { color: white; background: rgba(255,255,255,.08); }
+    .side-note {
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid rgba(255,255,255,.12);
+      color: #aeb9c8;
+      font-size: 11px;
+    }
+
+    main { min-width: 0; padding: 34px; }
+    article {
+      width: min(1140px, 100%);
+      margin: 0 auto;
+      background: rgba(255,253,248,.96);
+      border: 1px solid rgba(42, 55, 72, .12);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    section { padding: 62px clamp(28px, 6vw, 78px); border-top: 1px solid var(--line); }
+    section:first-child { border-top: 0; }
+    h1, h2, h3 { margin-top: 0; color: var(--navy); line-height: 1.22; }
+    h1 { margin-bottom: 18px; font-family: Georgia, "Songti SC", serif; font-size: clamp(44px, 7vw, 82px); letter-spacing: -.03em; }
+    h2 { margin-bottom: 12px; font-family: Georgia, "Songti SC", serif; font-size: clamp(28px, 4vw, 42px); }
+    h3 { margin-top: 28px; margin-bottom: 12px; font-size: 19px; }
+    p { margin: 0 0 14px; }
+    .subtitle { max-width: 780px; color: var(--muted); font-size: 17px; }
+    .label { margin-bottom: 10px; color: var(--gold); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    .status {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0 24px;
+      padding: 7px 11px;
+      color: #76550e;
+      background: var(--gold-soft);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 750;
+    }
+    .status::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--gold); }
+
+    .cover {
+      position: relative;
+      min-height: 700px;
+      display: grid;
+      align-content: center;
+      color: #f8f5ee;
+      background:
+        linear-gradient(125deg, rgba(20,37,62,.96), rgba(32,56,88,.91)),
+        radial-gradient(circle at 80% 20%, rgba(198,148,56,.25), transparent 30%);
+      overflow: hidden;
+    }
+    .cover::after {
+      content: "群";
+      position: absolute;
+      right: -40px;
+      bottom: -150px;
+      color: rgba(255,255,255,.035);
+      font-family: "Songti SC", Georgia, serif;
+      font-size: 440px;
+      line-height: 1;
+      pointer-events: none;
+    }
+    .cover h1 { position: relative; z-index: 1; color: white; }
+    .cover .cn { display: block; color: var(--gold-soft); font-family: "Songti SC", Georgia, serif; font-size: .62em; font-weight: 500; letter-spacing: .12em; }
+    .cover .lead { position: relative; z-index: 1; max-width: 750px; color: #d7deea; font-size: 21px; }
+    .cover-grid { position: relative; z-index: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; max-width: 780px; margin-top: 34px; }
+    .cover-card { padding: 15px; border: 1px solid rgba(255,255,255,.15); border-radius: 14px; background: rgba(255,255,255,.055); }
+    .cover-card strong { display: block; color: white; font-size: 14px; }
+    .cover-card span { color: #b9c5d4; font-size: 12px; }
+    .cover-meta { position: relative; z-index: 1; margin-top: 48px; color: #aebaca; font-size: 12px; }
+
+    .grid-2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .grid-3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
+    .card {
+      min-width: 0;
+      padding: 19px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: var(--paper-2);
+    }
+    .card strong { display: block; margin-bottom: 7px; color: var(--navy); }
+    .card p, .card li { color: var(--muted); font-size: 13px; }
+    .card p:last-child { margin-bottom: 0; }
+    .metric { padding-left: 16px; border-left: 4px solid var(--gold); }
+    .metric b { display: block; margin-bottom: 3px; color: var(--navy); font-size: 24px; }
+
+    .callout {
+      margin-top: 20px;
+      padding: 17px 19px;
+      border: 1px solid #dac08d;
+      border-left: 5px solid var(--gold);
+      border-radius: 12px;
+      background: #fbf3df;
+      color: #69542d;
+    }
+    .callout strong { color: #5c461e; }
+    .danger { border-color: #e0b5af; border-left-color: var(--red); background: var(--red-soft); color: #70413c; }
+    .success { border-color: #a9d0c6; border-left-color: var(--jade); background: var(--jade-soft); color: #24584f; }
+
+    .candidate { position: relative; overflow: hidden; }
+    .candidate::after { content: attr(data-rank); position: absolute; right: 14px; top: 5px; color: rgba(20,37,62,.06); font-family: Georgia, serif; font-size: 72px; font-weight: 800; }
+    .badges { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0; }
+    .badge { padding: 4px 8px; border-radius: 999px; background: var(--blue-soft); color: var(--blue); font-size: 10px; font-weight: 750; }
+    .badge.good { background: var(--jade-soft); color: var(--jade); }
+    .badge.warn { background: var(--gold-soft); color: #795811; }
+    .badge.stop { background: var(--red-soft); color: var(--red); }
+
+    table { width: 100%; border-collapse: collapse; margin-top: 18px; font-size: 13px; }
+    th { padding: 10px 12px; color: #f8f4ea; background: var(--navy); text-align: left; }
+    th:first-child { border-radius: 10px 0 0 0; }
+    th:last-child { border-radius: 0 10px 0 0; }
+    td { padding: 11px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+    tbody tr:nth-child(even) { background: #f8f5ee; }
+
+    .architecture { display: grid; gap: 13px; margin-top: 25px; }
+    .node { padding: 17px; border: 1px solid var(--line); border-radius: 14px; text-align: center; background: white; }
+    .node strong { display: block; color: var(--navy); }
+    .node small { display: block; margin-top: 5px; color: var(--muted); }
+    .node.foundation { border-color: #96abc5; background: var(--blue-soft); }
+    .node.hikmah { border-color: #d5bd87; background: var(--gold-soft); }
+    .node.scope { border-color: #9bc9bd; background: var(--jade-soft); }
+    .node.paw { border-color: #c6b4d7; background: #eee7f5; }
+    .runtime-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .connector { color: var(--muted); text-align: center; font-size: 12px; letter-spacing: .08em; }
+
+    .ownership { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; margin-top: 20px; }
+    .owner { padding: 16px; border-radius: 14px; border-top: 4px solid var(--blue); background: var(--blue-soft); }
+    .owner:nth-child(2) { border-top-color: var(--gold); background: var(--gold-soft); }
+    .owner:nth-child(3) { border-top-color: var(--jade); background: var(--jade-soft); }
+    .owner:nth-child(4) { border-top-color: #7b5ca0; background: #eee7f5; }
+    .owner strong { display: block; margin-bottom: 6px; }
+    .owner p { margin: 0; color: #475467; font-size: 12px; }
+
+    .identity-lanes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; margin-top: 22px; }
+    .lane { padding: 15px; border: 1px solid var(--line); border-radius: var(--radius); background: #faf8f2; }
+    .entity { margin-top: 10px; padding: 12px; border-radius: 11px; background: white; box-shadow: 0 3px 12px rgba(24,37,55,.06); }
+    .entity strong, .entity small { display: block; }
+    .entity small { margin-top: 4px; color: var(--muted); font-size: 11px; }
+    .expert { border-left: 4px solid #7b5ca0; }
+    .sidecar { border-left: 4px solid var(--jade); }
+    .personal { border-left: 4px solid var(--gold); }
+
+    .paths { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 22px; }
+    .path { padding: 20px; border: 1px solid var(--line); border-radius: var(--radius); background: #faf8f3; }
+    .path.direct { border-top: 5px solid var(--blue); }
+    .path.routed { border-top: 5px solid var(--jade); }
+    .step { display: grid; grid-template-columns: 27px 1fr; gap: 10px; margin: 10px 0; align-items: start; color: #475467; font-size: 13px; }
+    .num { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; color: white; background: var(--navy-2); font-size: 11px; font-weight: 800; }
+    .never { margin-top: 16px; padding: 14px; border-radius: 12px; color: var(--red); background: var(--red-soft); font-size: 13px; }
+
+    .flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 16px 0; }
+    .pill { padding: 7px 10px; border: 1px solid #a9c7c0; border-radius: 999px; color: var(--jade); background: var(--jade-soft); font-size: 11px; font-weight: 750; }
+    .decision { margin: 10px 0; padding: 13px 15px; border-radius: 11px; font-size: 13px; }
+    .decision.auto { color: #24584f; background: var(--jade-soft); }
+    .decision.approval { color: #74550e; background: var(--gold-soft); }
+    .decision.deny { color: #7b3933; background: var(--red-soft); }
+
+    .topology { display: grid; grid-template-columns: 1.4fr .35fr 1fr; gap: 14px; align-items: stretch; margin-top: 22px; }
+    .zone { padding: 19px; border: 1px solid var(--line); border-radius: var(--radius); background: #faf8f2; }
+    .zone h3 { margin-top: 0; }
+    .linkline { display: grid; place-items: center; color: var(--muted); text-align: center; font-size: 11px; }
+    .linkline::before { content: "→"; display: block; color: var(--gold); font-size: 34px; }
+    .protocols { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; }
+    .protocol { padding: 7px 10px; border-radius: 9px; color: var(--navy); background: var(--blue-soft); font-size: 11px; }
+    .protocol.conditional { background: #ececec; color: #606060; }
+
+    .slices { display: grid; gap: 10px; margin-top: 22px; }
+    .slice { display: grid; grid-template-columns: 86px 1fr; gap: 14px; align-items: center; padding: 15px; border: 1px solid var(--line); border-radius: 13px; background: white; }
+    .slice b { color: var(--gold); font-family: Georgia, serif; font-size: 17px; }
+    .slice p { margin: 0; color: var(--muted); font-size: 13px; }
+
+    ul.compact { margin: 8px 0 0; padding-left: 18px; }
+    ul.compact li { margin: 5px 0; }
+    .source-links { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
+    .source-links a { padding: 8px 11px; border: 1px solid var(--line); border-radius: 9px; color: var(--blue); background: white; text-decoration: none; font-size: 12px; }
+    footer { padding: 30px; color: #8b8378; background: #f3eee4; text-align: center; font-size: 12px; }
+
+    @media (max-width: 1020px) {
+      .shell { grid-template-columns: 1fr; }
+      aside { position: static; height: auto; padding: 18px 20px; }
+      .brand, .edition, .side-note { display: none; }
+      nav { display: flex; gap: 4px; overflow-x: auto; }
+      nav a { white-space: nowrap; }
+      main { padding: 16px; }
+      .ownership, .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+
+    @media (max-width: 720px) {
+      main { padding: 0; }
+      article { border: 0; border-radius: 0; }
+      section { padding: 42px 22px; }
+      .cover { min-height: 620px; }
+      .cover-grid, .grid-2, .grid-3, .grid-4, .runtime-row, .ownership, .identity-lanes, .paths, .topology { grid-template-columns: 1fr; }
+      .linkline::before { content: "↓"; }
+      .slice { grid-template-columns: 68px 1fr; }
+      table { display: block; overflow-x: auto; white-space: normal; }
+    }
+
     @media print {
-      @page { size:A4; margin:14mm; }
-      body { background:white; }
-      .shell { display:block; }
-      aside { display:none; }
-      article { width:auto; margin:0; }
-      .cover { min-height:245mm; border-radius:0; box-shadow:none; break-after:page; }
-      section { margin:0; padding:0; border:0; border-radius:0; box-shadow:none; break-before:page; }
-      section h2 { padding-top:2mm; }
-      .card,.path,.lane,.zone,.slice,.execution-card { break-inside:avoid; }
-      a { text-decoration:none; }
-      footer { break-before:page; padding-top:100mm; }
+      body { background: white; }
+      .shell { display: block; }
+      aside { display: none; }
+      main { padding: 0; }
+      article { width: 100%; border: 0; box-shadow: none; }
+      section { break-inside: avoid; }
+      .cover { min-height: 96vh; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
     }
   </style>
 </head>
 <body>
   <div class="shell">
-    <aside>
-      <div class="brand">Hikmah<span>群贤 · 产品与技术架构设计册</span></div>
-      <div class="edition">批准版 · 2026-08-28<br>Repository: hikmah</div>
+    <aside aria-label="设计册目录">
+      <div class="brand"><div class="mark">群</div><div><strong>Hikmah</strong><small>群贤 · 设计册</small></div></div>
+      <div class="edition">复用优先修订稿 · 待复核<br>2026-08-28 · Repository: hikmah</div>
       <nav>
         <a href="#cover">封面</a>
-        <a href="#summary">执行摘要</a>
-        <a href="#approach">总体方案</a>
-        <a href="#boundaries">01 系统边界</a>
-        <a href="#domain">02 领域与身份</a>
-        <a href="#routing">03 消息与任务流</a>
-        <a href="#governance">04 记忆与执行治理</a>
-        <a href="#runtime">05 运行与可靠性</a>
+        <a href="#summary">设计结论</a>
+        <a href="#research">GitHub 调研</a>
+        <a href="#architecture">复用架构</a>
+        <a href="#boundaries">边界与组件</a>
+        <a href="#identity">身份模型</a>
+        <a href="#routing">路由与边车</a>
+        <a href="#governance">记忆与治理</a>
+        <a href="#runtime">运行与安全</a>
         <a href="#delivery">交付切片</a>
-        <a href="#decisions">决策索引</a>
+        <a href="#decisions">决策状态</a>
       </nav>
+      <div class="side-note">本 HTML 是持久化视觉阅读版。若与 Markdown 规范不同，以正式规范和 Accepted ADR 为准。</div>
     </aside>
+
     <main>
       <article>
-        <div class="cover" id="cover">
-          <div class="eyebrow">Human–Agent Collaborative Community</div>
-          <h1>Hikmah</h1>
-          <div class="cn">群贤</div>
-          <div class="claim">一个让人类成员与专业 Agent 在清楚的身份、规则、上下文、审批和审计边界内共同工作的私有团队社区。</div>
-          <div class="meta">
-            <span>3–20 人私有团队</span>
-            <span>AgentScope 协调</span>
-            <span>QwenPaw 专家</span>
-            <span>显式意图优先</span>
-            <span>个人 Agent 私密隔离</span>
+        <section class="cover" id="cover">
+          <div class="label">Product & Architecture Book</div>
+          <h1>Hikmah<span class="cn">群贤</span></h1>
+          <p class="lead">一个以成熟协作底座为场域、以 QwenPaw 专家为成员、以 AgentScope 轻量边车维护秩序的人机协作社区。</p>
+          <div class="cover-grid">
+            <div class="cover-card"><strong>不造协作平台</strong><span>Team、Channel、Thread、消息、身份与搜索全部复用。</span></div>
+            <div class="cover-card"><strong>只造产品差异</strong><span>专家绑定、边车规则、个人 Agent、知识晋升与关联审计。</span></div>
+            <div class="cover-card"><strong>先验证再选型</strong><span>Mattermost / Zulip / Open WebUI / CircleChat 同场 Spike。</span></div>
           </div>
-        </div>
+          <div class="cover-meta">Hikmah · 群贤 · 复用优先修订稿 · 2026-08-28</div>
+        </section>
 
         <section id="summary">
           <div class="label">Executive Summary</div>
-          <h2>设计结论</h2>
-          <p class="subtitle">Hikmah 把“社区身份与治理”“协作协调”“专业 Agent 工作”分成三个稳定边界。</p>
-          <div class="grid-3">
-            <div class="card"><strong>Hikmah 产品层</strong><p>拥有团队、频道、线程、角色、专家席位、规则、审批、知识和审计。</p></div>
-            <div class="card"><strong>AgentScope 协调层</strong><p>运行团队与频道轻量 Sidecar，负责克制路由和多 Agent 协作，不给出专业结论。</p></div>
-            <div class="card"><strong>QwenPaw 专家层</strong><p>实现服务端共享专家及成员本机 Personal Agent，拥有 Workspace、Skills 和工具环境。</p></div>
-          </div>
-          <div class="callout"><strong>命名约束：</strong>产品英文名为 Hikmah，中文名为群贤，仓库名为 hikmah。其他实体只使用功能名称，不设置独立文化品牌。</div>
+          <h2>产品灵魂不变，基础设施收缩</h2>
+          <p class="subtitle">GitHub 调研推翻的是早期自建实现，不是已经批准的人机协作行为。Hikmah 从“新社区全栈”收敛为“成熟 Foundation 上的轻量治理层”。</p>
+          <div class="status">完整修订等待用户正式复核</div>
           <div class="grid-4">
-            <div class="card"><strong>显式 @</strong><p>直达指定专家，Channel Sidecar 仅观察。</p></div>
-            <div class="card"><strong>未显式 @</strong><p>规则优先，最多选择一名主答专家。</p></div>
-            <div class="card"><strong>副作用</strong><p>独立 Policy / Approval Service 控制。</p></div>
-            <div class="card"><strong>跨频道知识</strong><p>只有人审晋升这一条路径。</p></div>
+            <div class="metric"><b>3–20</b><span>邀请制私有团队成员</span></div>
+            <div class="metric"><b>3 类</b><span>Shared Expert / Personal Agent / Sidecar</span></div>
+            <div class="metric"><b>0</b><span>明确 @专家时 Sidecar 介入次数</span></div>
+            <div class="metric"><b>1</b><span>未 @时最多一名主答专家</span></div>
           </div>
+          <h3>本轮撤销的重复建设</h3>
+          <div class="grid-3">
+            <div class="card"><strong>Community Web / API</strong><p>Team、Channel、Thread、DM、消息、搜索、文件、通知和基础 RBAC 交给协作 Foundation。</p></div>
+            <div class="card"><strong>Agent Gateway / AgentLink</strong><p>改用 Foundation 原生 Bot/Event API 与 QwenPaw Channel / Plugin；本机 Agent 主动连入 Owner 私聊。</p></div>
+            <div class="card"><strong>Policy / TaskRun / 基础设施</strong><p>权限、审批、会话、计划任务、记忆和观测复用 AgentScope/QwenPaw；只保留关联薄层。</p></div>
+          </div>
+          <div class="callout success"><strong>Hikmah 只专注五件事：</strong>专家身份绑定、Sidecar 行为规则、Personal Agent 隔离、Knowledge Promotion、跨系统 Correlation。</div>
         </section>
 
-        <section id="approach">
-          <div class="label">Approved Architecture</div>
-          <h2>总体方案 · 控制面 + Agent 网关</h2>
-          <p class="subtitle">AgentScope 负责协作秩序，QwenPaw 负责专业工作；Hikmah 保持产品领域权威。</p>
-          <div class="stack">
-            <div class="node product"><strong>Hikmah Community Web / API</strong><br><small>Team Space · Channel · Thread · Group Chat · Member Experience</small></div>
-            <div class="arrow">↓</div>
-            <div class="node scope"><strong>Hikmah Collaboration Domain + AgentScope Coordination Adapter</strong><br><small>两级轻量 Sidecar · 路由 · TaskRun · 规则的运行视图</small></div>
-            <div class="arrow">↓</div>
-            <div class="node gateway"><strong>Agent Gateway / AgentLink + Policy / Approval</strong><br><small>统一身份 · 能力 · 流式事件 · 暂停恢复 · 审批 · 审计</small></div>
-            <div class="arrow">↓</div>
-            <div class="two-runtime">
-              <div class="node agent"><strong>服务端共享 QwenPaw 专家</strong><br><small>团队拥有 · 可被 @ · 可审计</small></div>
-              <div class="node private"><strong>成员本机 Personal Agent</strong><br><small>Owner-only · 出站连接 · 私密输出</small></div>
+        <section id="research">
+          <div class="label">GitHub Landscape</div>
+          <h2>广泛调研后的 Foundation 候选</h2>
+          <p class="subtitle">排序是 Spike 顺序，不是已经拍板的生产选型。许可证、品牌、隐私、核心补丁和兼容升级均是一票否决项。</p>
+          <div class="grid-2" style="margin-top:22px">
+            <div class="card candidate" data-rank="1">
+              <strong>Mattermost · 技术首选</strong>
+              <div class="badges"><span class="badge good">QwenPaw 原生 Channel</span><span class="badge good">成熟协作</span><span class="badge warn">许可/品牌门禁</span></div>
+              <p>Channel、Thread、DM、文件、搜索、RBAC、Bot/Plugin API 完整。只有确认目标发行方式与商标规则后才可 Adopt。</p>
+            </div>
+            <div class="card candidate" data-rank="2">
+              <strong>Zulip · 首要备选</strong>
+              <div class="badges"><span class="badge good">Apache-2.0</span><span class="badge good">Topic 线程</span><span class="badge warn">需 Channel Plugin</span></div>
+              <p>许可路径清晰；Bot/Event API 成熟。QwenPaw 的公开 register_channel 足以在 Hikmah 仓库完成薄适配。</p>
+            </div>
+            <div class="card candidate" data-rank="3">
+              <strong>Open WebUI Channels · AI 原生对照</strong>
+              <div class="badges"><span class="badge good">人 + AI 同线</span><span class="badge warn">定制许可证</span><span class="badge warn">身份待证</span></div>
+              <p>交互最接近 AI 社区；但三类 Agent、外部 QwenPaw、Personal Agent 隔离和长期品牌约束都必须实测。</p>
+            </div>
+            <div class="card candidate" data-rank="4">
+              <strong>CircleChat · 功能参照</strong>
+              <div class="badges"><span class="badge good">目标最相似</span><span class="badge stop">早期项目</span><span class="badge stop">维护集中</span></div>
+              <p>值得借鉴 Context Packet、Action allowlist、审批和 Agent Runtime；当前成熟度与高权限部署面不足以作稳定底座。</p>
             </div>
           </div>
-          <div class="grid-3">
-            <div class="card selected"><strong>选择理由</strong><p>职责边界最稳定，可同时容纳共享专家和成员本机 Personal Agent。</p></div>
-            <div class="card"><strong>未选择：QwenPaw 中心化</strong><p>会把个人 Agent OS 与团队社区领域缠在一起。</p></div>
-            <div class="card"><strong>未选择：完全中立核心</strong><p>首版会重复建设 AgentScope 已提供的大量协调能力。</p></div>
+          <h3>调研不是一次性名单</h3>
+          <table>
+            <thead><tr><th>门禁</th><th>必须回答</th></tr></thead>
+            <tbody>
+              <tr><td>功能</td><td>能否用公开扩展点完成核心旅程，不改核心、不双写数据？</td></tr>
+              <tr><td>法律</td><td>许可证、商标、品牌、分发方式和未来规模是否可接受？</td></tr>
+              <tr><td>维护</td><td>发布是否活跃、维护是否过度集中、升级和退出是否可重复？</td></tr>
+              <tr><td>安全</td><td>插件、Bot、工具、容器和本地 Agent 是否可收敛到最小权限？</td></tr>
+              <tr><td>成本</td><td>Adopt / Integrate / Borrow 是否确实不足，为什么必须 Build-gap？</td></tr>
+            </tbody>
+          </table>
+          <div class="callout"><strong>Stars 不是答案：</strong>本轮同时扫描了聊天社区、AI 工作台、Agent 编排、协议、身份授权、审批、记忆、观测、评测和持久工作流等数十个 GitHub 项目；具体清单与证据见研究报告。</div>
+        </section>
+
+        <section id="architecture">
+          <div class="label">Reuse-first Architecture</div>
+          <h2>四方各守一层事实</h2>
+          <p class="subtitle">没有第四套完整状态：消息属于 Foundation，协调会话属于 AgentScope，专业工作区属于 QwenPaw，Hikmah 只拥有产品差异和引用。</p>
+          <div class="architecture">
+            <div class="node foundation"><strong>Collaboration Foundation</strong><small>Identity · Invite · Team · Channel · Thread/Topic · DM · Message · File · Search · Notification · RBAC</small></div>
+            <div class="connector">NATIVE BOT · EVENT · WEBHOOK</div>
+            <div class="runtime-row">
+              <div class="node scope"><strong>AgentScope Coordination Runtime</strong><small>Team / Channel Sidecar · Team / Invite · Session · Permission/HITL · OTel</small></div>
+              <div class="node paw"><strong>QwenPaw Agent Runtime</strong><small>Shared Expert · Personal Agent · Channel · Workspace · ReMe · MCP · Approval</small></div>
+            </div>
+            <div class="connector">PUBLIC EXTENSION POINTS · FIXED VERSIONS · CONTRACT TESTS</div>
+            <div class="node hikmah"><strong>Hikmah Thin Governance Layer</strong><small>Expert Binding · Sidecar Rules · Personal Binding · Knowledge Promotion · Correlation Ledger</small></div>
           </div>
+          <div class="ownership">
+            <div class="owner"><strong>Foundation</strong><p>协作事实源与客户端，不由 Hikmah 复制。</p></div>
+            <div class="owner"><strong>Hikmah</strong><p>产品身份映射、规则、知识晋升和关联。</p></div>
+            <div class="owner"><strong>AgentScope</strong><p>Sidecar、协调会话与运行时权限。</p></div>
+            <div class="owner"><strong>QwenPaw</strong><p>专家工作区、个人记忆、工具与执行审批。</p></div>
+          </div>
+          <div class="callout danger"><strong>禁止路径：</strong>vendor 上游源码、monkey patch、直接读写上游数据库、长期私有 fork、复制全部聊天、用 A2A/ACP 名义再造私有传输层。</div>
         </section>
 
         <section id="boundaries">
-          <div class="label">Design 01</div>
-          <h2>系统边界与代码所有权</h2>
-          <p class="subtitle">hikmah 是唯一产品代码仓库；两个上游运行时不成为产品仓库中的隐式分支。</p>
-          <div class="boundary">
-            <div class="product-box">
-              <strong>hikmah · 产品领域唯一所有者</strong>
-              <div class="module-grid">
-                <div class="module">Community Web / API</div>
-                <div class="module">Collaboration Domain</div>
-                <div class="module">Coordination Adapter</div>
-                <div class="module">Agent Gateway / AgentLink</div>
-                <div class="module">Policy / Approval</div>
-                <div class="module">Knowledge Promotion / Audit</div>
-              </div>
-              <div class="guardrail">
-                <span>不 vendor 上游源码</span>
-                <span>不 monkey patch</span>
-                <span>不直连上游数据库</span>
-                <span>不维护长期 fork</span>
-              </div>
-            </div>
-            <div class="upstream">
-              <div class="card"><strong>AgentScope</strong><p>公开 SDK / Service；协调 Sidecar 与 Team / Invite / MessageBus 运行语义。</p></div>
-              <div class="card"><strong>QwenPaw</strong><p>公开 ACP / API / Plugin；共享专家和 Personal Agent 运行时。</p></div>
-            </div>
-          </div>
-          <h3>代码所有权</h3>
+          <div class="label">Component Sourcing</div>
+          <h2>组件先复用，只补产品缺口</h2>
+          <p class="subtitle">所有自建项都必须小到可以被清楚命名、单独测试和未来替换。</p>
           <table>
-            <thead><tr><th>所有者</th><th>拥有内容</th></tr></thead>
+            <thead><tr><th>能力</th><th>复用来源</th><th>Hikmah Build-gap</th></tr></thead>
             <tbody>
-              <tr><td>Hikmah</td><td>社交领域数据、RBAC、频道规则、TaskRun、审批、Agent 映射、团队知识和审计。</td></tr>
-              <tr><td>AgentScope</td><td>协调 Agent 会话与运行状态、Team / Pipeline / MessageBus 语义。</td></tr>
-              <tr><td>QwenPaw</td><td>Workspace、Skills、Plugins、专业记忆和本地工具环境。</td></tr>
+              <tr><td>团队协作</td><td>Foundation Web/API、消息、文件、搜索、通知</td><td>无</td></tr>
+              <tr><td>身份与权限</td><td>Foundation RBAC + AgentScope/QwenPaw 权限</td><td>Identity/Policy Binding</td></tr>
+              <tr><td>共享专家</td><td>QwenPaw Channel 或外部 Channel Plugin</td><td>Expert Seat Runtime Binding</td></tr>
+              <tr><td>协调边车</td><td>AgentScope ChannelBase、Team、Session</td><td>Sidecar Rule Profile</td></tr>
+              <tr><td>个人 Agent</td><td>本机 QwenPaw → Foundation owner-only 私聊</td><td>Personal Agent Binding + 分享规则</td></tr>
+              <tr><td>工具与 Agent 协作</td><td>MCP；Foundation Thread 优先；A2A 按需</td><td>Lead Expert 与邀请规则</td></tr>
+              <tr><td>记忆与知识</td><td>QwenPaw ReMe / AgentScope RAG、ReMe、Mem0</td><td>人审晋升、范围、版本、撤回</td></tr>
+              <tr><td>执行与审批</td><td>AgentScope Permission/HITL + QwenPaw Governance</td><td>规则绑定、Execution Card 投影与关联</td></tr>
+              <tr><td>观测与安全测试</td><td>OpenTelemetry、promptfoo、garak、Presidio</td><td>脱敏字段、威胁回归集</td></tr>
             </tbody>
           </table>
-          <div class="callout"><strong>上游修改唯一通道：</strong>识别通用扩展点 → 最小上游 PR → 等待正式发布 → Hikmah 固定版本 → Adapter 启用。产品不依赖未合并的长期补丁。</div>
+          <h3>最小产品对象</h3>
+          <div class="grid-3">
+            <div class="card"><strong>ExpertSeatBinding</strong><p>稳定社交身份 ↔ Foundation Bot ↔ 固定 QwenPaw Workspace。</p></div>
+            <div class="card"><strong>SidecarRuleProfile</strong><p>作用域、显式 @抑制、意图门控、主答选择和有限干预。</p></div>
+            <div class="card"><strong>PersonalAgentBinding</strong><p>唯一 Member、私聊身份、运行时、撤销和分享规则。</p></div>
+            <div class="card"><strong>PolicyBinding</strong><p>能力和风险规则到权威运行时策略的引用，不做第二次裁决。</p></div>
+            <div class="card"><strong>KnowledgeCandidate</strong><p>来源、候选内容、范围、敏感级别与人工审阅状态。</p></div>
+            <div class="card"><strong>CorrelationRecord</strong><p>消息、会话、工具、审批和 Trace 的外部 ID；不复制正文。</p></div>
+          </div>
         </section>
 
-        <section id="domain">
-          <div class="label">Design 02</div>
-          <h2>领域模型、身份与权限</h2>
-          <p class="subtitle">MVP 只有一个邀请制 Team Space；三类 Agent 身份彼此隔离。</p>
-          <div class="domain">
-            <div class="lane">
-              <div class="label">Human</div>
-              <div class="entity human"><strong>Team Owner</strong><small>最终治理权限</small></div>
-              <div class="entity human"><strong>Admin</strong><small>成员、Channel、Expert Seat 与策略配置</small></div>
-              <div class="entity human"><strong>Member</strong><small>发言、@、发起任务、授权范围内审批</small></div>
-              <div class="entity personal"><strong>Personal Agent Binding</strong><small>绑定唯一 Member；可连接本机 QwenPaw</small></div>
-            </div>
-            <div class="lane">
-              <div class="label">Collaboration Space</div>
-              <div class="entity space"><strong>Team Space</strong><small>成员、专家名册、全局规则、团队知识与审计边界</small></div>
-              <div class="entity sidecar"><strong>Team Coordinator Sidecar</strong><small>轻量、默认静默、只处理团队级协调</small></div>
-              <div class="entity channel"><strong>Channel</strong><small>长期主题、成员可见性、专家与频道记忆</small></div>
-              <div class="entity sidecar channel"><strong>Channel Coordinator Sidecar</strong><small>未 @时按需路由；处理秩序与治理</small></div>
-              <div class="entity thread"><strong>Thread / TaskRun</strong><small>具体讨论、执行、审批、结果与知识候选</small></div>
-              <div class="entity"><strong>Temporary Group Chat</strong><small>显式成员列表；默认无协调 Sidecar</small></div>
-            </div>
+        <section id="identity">
+          <div class="label">Identity Model</div>
+          <h2>三类 Agent 身份严格分离</h2>
+          <p class="subtitle">谁拥有、谁能调用、能看到什么、能否发共享消息，都由 Foundation ACL 和运行时权限共同证明。</p>
+          <div class="identity-lanes">
             <div class="lane">
               <div class="label">Shared Expert</div>
-              <div class="entity expert"><strong>Expert Seat</strong><small>团队拥有的稳定社交身份</small></div>
-              <div class="arrow">↓</div>
-              <div class="entity sidecar"><strong>Agent Runtime Binding</strong><small>endpoint、runtime、capabilities、version、presence</small></div>
-              <div class="arrow">↓</div>
-              <div class="entity expert"><strong>Server-side QwenPaw</strong><small>专业 Workspace、Skills、Plugins、工具环境</small></div>
-              <div class="entity"><strong>Channel Expert Membership</strong><small>逐项授权 @、路由、补充、上下文与工具能力</small></div>
+              <div class="entity expert"><strong>Expert Seat</strong><small>团队拥有的稳定名称、头像、专长与职责</small></div>
+              <div class="entity expert"><strong>Foundation Bot</strong><small>按 Channel 授权 @、回复与上下文</small></div>
+              <div class="entity expert"><strong>Server QwenPaw</strong><small>独立 Workspace、Skills、Memory 与工具</small></div>
+            </div>
+            <div class="lane">
+              <div class="label">Coordinator Sidecar</div>
+              <div class="entity sidecar"><strong>Team Sidecar</strong><small>全局身份、低频治理、默认静默</small></div>
+              <div class="entity sidecar"><strong>Channel Sidecar</strong><small>未 @时路由；明确 @只观察</small></div>
+              <div class="entity sidecar"><strong>No professional tools</strong><small>不提供专业结论，不替人类批准</small></div>
+            </div>
+            <div class="lane">
+              <div class="label">Personal Agent</div>
+              <div class="entity personal"><strong>唯一 Member 绑定</strong><small>此 Owner 不是 Team Owner 角色</small></div>
+              <div class="entity personal"><strong>Owner-only 私聊</strong><small>不是共享 Channel 成员，其他人不可 @</small></div>
+              <div class="entity personal"><strong>Local QwenPaw</strong><small>记忆留本机；选择上下文；本人确认后分享</small></div>
             </div>
           </div>
-          <div class="grid-3" style="margin-top:14px">
-            <div class="card"><strong>Personal Agent 不是共享成员</strong><p>仅 Owner 调用；选择性上下文；私密输出；Owner 确认后才能分享。</p></div>
-            <div class="card"><strong>Coordinator 不是专业专家</strong><p>无专业结论、无业务工具权限，只处理协调和治理。</p></div>
-            <div class="card"><strong>按能力授权</strong><p>读取、回复、检索、提议工具、副作用执行和审批分别授权。</p></div>
-          </div>
-          <div class="callout"><strong>术语说明：</strong>Personal Agent 的 Owner 指绑定该 Agent 的 Member，不等同于 Team Owner 治理角色；Team Owner 与 Admin 也不能查看其私有正文。</div>
+          <div class="callout danger"><strong>不是 UI 隐藏：</strong>若 Foundation 无法在 ACL 层证明 Personal Agent 不能读取共享内容，候选直接淘汰，不能靠应用过滤补救。</div>
         </section>
 
         <section id="routing">
-          <div class="label">Design 03</div>
-          <h2>消息路由与协作任务流</h2>
-          <p class="subtitle">显式选择永远优先于智能路由，两条路径严格分离。</p>
+          <div class="label">Routing & Coordination</div>
+          <h2>显式选择优先，智能协调克制</h2>
+          <p class="subtitle">消息沿 Foundation 原生 Bot/Event 通道流动；不再经过自建 Agent Gateway。</p>
           <div class="paths">
             <div class="path direct">
               <h3>路径 A · 明确 @专家</h3>
-              <div class="step"><div class="num">1</div><div>验证发言者与 Expert Seat 的 Channel 权限。</div></div>
-              <div class="step"><div class="num">2</div><div>Agent Gateway 直接投递给指定 QwenPaw。</div></div>
-              <div class="step"><div class="num">3</div><div>被 @的多位专家分别独立响应。</div></div>
-              <div class="step"><div class="num">4</div><div>Channel Sidecar 只观察和审计，不路由、不总结、不调停。</div></div>
-              <div class="step"><div class="num">5</div><div>副作用仍由独立 Policy / Approval Service 控制。</div></div>
+              <div class="step"><div class="num">1</div><div>Foundation 验证 Member、Channel 和 Expert Bot 权限。</div></div>
+              <div class="step"><div class="num">2</div><div>事件直接进入被 @专家的 QwenPaw Channel。</div></div>
+              <div class="step"><div class="num">3</div><div>专家在原 Thread 独立回复；离线时原样失败。</div></div>
+              <div class="step"><div class="num">4</div><div>Channel Sidecar 确定性进入 observe-only。</div></div>
+              <div class="step"><div class="num">5</div><div>副作用由专家运行时原生权限/HITL 处理。</div></div>
+              <div class="never"><strong>0 次介入：</strong>不重路由、不改写、不总结、不调停、不邀请。</div>
             </div>
             <div class="path routed">
               <h3>路径 B · 未明确 @</h3>
-              <div class="step"><div class="num">1</div><div>规则优先执行协作意图门控；闲聊默认不触发。</div></div>
-              <div class="step"><div class="num">2</div><div>选择一名主答专家；歧义时才使用轻量模型。</div></div>
-              <div class="step"><div class="num">3</div><div>创建 TaskRun 并投递主答 QwenPaw。</div></div>
-              <div class="step"><div class="num">4</div><div>主答按需邀请补充专家，并统一整合结果。</div></div>
-              <div class="step"><div class="num">5</div><div>方案 → 审批 → 执行 → 结果 → 知识候选。</div></div>
+              <div class="step"><div class="num">1</div><div>Sidecar 规则先做协作意图门控；闲聊不触发。</div></div>
+              <div class="step"><div class="num">2</div><div>按专长和可用性选择一名主答；歧义才用轻量模型。</div></div>
+              <div class="step"><div class="num">3</div><div>通过 Foundation 原生 @唤醒主答 QwenPaw。</div></div>
+              <div class="step"><div class="num">4</div><div>主答可在 Thread 邀请补充专家，并整合结论。</div></div>
+              <div class="step"><div class="num">5</div><div>只读自动；副作用审批；结果可成为知识候选。</div></div>
+              <div class="never"><strong>最多一名主答：</strong>避免多 Expert 争抢、循环 @与资源放大。</div>
             </div>
           </div>
-          <h3>TaskRun 状态机</h3>
-          <div class="states">
-            <span class="state">OPEN</span><span>→</span><span class="state">ROUTED</span><span>→</span><span class="state">WORKING</span><span>→</span><span class="state">AWAITING_APPROVAL</span><span>→</span><span class="state">EXECUTING</span><span>→</span><span class="state">COMPLETED</span><span>/</span><span class="state">FAILED</span><span>/</span><span class="state">CANCELLED</span>
+          <h3>Correlation 不是新工作流</h3>
+          <div class="flow">
+            <span class="pill">Foundation Thread</span><span>→</span><span class="pill">Sidecar Session</span><span>→</span><span class="pill">QwenPaw Session</span><span>→</span><span class="pill">Tool / Approval</span><span>→</span><span class="pill">OTel Trace</span>
           </div>
-          <div class="grid-3" style="margin-top:15px">
-            <div class="card"><strong>可介入：无人响应</strong><p>超过阈值后提醒或改派一次，不循环催促。</p></div>
-            <div class="card"><strong>可介入：竞争或冲突</strong><p>指定主答，要求补充者转入 Thread，由主答整合。</p></div>
-            <div class="card"><strong>可介入：治理事件</strong><p>审批、硬规则、定时总结和 Knowledge Candidate。</p></div>
-          </div>
-          <div class="never"><strong>永不介入：</strong>Sidecar 不得给出专业结论，不得在明确 @路径中组织对话，也不得替人类批准副作用。</div>
+          <p class="subtitle">Hikmah 只关联外部 ID 和最后已知状态；实际执行状态由运行时拥有。状态不明时显示“待核验”，不自动重放。</p>
         </section>
 
         <section id="governance">
-          <div class="label">Design 04</div>
-          <h2>记忆、隐私与执行治理</h2>
-          <p class="subtitle">记忆按作用域隔离，知识只能经人审晋升；审批绑定精确执行计划。</p>
+          <div class="label">Memory, Knowledge & Approval</div>
+          <h2>记忆按域保存，知识只能人审晋升</h2>
           <div class="grid-2">
             <div>
-              <h3>记忆边界</h3>
-              <div class="scope-list">
-                <div class="scope-item"><strong>Thread / Channel Memory</strong>普通对话与阶段结论留在原 Channel。</div>
-                <div class="scope-item"><strong>Expert Stable Memory</strong>身份、能力、技能版本和安全约束由 Admin 管理。</div>
-                <div class="scope-item"><strong>Team Knowledge</strong>只包含已审阅、带来源和版本的知识对象。</div>
-                <div class="scope-item"><strong>Personal Agent Memory</strong>Owner-only，长期记忆默认留在成员本机。</div>
-              </div>
-              <h3>唯一跨频道路径</h3>
-              <div class="promotion">
-                <span class="pill">知识候选</span><span>→</span><span class="pill">人类审阅</span><span>→</span><span class="pill">定范围 / 脱敏</span><span>→</span><span class="pill">发布</span><span>→</span><span class="pill">版本化 / 撤回</span>
-              </div>
-              <div class="never"><strong>硬规则：</strong>模型不能把聊天自动升级为 Team Knowledge；总结不等于发布。</div>
+              <h3>四个权威作用域</h3>
+              <div class="card"><strong>Thread / Channel 对话</strong><p>由 Foundation 保存，默认不跨 Channel。</p></div>
+              <div class="card" style="margin-top:10px"><strong>Expert Stable Memory</strong><p>由 QwenPaw ReMe 或 AgentScope 的现成适配保存。</p></div>
+              <div class="card" style="margin-top:10px"><strong>Team Knowledge</strong><p>只包含已审阅、带来源、范围、版本和状态的对象。</p></div>
+              <div class="card" style="margin-top:10px"><strong>Personal Agent Memory</strong><p>留在成员本机，不上传、不注入 Shared Expert。</p></div>
             </div>
             <div>
-              <h3>执行决策</h3>
-              <div class="decision auto"><strong>自动执行</strong><br>只读检索、分析、草稿和无副作用计算；仍需审计。</div>
-              <div class="decision approval"><strong>审批或规则放行</strong><br>写文件、发消息、变更任务或调用业务系统。</div>
-              <div class="decision deny"><strong>默认拒绝</strong><br>越权、目标含糊、参数漂移、凭据缺失或策略冲突。</div>
-              <div class="execution-card">
-                <header>Execution Card · 人类审批契约</header>
-                <div class="body">
-                  <div class="field"><strong>谁提出</strong><br>Expert Seat + Member</div>
-                  <div class="field"><strong>做什么</strong><br>工具、目标、精确参数</div>
-                  <div class="field"><strong>影响</strong><br>范围、对象、外部接收方</div>
-                  <div class="field"><strong>预览</strong><br>diff、消息或变更摘要</div>
-                </div>
-              </div>
+              <h3>执行由权威运行时裁决</h3>
+              <div class="decision auto"><strong>自动</strong><br>只读、分析、草稿、无副作用计算；仍留运行记录。</div>
+              <div class="decision approval"><strong>审批或精确预授权</strong><br>写文件、发消息、变更任务和外部业务系统操作。</div>
+              <div class="decision deny"><strong>默认拒绝</strong><br>越权、含糊、参数漂移、凭据缺失、策略冲突或审批不可用。</div>
+              <div class="callout"><strong>Execution Card 是投影：</strong>展示 AgentScope/QwenPaw 原生 tool proposal、参数、影响、diff、有效期和 proposal id，不建立第二套审批引擎。</div>
             </div>
           </div>
-          <div class="callout"><strong>审批不可泛化：</strong>Approval 绑定 Invocation、工具、标准化参数、资源作用域、计划 digest、有效期和单次 nonce；任何实质变化都要求重新审批。</div>
-          <h3>Personal Agent 隐私路径</h3>
-          <div class="promotion">
-            <span class="pill">Owner 选择上下文</span><span>→</span><span class="pill">最小 ContextEnvelope</span><span>→</span><span class="pill">本机 QwenPaw</span><span>→</span><span class="pill">Owner-only 结果</span><span>→</span><span class="pill">Owner 主动分享</span>
+          <h3>唯一跨 Channel 路径</h3>
+          <div class="flow">
+            <span class="pill">Knowledge Candidate</span><span>→</span><span class="pill">人类审阅</span><span>→</span><span class="pill">定范围 / 脱敏</span><span>→</span><span class="pill">发布</span><span>→</span><span class="pill">版本化 / 撤回</span>
           </div>
+          <div class="never"><strong>硬规则：</strong>模型不能自动发布 Team Knowledge；总结不等于发布；没有人类确认时内容留在原作用域。</div>
         </section>
 
         <section id="runtime">
-          <div class="label">Design 05</div>
-          <h2>运行拓扑、可靠性与 MVP</h2>
-          <p class="subtitle">共享协作运行在团队服务器；Personal Agent 由成员本地托管并主动出站连接。</p>
-          <div class="runtime">
-            <div class="zone server">
-              <h3>私有团队服务器</h3>
-              <div class="entity"><strong>Hikmah Web / API</strong><small>领域、ACL、TaskRun、知识与审计</small></div>
-              <div class="entity"><strong>AgentScope Coordination Runtime</strong><small>两级轻量 Sidecar 与专家协作</small></div>
-              <div class="entity"><strong>Agent Gateway + Policy</strong><small>能力、上下文、协议、审批和执行记录</small></div>
-              <div class="entity expert"><strong>Shared QwenPaw Pool</strong><small>按 Expert Seat 隔离 Workspace 与能力</small></div>
+          <div class="label">Runtime, Protocols & Security</div>
+          <h2>私有团队服务器 + 本机 Personal Agent</h2>
+          <p class="subtitle">所有集成通过公开接口和主动出站连接完成；固定版本、能力探测、契约测试共同隔离上游变化。</p>
+          <div class="topology">
+            <div class="zone">
+              <h3>Private Team Server</h3>
+              <div class="entity"><strong>Collaboration Foundation</strong><small>协作事实源与客户端</small></div>
+              <div class="entity"><strong>Hikmah Plugin / Thin Service</strong><small>Bindings、Rules、Knowledge、Correlation</small></div>
+              <div class="entity sidecar"><strong>AgentScope</strong><small>两级轻量 Sidecar</small></div>
+              <div class="entity expert"><strong>Shared QwenPaw</strong><small>按 Expert Seat 隔离 Workspace</small></div>
             </div>
-            <div class="connection"><span>认证出站连接</span><div class="dash"></div><span>短期令牌<br>最小上下文</span></div>
-            <div class="zone local">
-              <h3>成员设备</h3>
-              <div class="entity personal"><strong>Personal QwenPaw</strong><small>成员自行运行、升级和配置</small></div>
-              <div class="entity"><strong>AgentLink Client</strong><small>不开放本机入站端口</small></div>
-              <div class="entity personal"><strong>Owner-only Session</strong><small>私密结果；分享必须由 Owner 明确执行</small></div>
-            </div>
-          </div>
-          <div class="callout"><strong>上游边界：</strong>只使用 AgentScope 与 QwenPaw 公开接口，通过 Adapter 隔离版本差异；确需修改时只提交可复用的最小上游 PR。</div>
-          <div class="checks">
-            <div class="card">
-              <strong>失效与降级</strong>
-              <ul class="compact">
-                <li>显式目标离线时不擅自换专家</li>
-                <li>Sidecar 故障时显式 @仍直达</li>
-                <li>仅幂等只读操作有限重试</li>
-                <li>副作用状态不明进入人工核验</li>
-                <li>Policy / Audit 故障时写操作 fail closed</li>
-              </ul>
-            </div>
-            <div class="card">
-              <strong>验证体系</strong>
-              <ul class="compact">
-                <li>RBAC、路由和状态机单元测试</li>
-                <li>固定上游版本的 Adapter 契约测试</li>
-                <li>@直达、路由、邀请、审批和知识集成测试</li>
-                <li>跨 Channel、Owner Scope、治理角色泄漏、重放和注入安全测试</li>
-                <li>离线、取消、部分失败和审计端到端测试</li>
-              </ul>
-            </div>
-            <div class="card">
-              <strong>MVP 闭环</strong>
-              <ul class="compact">
-                <li>3–20 人邀请制 Team Space</li>
-                <li>共享 Expert Seat + Personal Agent</li>
-                <li>显式直达 + 克制单主答路由</li>
-                <li>只读自动 + 副作用审批</li>
-                <li>人审 Knowledge Promotion</li>
-              </ul>
+            <div class="linkline">TLS 主动出站<br>Owner-only 私聊</div>
+            <div class="zone">
+              <h3>Member Device</h3>
+              <div class="entity personal"><strong>Personal QwenPaw</strong><small>成员自行运行、升级与配置</small></div>
+              <div class="entity personal"><strong>Local Memory</strong><small>不上送团队服务器</small></div>
+              <div class="entity personal"><strong>Explicit Share</strong><small>本人确认后形成新 Channel 消息</small></div>
             </div>
           </div>
+          <h3>协议恪守职责</h3>
+          <div class="protocols">
+            <span class="protocol">Foundation Bot/Event · 主通道</span>
+            <span class="protocol">MCP · 工具/资源</span>
+            <span class="protocol">OpenTelemetry · 观测</span>
+            <span class="protocol conditional">A2A · 证明需要后</span>
+            <span class="protocol conditional">AG-UI · 自定义侧栏时</span>
+            <span class="protocol conditional">CloudEvents · 边界信封</span>
+            <span class="protocol conditional">ACP · 不作通用 AgentLink</span>
+          </div>
+          <div class="grid-3" style="margin-top:20px">
+            <div class="card"><strong>最小权限</strong><p>Shared Expert、Personal Agent 与两级 Sidecar 使用不同身份和凭据；Agent 不继承创建者权限。</p></div>
+            <div class="card"><strong>不可信扩展</strong><p>Bot、Plugin、Webhook、MCP、文件、URL 和模型输出都必须校验；禁止无边界主机权限。</p></div>
+            <div class="card"><strong>失败关闭</strong><p>审批/权限不可用时拒绝副作用；未知状态转人工核验，不能自动重试。</p></div>
+          </div>
+          <div class="callout danger"><strong>高权限红线：</strong>不向应用或 Agent 暴露 Docker Socket、宿主根目录、共享管理员凭据或未收敛的任意代码执行权限。</div>
         </section>
 
         <section id="delivery">
           <div class="label">Delivery Strategy</div>
-          <h2>MVP 交付切片</h2>
-          <p class="subtitle">完整 MVP 不使用一份巨型计划一次性交付；每个切片都形成可验证的端到端能力。</p>
+          <h2>先选底座，再交付产品切片</h2>
+          <p class="subtitle">每个 Slice 都重复执行 GitHub 复用门禁；没有证据时，不引入新的基础设施。</p>
           <div class="slices">
-            <div class="slice"><b>Slice 1</b><p>私有 Team Space、Channel、Thread、Expert Seat、服务端 QwenPaw、明确 @直达与基础审计。</p></div>
-            <div class="slice"><b>Slice 2</b><p>两级 Sidecar、未 @路由、单主答、TaskRun 和专家邀请。</p></div>
-            <div class="slice"><b>Slice 3</b><p>能力授权、Policy / Approval、Execution Card 与受控执行。</p></div>
-            <div class="slice"><b>Slice 4</b><p>Personal Agent Binding、AgentLink、Owner-only 结果和主动分享。</p></div>
-            <div class="slice"><b>Slice 5</b><p>Knowledge Promotion、版本与撤回、全面安全和可靠性加固。</p></div>
+            <div class="slice"><b>Slice 0</b><p>Foundation Reuse Spike：四候选同场测试，完成许可、品牌、隐私、运维和兼容升级门禁，输出 Accepted 选型 ADR。</p></div>
+            <div class="slice"><b>Slice 1</b><p>已选 Foundation + Expert Seat Binding + 一个服务端 QwenPaw Expert + 明确 @直达 + 基础 Correlation。</p></div>
+            <div class="slice"><b>Slice 2</b><p>AgentScope 两级 Sidecar、显式 @零介入、未 @单主答、有限专家邀请与失败可见。</p></div>
+            <div class="slice"><b>Slice 3</b><p>本机 Personal QwenPaw owner-only、最小上下文、明确分享、Policy Binding 与审批投影。</p></div>
+            <div class="slice"><b>Slice 4</b><p>Knowledge Promotion、版本撤回、安全回归、可观测性、备份恢复、依赖许可/SBOM 与升级门禁。</p></div>
           </div>
-          <div class="callout"><strong>下一步边界：</strong>正式规范获复核后，只为 Slice 1 编写 implementation plan，不提前实施后续切片。</div>
+          <div class="callout"><strong>下一步边界：</strong>本修订稿获复核后，只为 Slice 0 编写实施计划；不得跳过 Foundation 选型直接建设应用。</div>
         </section>
 
         <section id="decisions">
-          <div class="label">Decision Index</div>
-          <h2>已批准决策</h2>
-          <table class="decision-log">
-            <tbody>
-              <tr><td>品牌</td><td>仓库 hikmah；产品英文 Hikmah；中文 群贤；其他实体不独立命名。</td></tr>
-              <tr><td>用户范围</td><td>3–20 人邀请制私有小团队。</td></tr>
-              <tr><td>协作结构</td><td>一个 Team Space；长期 Channel 和 Thread；Temporary Group Chat 独立。</td></tr>
-              <tr><td>集成架构</td><td>Hikmah 产品层 + AgentScope 协调 + Agent Gateway + QwenPaw 专家。</td></tr>
-              <tr><td>协调定位</td><td>Team / Channel 两级轻量 Sidecar，默认静默，不给专业结论。</td></tr>
-              <tr><td>显式 @</td><td>直达指定 Expert Seat；Channel Sidecar 只观察。</td></tr>
-              <tr><td>未显式 @</td><td>规则优先，歧义时轻量模型，只选择一名主答。</td></tr>
-              <tr><td>共享专家</td><td>团队拥有，通常由服务端 QwenPaw 实现。</td></tr>
-              <tr><td>Personal Agent</td><td>仅 Owner 使用，可由成员本机 QwenPaw 提供，私密输出后人工分享。</td></tr>
-              <tr><td>记忆</td><td>普通对话 Channel-local；跨 Channel 只允许人审 Knowledge Promotion。</td></tr>
-              <tr><td>执行</td><td>只读可自动；副作用审批或 Admin 边界清晰的低风险预授权；始终审计。</td></tr>
-              <tr><td>上游代码</td><td>原则不修改；必要修改仅走上游 PR，等待发布并固定版本。</td></tr>
-              <tr><td>部署</td><td>私有团队服务器 + Personal Agent 主动出站连接。</td></tr>
-            </tbody>
-          </table>
-          <p class="subtitle">本册是视觉阅读版本。若与 Markdown 规范出现差异，以 docs/superpowers/specs/2026-08-28-hikmah-design.md 为准。</p>
+          <div class="label">Decision Status</div>
+          <h2>哪些已批准，哪些仍待复核</h2>
+          <div class="grid-2">
+            <div class="card">
+              <strong>已批准的产品行为</strong>
+              <ul class="compact">
+                <li>Hikmah / 群贤 / repo hikmah</li>
+                <li>3–20 人邀请制私有 Team</li>
+                <li>Shared Expert 通常使用 QwenPaw</li>
+                <li>Personal Agent 仅本人使用，可本机运行</li>
+                <li>AgentScope Team/Channel 轻量 Sidecar</li>
+                <li>明确 @时 Sidecar 只观察</li>
+                <li>未 @时规则优先、只选一名主答</li>
+                <li>跨 Channel 只允许人审知识晋升</li>
+                <li>上游原则不修改，必要时只走 PR</li>
+                <li>系统设计不重复造轮子</li>
+              </ul>
+            </div>
+            <div class="card">
+              <strong>本轮修订状态</strong>
+              <ul class="compact">
+                <li>ADR-0001：复用优先原则 Accepted；薄控制层边界待整体复核</li>
+                <li>ADR-0002：Proposed，Foundation Spike</li>
+                <li>Mattermost：技术首选，许可待证</li>
+                <li>Zulip：首要备选</li>
+                <li>Open WebUI：AI 原生对照</li>
+                <li>CircleChat：功能参照，不作稳定底座</li>
+                <li>完整修订版：等待用户复核</li>
+              </ul>
+            </div>
+          </div>
+          <div class="source-links">
+            <a href="../superpowers/specs/2026-08-28-hikmah-design.md">正式 Markdown 规范</a>
+            <a href="../research/2026-08-28-github-reuse-landscape.md">GitHub 复用调研</a>
+            <a href="../decisions/0001-reuse-first-thin-control-plane.md">ADR-0001</a>
+            <a href="../decisions/0002-collaboration-foundation-spike.md">ADR-0002</a>
+            <a href="approval-record.md">批准与修订记录</a>
+          </div>
+          <p class="subtitle" style="margin-top:20px">历史 source-screens 继续持久化保存，可能包含已被本版替代的早期架构。视觉册与规范冲突时，以 Markdown 规范和 Accepted ADR 为准。</p>
         </section>
 
         <footer>
-          Hikmah（群贤）产品与技术架构设计册 · 2026-08-28<br>
-          已根据交互式设计的逐节批准结果编制
+          Hikmah（群贤）产品与技术架构设计册 · 复用优先修订稿 · 2026-08-28<br>
+          GitHub landscape snapshot 不是永久事实；实现前必须重新核验候选版本、许可证与安全状态。
         </footer>
       </article>
     </main>
