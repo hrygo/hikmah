@@ -6,7 +6,7 @@
   <meta name="color-scheme" content="light">
   <meta name="hikmah:title" content="Hikmah（群贤）产品与技术架构设计册">
   <meta name="hikmah:document-type" content="design-record">
-  <meta name="hikmah:status" content="review">
+  <meta name="hikmah:status" content="active">
   <meta name="hikmah:created" content="2026-08-28">
   <meta name="hikmah:updated" content="2026-08-28">
   <meta name="hikmah:canonical" content="false">
@@ -309,7 +309,7 @@
   <div class="shell">
     <aside aria-label="设计册目录">
       <div class="brand"><div class="mark">群</div><div><strong>Hikmah</strong><small>群贤 · 设计册</small></div></div>
-      <div class="edition">复用优先修订稿 · 待复核<br>2026-08-28 · Repository: hikmah</div>
+      <div class="edition">正式终态版 · Active<br>2026-08-28 · Repository: hikmah</div>
       <nav>
         <a href="#cover">封面</a>
         <a href="#summary">设计结论</a>
@@ -335,16 +335,16 @@
           <div class="cover-grid">
             <div class="cover-card"><strong>不造协作平台</strong><span>Team、Channel、Thread、消息、身份与搜索全部复用。</span></div>
             <div class="cover-card"><strong>只造产品差异</strong><span>专家绑定、边车规则、个人 Agent、知识晋升与关联审计。</span></div>
-            <div class="cover-card"><strong>先验证再选型</strong><span>Mattermost / Zulip / Open WebUI / CircleChat 同场 Spike。</span></div>
+            <div class="cover-card"><strong>已选型，验证后发布</strong><span>Mattermost 是目标底座；运行、升级与合规证据是发布门禁。</span></div>
           </div>
-          <div class="cover-meta">Hikmah · 群贤 · 复用优先修订稿 · 2026-08-28</div>
+          <div class="cover-meta">Hikmah · 群贤 · 正式终态版 · 2026-08-28</div>
         </section>
 
         <section id="summary">
           <div class="label">Executive Summary</div>
           <h2>产品灵魂不变，基础设施收缩</h2>
           <p class="subtitle">GitHub 调研推翻的是早期自建实现，不是已经批准的人机协作行为。Hikmah 从“新社区全栈”收敛为“成熟 Foundation 上的轻量治理层”。</p>
-          <div class="status">完整修订等待用户正式复核</div>
+          <div class="status">正式终态已批准；交付证据独立跟踪</div>
           <div class="grid-4">
             <div class="metric"><b>3–20</b><span>邀请制私有团队成员</span></div>
             <div class="metric"><b>3 类</b><span>Shared Expert / Personal Agent / Sidecar</span></div>
@@ -362,13 +362,13 @@
 
         <section id="research">
           <div class="label">GitHub Landscape</div>
-          <h2>广泛调研后的 Foundation 候选</h2>
-          <p class="subtitle">排序是 Spike 顺序，不是已经拍板的生产选型。许可证、品牌、隐私、核心补丁和兼容升级均是一票否决项。</p>
+          <h2>Foundation 选型结论与备选边界</h2>
+          <p class="subtitle">Mattermost 已由 ADR-0003 选为目标底座；Zulip 等保留为退出路径候选。许可证、品牌、隐私、核心补丁和兼容升级仍是发布硬门禁。</p>
           <div class="grid-2" style="margin-top:22px">
             <div class="card candidate" data-rank="1">
-              <strong>Mattermost · 技术首选</strong>
+              <strong>Mattermost · 已选目标底座</strong>
               <div class="badges"><span class="badge good">QwenPaw 原生 Channel</span><span class="badge good">成熟协作</span><span class="badge warn">许可/品牌门禁</span></div>
-              <p>Channel、Thread、DM、文件、搜索、RBAC、Bot/Plugin API 完整。只有确认目标发行方式与商标规则后才可 Adopt。</p>
+              <p>Channel、Thread、DM、文件、搜索、RBAC、Bot/Plugin API 完整。ADR-0003 已完成 Adopt 决策；目标发行方式、许可证与商标复核属于发布门禁。</p>
             </div>
             <div class="card candidate" data-rank="2">
               <strong>Zulip · 首要备选</strong>
@@ -386,7 +386,7 @@
               <p>值得借鉴 Context Packet、Action allowlist、审批和 Agent Runtime；当前成熟度与高权限部署面不足以作稳定底座。</p>
             </div>
           </div>
-          <h3>调研不是一次性名单</h3>
+          <h3>退出路径与再评估门禁</h3>
           <table>
             <thead><tr><th>门禁</th><th>必须回答</th></tr></thead>
             <tbody>
@@ -434,7 +434,7 @@
               <tr><td>身份与权限</td><td>Foundation RBAC + AgentScope/QwenPaw 权限</td><td>Identity/Policy Binding</td></tr>
               <tr><td>共享专家</td><td>QwenPaw Channel 或外部 Channel Plugin</td><td>Expert Seat Runtime Binding</td></tr>
               <tr><td>协调边车</td><td>AgentScope ChannelBase、Team、Session</td><td>Sidecar Rule Profile</td></tr>
-              <tr><td>个人 Agent</td><td>本机 QwenPaw → Foundation owner-only 私聊</td><td>Personal Agent Binding + 分享规则</td></tr>
+              <tr><td>个人 Agent</td><td>QwenPaw Hub / 受验证本地出站连接器</td><td>Owner-only 产品页、Personal Agent Binding + 分享规则</td></tr>
               <tr><td>工具与 Agent 协作</td><td>MCP；Foundation Thread 优先；A2A 按需</td><td>Lead Expert 与邀请规则</td></tr>
               <tr><td>记忆与知识</td><td>QwenPaw ReMe / AgentScope RAG、ReMe、Mem0</td><td>人审晋升、范围、版本、撤回</td></tr>
               <tr><td>执行与审批</td><td>AgentScope Permission/HITL + QwenPaw Governance</td><td>规则绑定、Execution Card 投影与关联</td></tr>
@@ -445,7 +445,7 @@
           <div class="grid-3">
             <div class="card"><strong>ExpertSeatBinding</strong><p>稳定社交身份 ↔ Foundation Bot ↔ 固定 QwenPaw Workspace。</p></div>
             <div class="card"><strong>SidecarRuleProfile</strong><p>作用域、显式 @抑制、意图门控、主答选择和有限干预。</p></div>
-            <div class="card"><strong>PersonalAgentBinding</strong><p>唯一 Member、私聊身份、运行时、撤销和分享规则。</p></div>
+            <div class="card"><strong>PersonalAgentBinding</strong><p>唯一 Member、owner-only Runtime、撤销和显式分享；不注册公共 Bot。</p></div>
             <div class="card"><strong>PolicyBinding</strong><p>能力和风险规则到权威运行时策略的引用，不做第二次裁决。</p></div>
             <div class="card"><strong>KnowledgeCandidate</strong><p>来源、候选内容、范围、敏感级别与人工审阅状态。</p></div>
             <div class="card"><strong>CorrelationRecord</strong><p>消息、会话、工具、审批和 Trace 的外部 ID；不复制正文。</p></div>
@@ -472,11 +472,11 @@
             <div class="lane">
               <div class="label">Personal Agent</div>
               <div class="entity personal"><strong>唯一 Member 绑定</strong><small>此 Owner 不是 Team Owner 角色</small></div>
-              <div class="entity personal"><strong>Owner-only 私聊</strong><small>不是共享 Channel 成员，其他人不可 @</small></div>
-              <div class="entity personal"><strong>Local QwenPaw</strong><small>记忆留本机；选择上下文；本人确认后分享</small></div>
+              <div class="entity personal"><strong>Owner-only 产品页</strong><small>不是共享 Channel 成员，不暴露可私聊 Bot</small></div>
+              <div class="entity personal"><strong>QwenPaw Runtime</strong><small>Hub 或受验证本地连接；本人确认后分享</small></div>
             </div>
           </div>
-          <div class="callout danger"><strong>不是 UI 隐藏：</strong>若 Foundation 无法在 ACL 层证明 Personal Agent 不能读取共享内容，候选直接淘汰，不能靠应用过滤补救。</div>
+          <div class="callout danger"><strong>不是 UI 隐藏：</strong>OAuth/BFF、资源 owner、QwenPaw tenant/runtime 与 404 隐藏存在性共同强制 owner-only；无法证明时功能保持关闭。</div>
         </section>
 
         <section id="routing">
@@ -538,17 +538,18 @@
 
         <section id="runtime">
           <div class="label">Runtime, Protocols & Security</div>
-          <h2>私有团队服务器 + 本机 Personal Agent</h2>
+          <h2>私有团队服务器 + owner-only Personal Runtime</h2>
           <p class="subtitle">所有集成通过公开接口和主动出站连接完成；固定版本、能力探测、契约测试共同隔离上游变化。</p>
           <div class="topology">
             <div class="zone">
               <h3>Private Team Server</h3>
-              <div class="entity"><strong>Collaboration Foundation</strong><small>协作事实源与客户端</small></div>
-              <div class="entity"><strong>Hikmah Plugin / Thin Service</strong><small>Bindings、Rules、Knowledge、Correlation</small></div>
+              <div class="entity"><strong>Mattermost Foundation</strong><small>协作身份、数据面与客户端</small></div>
+              <div class="entity"><strong>Hikmah Plugin + OAuth/BFF</strong><small>Trusted Actor、Bindings、Rules、Knowledge、Correlation</small></div>
+              <div class="entity"><strong>Hikmah PostgreSQL 16</strong><small>独立 database/role 与 Alembic schema</small></div>
               <div class="entity sidecar"><strong>AgentScope</strong><small>两级轻量 Sidecar</small></div>
               <div class="entity expert"><strong>Shared QwenPaw</strong><small>按 Expert Seat 隔离 Workspace</small></div>
             </div>
-            <div class="linkline">TLS 主动出站<br>Owner-only 私聊</div>
+            <div class="linkline">受验证 TLS 主动出站<br>Owner-only surface</div>
             <div class="zone">
               <h3>Member Device</h3>
               <div class="entity personal"><strong>Personal QwenPaw</strong><small>成员自行运行、升级与配置</small></div>
@@ -576,21 +577,26 @@
 
         <section id="delivery">
           <div class="label">Delivery Strategy</div>
-          <h2>先选底座，再交付产品切片</h2>
+          <h2>目标架构固定，逐切片验证交付</h2>
           <p class="subtitle">每个 Slice 都重复执行 GitHub 复用门禁；没有证据时，不引入新的基础设施。</p>
           <div class="slices">
-            <div class="slice"><b>Slice 0</b><p>Foundation Reuse Spike：四候选同场测试，完成许可、品牌、隐私、运维和兼容升级门禁，输出 Accepted 选型 ADR。</p></div>
-            <div class="slice"><b>Slice 1</b><p>已选 Foundation + Expert Seat Binding + 一个服务端 QwenPaw Expert + 明确 @直达 + 基础 Correlation。</p></div>
+            <div class="slice"><b>Slice 0</b><p>Mattermost 资格验证：OAuth、Plugin、QwenPaw/AgentScope 纵向链路、owner-only、升级/回退与许可证/品牌门禁。</p></div>
+            <div class="slice"><b>Slice 1</b><p>Mattermost + Expert Seat Binding + 一个服务端 QwenPaw Expert + 明确 @直达 + 基础 Correlation。</p></div>
             <div class="slice"><b>Slice 2</b><p>AgentScope 两级 Sidecar、显式 @零介入、未 @单主答、有限专家邀请与失败可见。</p></div>
-            <div class="slice"><b>Slice 3</b><p>本机 Personal QwenPaw owner-only、最小上下文、明确分享、Policy Binding 与审批投影。</p></div>
+            <div class="slice"><b>Slice 3</b><p>Owner-only Personal Runtime（QwenPaw Hub 或受验证本地连接器）、最小上下文、明确分享、Policy Binding 与审批投影。</p></div>
             <div class="slice"><b>Slice 4</b><p>Knowledge Promotion、版本撤回、安全回归、可观测性、备份恢复、依赖许可/SBOM 与升级门禁。</p></div>
           </div>
-          <div class="callout"><strong>下一步边界：</strong>本修订稿获复核后，只为 Slice 0 编写实施计划；不得跳过 Foundation 选型直接建设应用。</div>
+          <div class="grid-3" style="margin-top:20px">
+            <div class="card"><strong>内部 API</strong><p>读取 p95 ≤ 300 ms；事务写入 p95 ≤ 500 ms。</p></div>
+            <div class="card"><strong>安全不变量</strong><p>显式 @介入为 0；Personal/cross-channel 越权容忍为 0。</p></div>
+            <div class="card"><strong>恢复目标</strong><p>RPO ≤ 24 h；RTO ≤ 4 h；每个目标版本恢复演练。</p></div>
+          </div>
+          <div class="callout"><strong>交付边界：</strong>设计获批不等于验证完成；每个 Slice 必须以固定 BOM、契约、安全、恢复和 NFR 证据关闭。</div>
         </section>
 
         <section id="decisions">
           <div class="label">Decision Status</div>
-          <h2>哪些已批准，哪些仍待复核</h2>
+          <h2>终态决策已批准，交付证据独立跟踪</h2>
           <div class="grid-2">
             <div class="card">
               <strong>已批准的产品行为</strong>
@@ -612,8 +618,11 @@
               <ul class="compact">
                 <li>ADR-0001：复用优先与轻量治理控制层 (Accepted)</li>
                 <li>ADR-0003：选定 Mattermost 作为协作底座与 UI 宿主 (Accepted)</li>
-                <li>协作数据面：Mattermost v11.10+ (Channel / Thread / Team / File)</li>
-                <li>UI 扩展形态：Mattermost Web App Plugin (React 19 / TypeScript)</li>
+                <li>ADR-0004：可信身份与 Personal Agent 隔离 (Accepted)</li>
+                <li>ADR-0005：公开集成契约与 fail-closed 状态 (Accepted)</li>
+                <li>ADR-0006：PostgreSQL 与 Alembic 数据生命周期 (Accepted)</li>
+                <li>协作数据面：Mattermost（精确版本见目标基线）</li>
+                <li>UI 扩展形态：Mattermost Web App Plugin + Python OAuth/BFF</li>
                 <li>专家与个人运行时：QwenPaw (单 Agent 执行 / Tools / Skills)</li>
                 <li>团队协同与协调：AgentScope (Coordinator Sidecar / Workflows)</li>
                 <li>控制面：Python FastAPI 统一薄治理</li>
@@ -625,6 +634,11 @@
             <a href="../research/2026-08-28-github-reuse-landscape.md">GitHub 复用调研</a>
             <a href="../decisions/0001-reuse-first-thin-control-plane.md">ADR-0001</a>
             <a href="../decisions/0003-adopt-mattermost-as-collaboration-foundation.md">ADR-0003</a>
+            <a href="../decisions/0004-trusted-identity-and-personal-agent-isolation.md">ADR-0004</a>
+            <a href="../decisions/0005-public-integration-contracts-and-fail-closed-semantics.md">ADR-0005</a>
+            <a href="../decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md">ADR-0006</a>
+            <a href="../architecture/version-baseline.md">目标版本基线</a>
+            <a href="../project/prd-architecture-review-tracker.md">审查跟踪</a>
             <a href="approval-record.md">批准与修订记录</a>
           </div>
           <p class="subtitle" style="margin-top:20px">历史<a href="../archive/design-sources/README.md">画布源材料</a>继续持久化保存，可能包含已被本版替代的早期架构。视觉册与规范冲突时，以 Markdown 规范和 Accepted ADR 为准。</p>
@@ -632,8 +646,8 @@
         </section>
 
         <footer>
-          Hikmah（群贤）产品与技术架构设计册 · 复用优先修订稿 · 2026-08-28<br>
-          GitHub landscape snapshot 不是永久事实；实现前必须重新核验候选版本、许可证与安全状态。
+          Hikmah（群贤）产品与技术架构设计册 · 正式终态版 · 2026-08-28<br>
+          正式终态以产品规范与 Accepted ADR 为准；实现、运行、升级和合规证据由审查跟踪表管理。
         </footer>
       </article>
     </main>

@@ -16,13 +16,21 @@ tags:
   - control-plane
 canonical: true
 related:
+  - 0003-adopt-mattermost-as-collaboration-foundation.md
+  - 0004-trusted-identity-and-personal-agent-isolation.md
+  - 0005-public-integration-contracts-and-fail-closed-semantics.md
+  - 0006-governance-metadata-persistence-and-schema-lifecycle.md
+  - ../architecture/version-baseline.md
   - ../research/2026-08-28-github-reuse-landscape.md
   - ../product/overview.md
+  - ../project/prd-architecture-review-tracker.md
 ---
 
 # ADR-0001：复用优先的轻量治理控制层
 
-> 决策者：产品设计会话；“不重复造轮子”原则由用户明确批准。具体轻量控制层边界仍随产品架构修订稿复核。
+> **状态**：Accepted（已采纳）
+>
+> **终态边界**：轻量控制层的产品行为以产品规范为准，具体身份、集成和数据边界由 ADR-0003～ADR-0006 固化；实现与验证状态由审查跟踪表管理。
 
 ## Context
 
@@ -40,7 +48,7 @@ GitHub 广泛调研和固定提交源码核对表明：
 
 ## Decision
 
-用户已明确接受“系统设计不重复造轮子”和“所有组件先做广泛 GitHub 调研”的原则。根据本轮证据，修订稿进一步把 Hikmah 定位为成熟协作 Foundation、AgentScope 与 QwenPaw 之上的**轻量治理与编排控制层**；这个具体边界须随完整修订稿一起复核。
+Hikmah 定位为 Mattermost、AgentScope 与 QwenPaw 之上的**轻量治理与编排控制层**。“系统设计不重复造轮子”和“所有组件先做广泛复用调研”是正式架构原则，具体终态边界由产品规范及后续 Accepted ADR 共同定义。
 
 所有组件按以下优先级决策：
 
@@ -68,7 +76,7 @@ AgentScope 与 QwenPaw 原则上不修改。确认缺少通用扩展点时，只
 
 - MVP 工作量和攻击面显著缩小；
 - 消息、权限、文件、搜索、会话、审批和升级由成熟社区持续维护；
-- AgentScope、QwenPaw 与协作底座可独立升级和替换；
+- 通过公开契约、固定版本和升级门禁降低 AgentScope、QwenPaw 与协作底座的耦合；
 - 产品差异集中在人机协作规则、身份边界和知识治理。
 
 ### Negative

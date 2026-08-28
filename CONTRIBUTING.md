@@ -8,11 +8,18 @@
 
 - [README](README.md)
 - [产品与技术架构设计](docs/product/overview.md)
+- [目标版本与发布基线](docs/architecture/version-baseline.md)
+- [PRD 与技术架构方案审查跟踪表](docs/project/prd-architecture-review-tracker.md)
 - [复用优先调研报告](docs/research/2026-08-28-github-reuse-landscape.md)
 - [ADR-0001：复用优先的轻量治理控制层](docs/decisions/0001-reuse-first-thin-control-plane.md)
 - [ADR-0003：选定 Mattermost 作为协作底座](docs/decisions/0003-adopt-mattermost-as-collaboration-foundation.md)
+- [ADR-0004：可信身份与 Personal Agent 隔离](docs/decisions/0004-trusted-identity-and-personal-agent-isolation.md)
+- [ADR-0005：公开集成契约与 fail-closed 语义](docs/decisions/0005-public-integration-contracts-and-fail-closed-semantics.md)
+- [ADR-0006：治理元数据持久化与 schema 生命周期](docs/decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md)
 
 所有贡献与实现均需严格遵循已批准的 Accepted ADR 与产品事实源规范。
+
+当前仓库代码是架构脚手架。审查跟踪表中的 `CR-*` 只记录潜在工作；只有独立 Issue/任务明确授权后才能实施，且不得用脚手架构建通过替代真实集成或发布证据。
 
 ## Contribution principles
 
@@ -32,10 +39,10 @@
 
 ## Technology baseline
 
-Hikmah 官方技术基线：
+Hikmah 目标技术基线如下；精确版本与支持状态只以[目标版本与发布基线](docs/architecture/version-baseline.md)为准：
 
-- **后端 (Backend)**：Python 3.14+、FastAPI、Pydantic v2、SQLAlchemy 2.x、Alembic、uv、Ruff、mypy (--strict) 和 pytest；
-- **前端 (Frontend)**：React 19.2+、TypeScript 6+、Vite 8+、Node.js 24 LTS、pnpm、TanStack Query、React Router、Vitest 和 Playwright；
+- **后端 (Backend)**：Python 3.14.x、FastAPI、Pydantic v2、SQLAlchemy 2.x、Alembic、uv、Ruff、mypy (--strict) 和 pytest；
+- **前端 (Frontend)**：React 19.2.x、TypeScript 6.0.x、Vite 8.x、Node.js 24 LTS、pnpm、TanStack Query、React Router、Vitest 和 Playwright；
 - **协作底座集成 (Foundation)**：Mattermost Web App Plugin (React/TS) + Bot API & WebSocket 事件流；
 - **契约与流式**：FastAPI OpenAPI 驱动前端 TypeScript 客户端；流式事件采用 SSE，双向控制采用 WebSocket。
 
@@ -70,4 +77,3 @@ PR 描述至少包含：
 ## License
 
 提交到本仓库的内容默认按 [Apache-2.0](LICENSE) 发布，除非贡献者在提交时明确声明其他适用条款。
-

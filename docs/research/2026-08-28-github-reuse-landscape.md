@@ -2,7 +2,7 @@
 title: Hikmah GitHub 复用调研与组件决策矩阵
 description: 调研 Hikmah 可复用的协作底座、Agent Runtime、协议、权限、记忆、审批和可观测性组件。
 document_type: research-report
-status: active
+status: completed
 created: 2026-08-28
 updated: 2026-08-28
 review_after: 2026-11-28
@@ -19,7 +19,12 @@ canonical: false
 related:
   - ../decisions/0001-reuse-first-thin-control-plane.md
   - ../decisions/0002-collaboration-foundation-spike.md
+  - ../decisions/0003-adopt-mattermost-as-collaboration-foundation.md
+  - ../decisions/0004-trusted-identity-and-personal-agent-isolation.md
+  - ../decisions/0005-public-integration-contracts-and-fail-closed-semantics.md
+  - ../decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md
   - ../product/overview.md
+  - ../project/prd-architecture-review-tracker.md
 ---
 
 # Hikmah GitHub 复用调研与组件决策矩阵
@@ -27,6 +32,8 @@ related:
 > 快照日期：2026-08-28。适用范围：Hikmah 产品、协作底座、Agent 运行时、协议、权限、记忆、审批、工作流与可观测性。
 >
 > 结论边界：本报告能降低重复造轮子的概率，但不能对整个 GitHub 做数学意义上的穷尽证明；每个交付切片仍须重新执行复用门禁。
+>
+> 后续决议：本报告完成后，ADR-0003～ADR-0006 已接受 Mattermost、可信身份、公开集成契约和 PostgreSQL 数据终态。本报告保留决策前快照；其中“候选”“先 Spike 再选型”等状态语言不再代表当前正式决策。运行与合规证据仍按[审查跟踪表](../project/prd-architecture-review-tracker.md)管理。
 
 ## 1. 调研方法
 

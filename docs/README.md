@@ -25,10 +25,12 @@ canonical: false
 
 1. [产品与技术架构](product/overview.md)：了解愿景、边界、领域模型和 MVP。
 2. [架构导航](architecture/README.md)：理解组件关系、事实源和当前技术状态。
-3. [架构决策记录](decisions/README.md)：查看已经接受或仍在提议中的不可逆决策。
-4. [研究报告](research/README.md)：查阅复用调研、源码证据和候选方案。
-5. [设计资料](design/README.md)：查看设计册和批准记录。
-6. [开发文档](development/README.md)：进入贡献、实施和验证流程。
+3. [目标版本与发布基线](architecture/version-baseline.md)：确认目标 BOM、兼容和许可证门禁。
+4. [架构决策记录](decisions/README.md)：查看已经接受或仍在提议中的不可逆决策。
+5. [PRD 与技术架构方案审查跟踪表](project/prd-architecture-review-tracker.md)：确认设计闭环、实现授权和验证状态。
+6. [研究报告](research/README.md)：查阅复用调研、源码证据和候选方案。
+7. [设计资料](design/README.md)：查看设计册和批准记录。
+8. [开发文档](development/README.md)：进入贡献、实施和验证流程。
 
 ## 文档分区
 
@@ -40,7 +42,7 @@ canonical: false
 | [`research/`](research/README.md) | 外部调研、源码证据和 Spike 结论 | 贡献者、维护者 |
 | [`design/`](design/README.md) | 设计册、批准记录和可视化交付物 | 产品、设计、维护者 |
 | [`development/`](development/README.md) | 开发入口、计划和质量要求 | 贡献者 |
-| [`project/`](project/documentation-policy.md) | 文档治理规则和 metadata 规范 | 维护者 |
+| [`project/`](project/documentation-policy.md) | 文档治理规则、metadata 规范和[架构审查跟踪](project/prd-architecture-review-tracker.md) | 维护者 |
 | [`archive/`](archive/README.md) | 已完成、已替代或仅供追溯的资料 | 维护者 |
 
 ## 当前状态
@@ -49,8 +51,12 @@ canonical: false
 |---|---|---|
 | 复用优先原则 | Accepted | [ADR-0001](decisions/0001-reuse-first-thin-control-plane.md) |
 | Collaboration Foundation 选型 (Mattermost) | Accepted | [ADR-0003](decisions/0003-adopt-mattermost-as-collaboration-foundation.md) |
-| Mattermost WebUI 混合路线 | Accepted | [WebUI 整合调研](research/2026-08-28-mattermost-zulip-webui-integration.md) |
-| 产品与技术架构 | Review | [产品与技术架构](product/overview.md) |
-| HTML 设计册 | Review | [设计册](design/hikmah-design-book.html) |
+| 身份与 Personal Agent 隔离 | Accepted | [ADR-0004](decisions/0004-trusted-identity-and-personal-agent-isolation.md) |
+| 集成与 fail-closed 语义 | Accepted | [ADR-0005](decisions/0005-public-integration-contracts-and-fail-closed-semantics.md) |
+| 治理元数据持久化 | Accepted | [ADR-0006](decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md) |
+| 产品与技术架构 | Active | [产品与技术架构](product/overview.md) |
+| 目标版本与发布基线 | Active | [版本基线](architecture/version-baseline.md) |
+| HTML 设计册 | Active | [设计册](design/hikmah-design-book.html) |
+| PRD 与技术架构审查 | Active / 5 design-resolved / 3 evidence-needed | [审查跟踪表](project/prd-architecture-review-tracker.md) |
 
 状态与 metadata 的唯一规范见[文档治理规则](project/documentation-policy.md)。
