@@ -439,9 +439,16 @@ Approval Decision 绑定：
 - 断线时显示离线，不静默代答；
 - 重新连接不会自动重放副作用操作。
 
-### 12.3 技术选择边界
+### 12.3 首个 MVP 技术栈基线
 
-本文规定领域边界、运行职责和接口语义，不锁定 Web 框架、关系数据库产品、前端框架或部署编排工具。这些属于实施选择，必须在不改变本文安全与所有权边界的前提下，于对应交付切片的 implementation plan 中确定。
+首个 MVP 采用 Python + React 的类型安全、异步优先技术基线：
+
+- 后端使用 Python 3.14、FastAPI、Pydantic v2、SQLAlchemy 2.x、Alembic、uv、Ruff、mypy strict 和 pytest。
+- 前端使用 React 19.2、TypeScript 6.x、Vite 8.x、Node.js 24 LTS、pnpm、TanStack Query、React Router、Vitest 和 Playwright。
+- FastAPI 生成版本化 OpenAPI，前端从 OpenAPI 生成 TypeScript 类型与客户端，不手工维护两套公共接口模型。
+- 流式 Agent 事件优先使用 SSE；需要双向实时控制、取消或连接状态同步时使用 WebSocket。
+
+上述技术基线必须在不改变本文安全、隐私和所有权边界的前提下，于对应交付切片的 implementation plan 中落地。关系数据库产品、对象存储、部署编排、认证提供方和实时基础设施的具体实现仍属于后续实施选择。
 
 ## 13. 可靠性与错误处理
 
@@ -576,14 +583,13 @@ Approval Decision 绑定：
 
 以下选择不改变本架构，故不在本文提前锁定：
 
-- Web / API 与前端框架；
 - 关系数据库和对象存储产品；
 - 单进程、容器或编排部署方式；
 - 具体认证提供方；
 - 实时消息基础设施的具体实现；
 - Adapter 的序列化格式和代码语言。
 
-每个实施计划必须基于当时固定的 AgentScope / QwenPaw 版本选择最小技术栈，并满足本文的契约测试、隐私和降级要求。
+每个实施计划必须基于上述 Python + React 技术栈、当时固定的 AgentScope / QwenPaw 版本，为尚未锁定的基础设施选择最小方案，并满足本文的契约测试、隐私和降级要求。
 
 ## 18. 已批准的决策记录
 
@@ -601,6 +607,7 @@ Approval Decision 绑定：
 | 执行 | 只读可自动；副作用审批或 Admin 低风险预授权 |
 | 上游代码 | 原则不修改；必要修改仅通过上游 PR 和正式版本 |
 | 部署 | 私有团队服务器 + Personal Agent 出站连接 |
+| 首个 MVP 技术基线 | Python 3.14 + FastAPI；React 19.2 + TypeScript 6 + Vite 8；OpenAPI 驱动前端契约 |
 | 品牌 | GitHub repo 为 hikmah；英文 Hikmah；中文 群贤 |
 | 实体命名 | 其他实体不设置独立品牌名 |
 | 成册交付 | Markdown 规范 + 自包含 HTML 设计册 + 源画布档案 |
