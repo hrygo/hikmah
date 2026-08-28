@@ -1,8 +1,31 @@
+---
+title: Hikmah GitHub 复用调研与组件决策矩阵
+description: 调研 Hikmah 可复用的协作底座、Agent Runtime、协议、权限、记忆、审批和可观测性组件。
+document_type: research-report
+status: review
+created: 2026-08-28
+updated: 2026-08-28
+review_after: 2026-11-28
+owners:
+  - hikmah-maintainers
+audience:
+  - contributors
+  - maintainers
+tags:
+  - research
+  - github
+  - reuse
+canonical: false
+related:
+  - ../decisions/0001-reuse-first-thin-control-plane.md
+  - ../decisions/0002-collaboration-foundation-spike.md
+  - ../product/overview.md
+---
+
 # Hikmah GitHub 复用调研与组件决策矩阵
 
-> 状态：架构修订的证据基线，等待用户复核  
-> 快照日期：2026-08-28  
-> 适用范围：Hikmah（群贤）产品、协作底座、Agent 运行时、协议、权限、记忆、审批、工作流与可观测性  
+> 快照日期：2026-08-28。适用范围：Hikmah 产品、协作底座、Agent 运行时、协议、权限、记忆、审批、工作流与可观测性。
+>
 > 结论边界：本报告能降低重复造轮子的概率，但不能对整个 GitHub 做数学意义上的穷尽证明；每个交付切片仍须重新执行复用门禁。
 
 ## 1. 调研方法

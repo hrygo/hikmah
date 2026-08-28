@@ -1,4 +1,27 @@
+---
+title: Hikmah GitHub Repository Bootstrap Implementation Plan
+description: Hikmah GitHub 开源仓库初始化工作的已完成实施计划。
+document_type: implementation-plan
+status: archived
+created: 2026-08-28
+updated: 2026-08-28
+owners:
+  - hikmah-maintainers
+audience:
+  - maintainers
+tags:
+  - archive
+  - github
+  - bootstrap
+canonical: false
+related:
+  - design.md
+  - ../../product/overview.md
+---
+
 # Hikmah GitHub Repository Bootstrap Implementation Plan
+
+> 归档说明：本计划已经执行完成。正文中的旧路径和命令作为当时执行记录保留，不代表当前文档位置。
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
@@ -8,7 +31,7 @@
 
 **Tech Stack:** Python 3.14.x、FastAPI、Pydantic v2、SQLAlchemy 2.x、Alembic、uv、Ruff、mypy、pytest；React 19.2.x、TypeScript 6.x、Vite 8.x、Node.js 24 LTS、pnpm、TanStack Query、React Router、Vitest、Playwright。
 
-**Spec:** docs/superpowers/specs/2026-08-28-hikmah-github-bootstrap-design.md
+**Spec:** `docs/archive/github-bootstrap/design.md`
 
 ## Global Constraints
 

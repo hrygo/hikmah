@@ -1,11 +1,33 @@
+---
+title: Hikmah（群贤）产品与技术架构设计
+description: Hikmah 的产品愿景、系统边界、领域模型、Agent 协作规则和 MVP 技术架构事实源。
+document_type: product-spec
+status: review
+created: 2026-08-28
+updated: 2026-08-28
+owners:
+  - hikmah-maintainers
+audience:
+  - users
+  - contributors
+  - maintainers
+tags:
+  - product
+  - architecture
+  - agents
+canonical: true
+related:
+  - ../research/2026-08-28-github-reuse-landscape.md
+  - ../research/2026-08-28-mattermost-zulip-webui-integration.md
+  - ../decisions/0001-reuse-first-thin-control-plane.md
+  - ../decisions/0002-collaboration-foundation-spike.md
+---
+
 # Hikmah（群贤）产品与技术架构设计
 
-> 状态：复用优先修订稿，等待用户正式复核  
-> 日期：2026-08-28  
-> GitHub 仓库名：hikmah  
-> 产品英文名：Hikmah  
-> 产品中文名：群贤  
-> 调研基线：[GitHub 复用调研与组件决策矩阵](../../research/2026-08-28-github-reuse-landscape.md)
+> GitHub 仓库名：`hikmah`；产品英文名：Hikmah；产品中文名：群贤。
+>
+> 调研基线：[GitHub 复用调研与组件决策矩阵](../research/2026-08-28-github-reuse-landscape.md)
 
 ## 1. 文档地位与命名约束
 
@@ -112,7 +134,7 @@ Foundation 是协作事实源；AgentScope 和 QwenPaw 是各自运行事实源�
 
 ### 4.2 Foundation 选型状态
 
-最终 Foundation 尚未批准，必须先执行 [ADR-0002](../../decisions/0002-collaboration-foundation-spike.md) 定义的同场景 Spike：
+最终 Foundation 尚未批准，必须先执行 [ADR-0002](../decisions/0002-collaboration-foundation-spike.md) 定义的同场景 Spike：
 
 | 顺序 | 候选 | 当前定位 |
 |---:|---|---|
@@ -578,17 +600,17 @@ Member Device
 
 ### 18.2 本轮架构修订
 
-- [ADR-0001](../../decisions/0001-reuse-first-thin-control-plane.md)：复用优先原则 Accepted；轻量治理控制层是本修订稿的证据推导，等待整体复核；
-- [ADR-0002](../../decisions/0002-collaboration-foundation-spike.md)：Proposed；Foundation 候选排序和 Spike 方案等待用户复核；
+- [ADR-0001](../decisions/0001-reuse-first-thin-control-plane.md)：复用优先原则 Accepted；轻量治理控制层是本修订稿的证据推导，等待整体复核；
+- [ADR-0002](../decisions/0002-collaboration-foundation-spike.md)：Proposed；Foundation 候选排序和 Spike 方案等待用户复核；
 - 被撤销的早期实现：自建 Community Web/API、Agent Gateway、AgentLink、独立 Policy/Approval、TaskRun 工作流和通用基础设施。
 
 ## 19. 持久化设计资产
 
-- 本规范：`docs/superpowers/specs/2026-08-28-hikmah-design.md`
+- 本规范：`docs/product/overview.md`
 - GitHub 调研：`docs/research/2026-08-28-github-reuse-landscape.md`
 - 决策记录：`docs/decisions/`
-- 视觉设计册：`docs/design-book/hikmah-design-book.html`
-- 批准记录：`docs/design-book/approval-record.md`
-- 历史画布：`docs/design-book/source-screens/`
+- 视觉设计册：`docs/design/hikmah-design-book.html`
+- 批准记录：`docs/design/approval-record.md`
+- 历史画布：`docs/archive/design-sources/`
 
 历史画布继续作为设计过程档案保存，可能包含已被本修订稿替代的早期架构。发生差异时，以本规范和状态为 Accepted 的 ADR 为准。

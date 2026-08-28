@@ -1,9 +1,27 @@
+---
+title: Hikmah GitHub 仓库初始化与技术栈设计
+description: 记录 Hikmah 开源仓库初始化、协作基线和首个技术栈选择的历史设计。
+document_type: archived-artifact
+status: archived
+created: 2026-08-28
+updated: 2026-08-28
+owners:
+  - hikmah-maintainers
+audience:
+  - maintainers
+tags:
+  - archive
+  - github
+  - bootstrap
+canonical: false
+related:
+  - implementation-plan.md
+  - ../../product/overview.md
+---
+
 # Hikmah GitHub 仓库初始化与技术栈设计
 
-> 状态：已获用户批准，等待实施前复核  
-> 日期：2026-08-28  
-> 仓库：`hrygo/hikmah`  
-> 产品：Hikmah（群贤）
+> 归档说明：本设计已完成实施，仅用于追溯仓库基线。当前产品和技术要求以 [`docs/product/overview.md`](../../product/overview.md) 为准。
 
 ## 1. 目标与范围
 

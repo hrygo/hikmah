@@ -1,7 +1,27 @@
+---
+title: Hikmah 设计批准与修订记录
+description: 记录 Hikmah 交互式产品设计阶段的批准结果、修订依据和适用边界。
+document_type: design-record
+status: active
+created: 2026-08-28
+updated: 2026-08-28
+owners:
+  - hikmah-maintainers
+audience:
+  - contributors
+  - maintainers
+tags:
+  - design
+  - approvals
+canonical: true
+related:
+  - ../product/overview.md
+  - hikmah-design-book.html
+---
+
 # Hikmah 设计批准与修订记录
 
-> 日期：2026-08-28  
-> 来源：当前交互式产品设计会话中的终端确认、visual companion 点击事件及 GitHub 复用调研
+> 来源：当前交互式产品设计会话中的终端确认、visual companion 点击事件及 GitHub 复用调研。
 
 ## 已批准内容
 
@@ -32,4 +52,11 @@ GitHub 调研发现早期架构重复了成熟协作平台、AgentScope 和 Qwen
 - 原始画布是设计过程材料，可能保留早期工作名称或未选择方案。
 - 本批准记录用于追溯，不替代正式规范。
 - 状态为 Accepted 的 ADR 记录架构原则；Proposed ADR 不能视为已获用户批准。
-- 最终要求以 `docs/superpowers/specs/2026-08-28-hikmah-design.md` 和 Accepted ADR 为准。
+- 最终要求以 `docs/product/overview.md` 和 Accepted ADR 为准。
+
+## 2026-08-28 文档信息架构重组
+
+- 批准按生命周期组织 `docs/`：产品、架构、决策、研究、设计、开发、项目治理和历史归档。
+- 批准根目录 GitHub 社区入口例外：`README.md`、`CONTRIBUTING.md`、`SECURITY.md`、`CODE_OF_CONDUCT.md` 和 `LICENSE` 保持原位。
+- 批准 Markdown 使用 YAML front matter、完整 HTML 使用 `hikmah:*` meta、HTML 源片段使用 metadata 注释。
+- 批准历史设计画布和已完成计划归档但不删除，并以导航、状态和相对链接保证可追溯性。

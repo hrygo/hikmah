@@ -76,20 +76,24 @@ Foundation 是协作事实源；AgentScope 和 QwenPaw 是各自运行事实源�
 
 ## Documentation
 
-### Product and architecture
+从[文档中心](docs/README.md)开始，可以按产品、架构、决策、研究、设计、开发和历史状态浏览全部资料。
 
-- [产品与技术架构设计](docs/superpowers/specs/2026-08-28-hikmah-design.md)
+### Product, architecture, and research
+
+- [产品与技术架构设计](docs/product/overview.md)
+- [架构导航](docs/architecture/README.md)
 - [GitHub 复用调研与组件决策矩阵](docs/research/2026-08-28-github-reuse-landscape.md)
+- [Mattermost、Zulip 与 WebUI 整合调研](docs/research/2026-08-28-mattermost-zulip-webui-integration.md)
 - [ADR-0001：复用优先的轻量治理控制层](docs/decisions/0001-reuse-first-thin-control-plane.md)
 - [ADR-0002：Foundation Reuse Spike](docs/decisions/0002-collaboration-foundation-spike.md)
-- [设计批准与修订记录](docs/design-book/approval-record.md)
-- [HTML 设计册](docs/design-book/hikmah-design-book.html)
-- [交互画布源材料](docs/design-book/source-screens/README.md)
+- [设计批准与修订记录](docs/design/approval-record.md)
+- [HTML 设计册](docs/design/hikmah-design-book.html)
 
-### Repository decisions
+### Project governance and history
 
-- [仓库初始化与技术栈设计](docs/superpowers/specs/2026-08-28-hikmah-github-bootstrap-design.md)
-- [仓库初始化实施计划](docs/superpowers/plans/2026-08-28-hikmah-github-bootstrap.md)
+- [文档治理与 Metadata 规范](docs/project/documentation-policy.md)
+- [开发文档入口](docs/development/README.md)
+- [历史归档](docs/archive/README.md)
 
 ## Upstream boundaries
 

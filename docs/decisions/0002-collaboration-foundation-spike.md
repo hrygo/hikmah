@@ -1,10 +1,29 @@
+---
+title: ADR-0002：通过 Foundation Reuse Spike 选择协作底座
+description: 提议通过统一场景和硬门槛验证 Mattermost、Zulip 等协作底座。
+document_type: architecture-decision
+status: proposed
+created: 2026-08-28
+updated: 2026-08-28
+owners:
+  - hikmah-maintainers
+audience:
+  - contributors
+  - maintainers
+tags:
+  - architecture
+  - collaboration-foundation
+  - spike
+canonical: true
+related:
+  - 0001-reuse-first-thin-control-plane.md
+  - ../research/2026-08-28-github-reuse-landscape.md
+  - ../research/2026-08-28-mattermost-zulip-webui-integration.md
+---
+
 # ADR-0002：通过 Foundation Reuse Spike 选择协作底座
 
-- 状态：Proposed
-- 日期：2026-08-28
-- 决策类型：待用户复核后执行的选型验证
-- 依赖：[ADR-0001](0001-reuse-first-thin-control-plane.md)
-- 证据：[GitHub 复用调研](../research/2026-08-28-github-reuse-landscape.md)
+> 决策类型：待产品负责人复核后执行的选型验证。
 
 ## Context
 

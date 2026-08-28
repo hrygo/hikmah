@@ -1,9 +1,28 @@
+---
+title: ADR-0001：复用优先的轻量治理控制层
+description: 决定 Hikmah 优先复用成熟组件，只建设产品必需的轻量治理控制层。
+document_type: architecture-decision
+status: accepted
+created: 2026-08-28
+updated: 2026-08-28
+owners:
+  - hikmah-maintainers
+audience:
+  - contributors
+  - maintainers
+tags:
+  - architecture
+  - reuse
+  - control-plane
+canonical: true
+related:
+  - ../research/2026-08-28-github-reuse-landscape.md
+  - ../product/overview.md
+---
+
 # ADR-0001：复用优先的轻量治理控制层
 
-- 状态：Accepted（复用优先原则）；具体轻量控制层边界随架构修订稿等待用户复核
-- 日期：2026-08-28
-- 决策者：产品设计会话；“不重复造轮子”原则由用户明确批准
-- 关联：[GitHub 复用调研](../research/2026-08-28-github-reuse-landscape.md)
+> 决策者：产品设计会话；“不重复造轮子”原则由用户明确批准。具体轻量控制层边界仍随产品架构修订稿复核。
 
 ## Context
 
