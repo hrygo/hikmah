@@ -1,3 +1,7 @@
+## 🔗 Linked Issue / Tracking
+
+- Fixes # (or Closes # / Resolves # / Refs #, use `[skip-issue]` with reason if not applicable)
+
 ## Summary
 
 <!-- What problem does this change solve? -->
@@ -6,7 +10,8 @@
 
 - What is included:
 - What is intentionally not included:
-- Related Issue, ADR, or implementation plan:
+- Related ADR or Design Doc:
+
 
 ## Validation
 

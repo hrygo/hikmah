@@ -186,6 +186,8 @@ pnpm run build
    - TypeScript 代码必须开启全部严格检查，严禁引入未使用的变量或导入。
 3. **文档与代码强同步**：
    - 领域模型字段或 REST 接口变动时，必须同步更新 `packages/api-client`、`apps/web` 与 `docs/` 文档。
-4. **Git 与分支规范**：
-   - `main` 分支已开启分支保护，严禁 Force Push；
-   - 使用 Conventional Commits 格式（如 `feat: ...`, `fix: ...`, `docs: ...`, `test: ...`）。
+4. **Git 与 PR 协作规范**：
+   - `main` 分支已开启分支保护，严禁 Force Push，所有合并必须走 Pull Request；
+   - **PR 标题**：严格遵守 Conventional Commits 格式（如 `feat: ...`, `fix: ...`, `docs: ...`, `chore: ...`, `ci: ...`）；
+   - **关联 Issue 强校验**：PR 正文必须显式关联目标 Issue（如 `Fixes #123` 或 `Refs #123`；非功能性小微改动可标注 `[skip-issue]` 并在 PR 中说明原因）。
+
