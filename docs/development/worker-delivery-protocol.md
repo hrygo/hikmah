@@ -49,6 +49,8 @@ related:
 
 任务同时记录两类独立状态：
 
+实时状态及证据引用保存在[交接状态账本](../project/handoff/state.json)；填写方式见[记录协议](../project/handoff/records-and-acceptance.md)。队列表维护 ID、依赖和角色，交接校验器核对两者一致；不再另维护一份人工完成计数。
+
 - 准备度：`outlined`（拆分已定义）→ `specified`（完整卡与接口已写）→ `ready`（负责人核验契约/前置证据可分派）。接口或上游证据失效时退回 `specified`。
 - 执行状态：`not_authorized` → `authorized` → `in_progress` → `in_review` → `verified`；发生缺依赖/边界冲突为 `blocked`，必须记录原因和恢复条件。
 

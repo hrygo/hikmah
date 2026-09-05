@@ -21,6 +21,8 @@ canonical: false
 
 本目录是 Hikmah（群贤）产品与开源项目文档的统一入口。根目录 `README.md`、`CONTRIBUTING.md`、`SECURITY.md`、`CODE_OF_CONDUCT.md` 和 `LICENSE` 保留在 GitHub 可原生发现的位置；其余长期文档在这里按用途和生命周期管理。
 
+接续研发团队先读[工作交接入口](project/handoff/README.md)：包含事实基线、资产接收、关键决策、任务状态账本和不依赖本会话的接手流程。
+
 ## 推荐阅读顺序
 
 1. [产品与技术架构](product/overview.md)：了解愿景、边界、领域模型和 MVP。

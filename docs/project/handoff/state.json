@@ -1,0 +1,770 @@
+{
+  "schema_version": 1,
+  "snapshot_date": "2026-09-05",
+  "baseline": {
+    "input_commit": "3aea245daa32a55b5e976638418963601d929e12",
+    "main_commit": "8ea48c2dc006b9ca69950e98821ed235e129a8b9",
+    "branch": "docs/knowledge-collaboration-pilot",
+    "remote_freshness": "cached_ref_only"
+  },
+  "receiving_roles": {
+    "product_owner": null,
+    "technical_lead": null,
+    "reviewer": null,
+    "operator": null
+  },
+  "receipt": {
+    "status": "pending",
+    "received_by": null,
+    "record": null
+  },
+  "documents": [
+    "README.md",
+    "AGENTS.md",
+    "docs/README.md",
+    "docs/product/overview.md",
+    "docs/architecture/version-baseline.md",
+    "docs/decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md",
+    "docs/project/long-term-roadmap.md",
+    "docs/project/prd-architecture-review-tracker.md",
+    "docs/development/README.md",
+    "docs/development/worker-delivery-protocol.md",
+    "docs/development/plans/2026-09-05-implementation-roadmap.md",
+    "docs/development/plans/2026-09-05-pilot-0-foundation.md",
+    "docs/development/plans/2026-09-05-pilot-1-knowledge.md",
+    "docs/development/plans/2026-09-05-pilot-2-coordination.md",
+    "docs/development/plans/2026-09-05-work-item-sequence.md",
+    "docs/development/plans/2026-09-05-p0-01-worker-packet.md",
+    "docs/research/2026-09-05-knowledge-collaboration-feasibility.md",
+    "docs/project/handoff/README.md",
+    "docs/project/handoff/successor-runbook.md",
+    "docs/project/handoff/decision-register.md",
+    "docs/project/handoff/records-and-acceptance.md",
+    "docs/project/handoff/validation-record.md",
+    "docs/project/handoff/state.json",
+    "scripts/check_handoff.py",
+    "tests/handoff/test_check_handoff.py",
+    ".github/workflows/handoff.yml"
+  ],
+  "task_index": "docs/development/plans/2026-09-05-work-item-sequence.md",
+  "tasks": [
+    {
+      "id": "P0-01.A",
+      "depends_on": [],
+      "role": "W",
+      "objective": "无导入副作用的单元测试 DB 准入保护",
+      "acceptance_summary": "仅 test + 内存 URL 通过；文件/远端 URL 拒绝",
+      "readiness": "specified",
+      "execution": "not_authorized",
+      "packet": "docs/development/plans/2026-09-05-p0-01-worker-packet.md",
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-01.B",
+      "depends_on": [
+        "P0-01.A"
+      ],
+      "role": "W",
+      "objective": "显式创建/释放的 Database 对象",
+      "acceptance_summary": "两实例数据不互见、未调用连接前无 I/O",
+      "readiness": "specified",
+      "execution": "not_authorized",
+      "packet": "docs/development/plans/2026-09-05-p0-01-worker-packet.md",
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-01.C",
+      "depends_on": [
+        "P0-01.B"
+      ],
+      "role": "W",
+      "objective": "配置/应用工厂与安全 fixture 原子接线",
+      "acceptance_summary": "无 import-time Settings/Engine；全部旧 HTTP 测试使用隔离 app",
+      "readiness": "specified",
+      "execution": "not_authorized",
+      "packet": "docs/development/plans/2026-09-05-p0-01-worker-packet.md",
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-01.D",
+      "depends_on": [
+        "P0-01.C"
+      ],
+      "role": "W",
+      "objective": "防误连回归和 CI 收集闭环",
+      "acceptance_summary": "外部环境/工作目录诱导下 sentinel 不变，全部新测试被收集",
+      "readiness": "specified",
+      "execution": "not_authorized",
+      "packet": "docs/development/plans/2026-09-05-p0-01-worker-packet.md",
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-02.A",
+      "depends_on": [
+        "P0-01.D"
+      ],
+      "role": "T",
+      "objective": "固定 Hook 公开签名和入口/故障实验协议",
+      "acceptance_summary": "入口清单、观察点、期望及上游 commit 齐全",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-02.B",
+      "depends_on": [
+        "P0-02.A"
+      ],
+      "role": "T",
+      "objective": "缺失/卸载/异常及读取隔离实测记录",
+      "acceptance_summary": "禁止用例模型/工具启动 0；上下文读取单独核验",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-02.C",
+      "depends_on": [
+        "P0-02.B"
+      ],
+      "role": "T",
+      "objective": "是否允许采用该准入路线的资格结论",
+      "acceptance_summary": "全部硬门禁通过才解锁，失败提交退出决策",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-03.A",
+      "depends_on": [
+        "P0-02.C"
+      ],
+      "role": "T",
+      "objective": "可用版本组合、许可及密钥引用契约",
+      "acceptance_summary": "无浮动版本、无隐私外泄、真实证据引用",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-03.B",
+      "depends_on": [
+        "P0-03.A"
+      ],
+      "role": "W",
+      "objective": "独立试点 Compose 与隔离用例",
+      "acceptance_summary": "两信任域互读拒绝，现有服务/卷不变",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-03.C",
+      "depends_on": [
+        "P0-03.B"
+      ],
+      "role": "W",
+      "objective": "锁文件、BOM 校验、构建矩阵与 SBOM",
+      "acceptance_summary": "实际解析值与目标一致，不能自动降级",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-04.A",
+      "depends_on": [
+        "P0-03.C"
+      ],
+      "role": "W",
+      "objective": "治理库首迁移与启动 revision 检查",
+      "acceptance_summary": "空库/升级通过，落后 revision 不 ready",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-04.B",
+      "depends_on": [
+        "P0-04.A"
+      ],
+      "role": "W",
+      "objective": "数据库原子准入保留",
+      "acceptance_summary": "PostgreSQL 并发只保留一次，重启仍去重",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-04.C",
+      "depends_on": [
+        "P0-04.B"
+      ],
+      "role": "T",
+      "objective": "隔离恢复链路和 RPO/RTO 证据",
+      "acceptance_summary": "恢复后 schema/数据/幂等键实际可用",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-05.A",
+      "depends_on": [
+        "P0-04.C"
+      ],
+      "role": "T",
+      "objective": "OAuth、session、CSRF、Actor 冻结契约",
+      "acceptance_summary": "真正公开调用和错误/撤销矩阵齐全",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-05.B",
+      "depends_on": [
+        "P0-05.A"
+      ],
+      "role": "W",
+      "objective": "BFF 登录/回调/退出与 session 持久化",
+      "acceptance_summary": "state/重放/过期/撤销失败，浏览器不拿 Token",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-05.C",
+      "depends_on": [
+        "P0-05.B"
+      ],
+      "role": "W",
+      "objective": "全受保护路由的集中授权",
+      "acceptance_summary": "身份自报无效、跨域拒绝、权限故障拒绝",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-06.A",
+      "depends_on": [
+        "P0-05.C"
+      ],
+      "role": "W",
+      "objective": "Shared Binding 与个人边界拆分",
+      "acceptance_summary": "单席位单 Channel、无敏感配置输出",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-06.B",
+      "depends_on": [
+        "P0-06.A"
+      ],
+      "role": "W",
+      "objective": "权威 Post 与准确提及解析",
+      "acceptance_summary": "前缀/代码/引用/伪造发送者不获资格",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-06.C",
+      "depends_on": [
+        "P0-06.B"
+      ],
+      "role": "W",
+      "objective": "原生 Channel 公开 Hook 接入窄准入",
+      "acceptance_summary": "最终入口原子保留，缺失/故障无模型启动",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-06.D",
+      "depends_on": [
+        "P0-06.C"
+      ],
+      "role": "W",
+      "objective": "权威状态投影与安全失败语义",
+      "acceptance_summary": "无 mock success，未知外部写只发一次",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-07.A",
+      "depends_on": [
+        "P0-06.D"
+      ],
+      "role": "W",
+      "objective": "固定 ID 的可安装 Plugin 包",
+      "acceptance_summary": "manifest/bundle/宿主兼容与卸载清理",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-07.B",
+      "depends_on": [
+        "P0-07.A"
+      ],
+      "role": "W",
+      "objective": "同源 RHS 和安全状态视图",
+      "acceptance_summary": "BFF/CSRF、无自报身份、未开放能力隐藏",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P0-07.C",
+      "depends_on": [
+        "P0-07.B"
+      ],
+      "role": "T",
+      "objective": "Pilot 0 固定版本纵向资格报告",
+      "acceptance_summary": "合成链路、准入、回帖、隔离/恢复逐项通过",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-01.A",
+      "depends_on": [
+        "P0-07.C"
+      ],
+      "role": "W",
+      "objective": "候选和不可变知识版本迁移",
+      "acceptance_summary": "修订/发布记录可追溯，正文不可原地改写",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-01.B",
+      "depends_on": [
+        "P1-01.A"
+      ],
+      "role": "W",
+      "objective": "精确内容与受众的人类审核事务",
+      "acceptance_summary": "digest 漂移 409，重复批准只一个版本",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-01.C",
+      "depends_on": [
+        "P1-01.B"
+      ],
+      "role": "W",
+      "objective": "Client/Web 审核契约与恢复验证",
+      "acceptance_summary": "reviewer 不来自 body，恢复后 scope/审计不丢失",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-02.A",
+      "depends_on": [
+        "P1-01.C"
+      ],
+      "role": "W",
+      "objective": "请求者和目标受众的知识授权判断",
+      "acceptance_summary": "提问者可见而频道无权时零内容/标题泄漏",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-02.B",
+      "depends_on": [
+        "P1-02.A"
+      ],
+      "role": "W",
+      "objective": "授权集合内检索与版本引用",
+      "acceptance_summary": "无未授权数量侧信道，无答案不扩检索范围",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-02.C",
+      "depends_on": [
+        "P1-02.B"
+      ],
+      "role": "W",
+      "objective": "QwenPaw 受控知识工具与提示契约",
+      "acceptance_summary": "仅获准 excerpt/citation，模型不能提升权限",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-03.A",
+      "depends_on": [
+        "P1-02.C"
+      ],
+      "role": "W",
+      "objective": "权威撤回事务和 usage 元数据",
+      "acceptance_summary": "撤回后新查询拒绝，历史关联保留",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-03.B",
+      "depends_on": [
+        "P1-03.A"
+      ],
+      "role": "W",
+      "objective": "缓存/索引/旧 session/记忆失效",
+      "acceptance_summary": "旧上下文续问不再注入，未知污染范围暂停",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-03.C",
+      "depends_on": [
+        "P1-03.B"
+      ],
+      "role": "T",
+      "objective": "发送前复核和竞态资格",
+      "acceptance_summary": "生成期间撤回无新 Post，已在途暴露明确记录",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-03.D",
+      "depends_on": [
+        "P1-03.C"
+      ],
+      "role": "W",
+      "objective": "Web 撤回闭环与知识生命周期 E2E",
+      "acceptance_summary": "权限变化、恢复重建、重复点击均保持安全",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-04.A",
+      "depends_on": [
+        "P1-03.D"
+      ],
+      "role": "P",
+      "objective": "授权任务集、rubric 与成本/对照口径",
+      "acceptance_summary": "运行前固定至少 30 个任务及数据使用范围",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-04.B",
+      "depends_on": [
+        "P1-04.A"
+      ],
+      "role": "W",
+      "objective": "固定口径汇总脚本和合成样例",
+      "acceptance_summary": "失败尝试计成本，零采纳返回不可计算",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P1-04.C",
+      "depends_on": [
+        "P1-04.B"
+      ],
+      "role": "P",
+      "objective": "真实结果与扩大/缩小决定",
+      "acceptance_summary": "逐项原始证据、分母、失败项及安全门禁",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-01.A",
+      "depends_on": [
+        "P1-04.C"
+      ],
+      "role": "W",
+      "objective": "权威事件规范化和合格候选集合",
+      "acceptance_summary": "Agent/人类/未知提及、Channel/capability/readiness 分开",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-01.B",
+      "depends_on": [
+        "P2-01.A"
+      ],
+      "role": "W",
+      "objective": "完整确定性路由判定",
+      "acceptance_summary": "全表命中、平局/低分澄清、显式 @零介入",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-01.C",
+      "depends_on": [
+        "P2-01.B"
+      ],
+      "role": "W",
+      "objective": "受限歧义分类及规则 UI 同步",
+      "acceptance_summary": "仅规则无法消歧才调用，不能覆盖权限/显式目标",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-02.A",
+      "depends_on": [
+        "P2-01.C"
+      ],
+      "role": "T",
+      "objective": "固定 AgentScope 映射/邀请公开契约",
+      "acceptance_summary": "邀请能在发帖前登记并在专家入口核验",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-02.B",
+      "depends_on": [
+        "P2-02.A"
+      ],
+      "role": "W",
+      "objective": "原子主答/邀请/提示预算账本",
+      "acceptance_summary": "并发/新帖子/重启不重置根人类事件预算",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-02.C",
+      "depends_on": [
+        "P2-02.B"
+      ],
+      "role": "W",
+      "objective": "两级 Sidecar 原生事件适配",
+      "acceptance_summary": "同 Thread 1 主 2 辅 1 层、明确 @不总结调停",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-03.A",
+      "depends_on": [
+        "P2-02.C"
+      ],
+      "role": "W",
+      "objective": "重放/乱序/部分失败实验集",
+      "acceptance_summary": "重复外部副作用 0、未知状态重试 0",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-03.B",
+      "depends_on": [
+        "P2-03.A"
+      ],
+      "role": "W",
+      "objective": "分故障域降级和知识权限回归",
+      "acceptance_summary": "Sidecar 停止明确 @可用；准入停止则执行拒绝",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    },
+    {
+      "id": "P2-03.C",
+      "depends_on": [
+        "P2-03.B"
+      ],
+      "role": "T",
+      "objective": "Pilot 2 资格与开放范围结论",
+      "acceptance_summary": "全部预算/静默/安全门禁及失败证据完整",
+      "readiness": "outlined",
+      "execution": "not_authorized",
+      "packet": null,
+      "authorization_ref": null,
+      "evidence": [],
+      "review_ref": null,
+      "blocked_reason": null
+    }
+  ]
+}

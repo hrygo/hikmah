@@ -27,7 +27,7 @@ related:
 
 本队列将 14 个工作包分解为 45 个工作项；每个条目只有一个独立可审阅结果。它负责依赖和排队，完整白名单、接口、测试及操作必须来自任务卡。不能把本表的简要描述直接转发为 worker 的实现指令。
 
-当前状态：P0-01.A～D 的完整卡见[首个工作包任务包](2026-09-05-p0-01-worker-packet.md)，准备度为 `specified`、执行为 `not_authorized`；其余 41 项为 `outlined / not_authorized`。表中的前置 ID 表示必须 `verified`；后续卡在前置实现形成后由技术负责人填写实际 commit、完整接口和测试，才进入 ready。具体准备/执行状态及升级流程见[交付规范](../worker-delivery-protocol.md)。
+2026-09-05 交接快照：P0-01.A～D 的完整卡见[首个工作包任务包](2026-09-05-p0-01-worker-packet.md)，准备度为 `specified`、执行为 `not_authorized`；其余 41 项为 `outlined / not_authorized`。后续实时状态以[交接账本](../../project/handoff/state.json)为准。表中的前置 ID 表示必须 `verified`；后续卡在前置实现形成后由技术负责人填写实际 commit、完整接口和测试，才进入 ready。具体准备/执行状态及升级流程见[交付规范](../worker-delivery-protocol.md)。
 
 角色：`W` 为 worker 实施、负责人验收；`T` 为技术负责人主责的设计/资格判断，可将已经固定操作的证据采集另写 worker 卡；`P` 为产品负责人主责。角色不表示已派出人员或 Agent。
 

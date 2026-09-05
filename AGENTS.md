@@ -6,6 +6,8 @@
 
 > 📌 **长期方向与任务交付**：研发路线遵循[长期路线图](docs/project/long-term-roadmap.md)；实施分派遵循[受控任务交付规范](docs/development/worker-delivery-protocol.md)和[工作项队列](docs/development/plans/2026-09-05-work-item-sequence.md)。工作包不能直接作为单 worker 任务；先冻结任务卡，再在对应授权和前置证据满足时执行。
 
+> 📌 **团队接续入口**：新负责人或无历史上下文的 Agent 先读[工作交接](docs/project/handoff/README.md)与接手运行手册。任务实时状态见 `docs/project/handoff/state.json`，用 `python3 scripts/check_handoff.py` 做只读完整性检查；这不批准实施或证明运行资格。后续决定由接续团队承担，不依赖离任顾问。
+
 ---
 
 ## 🏛️ 项目定位与三大基石 (Core Foundation & Fact Sources)

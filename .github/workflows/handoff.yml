@@ -1,0 +1,24 @@
+name: Handoff integrity
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  handoff:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - name: Set up isolated Python
+        run: uv python install 3.14
+      - name: Test handoff checker without application dependencies
+        run: uv run --no-project --python 3.14 python -m unittest discover -s tests/handoff -v
+      - name: Verify handoff state and references
+        run: uv run --no-project --python 3.14 python scripts/check_handoff.py

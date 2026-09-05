@@ -157,31 +157,9 @@ Hikmah 严格保持职责单一与事实源唯一，不把各方状态复制成�
 
 ## 🗺️ 路线图 (Roadmap)
 
-下列条目描述完整产品的能力范围。具体交付顺序以[产品规范第 17 节](docs/product/overview.md#17-试点与完整-mvp-交付顺序)为准：依据 [ADR-0007](docs/decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md)，先验证团队知识问答与方案协作，再逐项开放自动协作、Personal Agent 和业务执行。除明确附有运行证据的事项外，现有代码只视为脚手架，不据此勾选完成状态。
+具体行为以[产品规范第 17 节](docs/product/overview.md#17-试点与完整-mvp-交付顺序)和 [ADR-0007](docs/decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md)为准；[长期路线图](docs/project/long-term-roadmap.md)统一管理隔离资格、知识价值、有限自动协作、个人/业务执行、完整 MVP 和持续演进，避免维护多套阶段编号。
 
-```markdown
-- [x] Phase 1: 概念与规范设计
-  - [x] 完成产品愿景、边界定义、Sidecar 协调逻辑与知识晋升机制
-  - [x] 完成复用优先调研与轻量治理控制层设计 (ADR-0001)
-  - [x] 完成全套设计册与视觉交互定义
-
-- [ ] Phase 2: 选型决议与运行证据闭环
-  - [x] 完成 Mattermost / Zulip / Open WebUI 的协作底座深度调研与集成评估
-  - [x] 产出 Accepted 状态的 ADR-0003，正式确立 Mattermost 选型决议
-  - [ ] 补齐 Foundation 运行态 Spike、升级及许可证/品牌门禁证据（AR-001、AR-007）
-
-- [ ] Phase 3: MVP 核心治理层与 Web App Plugin 实现
-  - [ ] 实现 Expert Seat 席位绑定与 Mattermost Bot API 联动
-  - [ ] 实现 Sidecar Rule Profile 协调策略（静默观察 / @ 抑制 / 单主答）
-  - [ ] 实现 Mattermost Web App Plugin（RHS 面板、Custom Post 富卡片）
-  - [ ] 实现 Personal Agent 隐私上下文边界与授权控制
-  - [ ] 实现 Knowledge Promotion 人审晋升与版本撤回工作流
-  - [ ] 实现全链路 Correlation Record 审计追踪
-
-- [ ] Phase 4: 质量加固与私有化交付
-  - [ ] 建立 OpenAPI 契约测试与权限/隐私安全回归套件
-  - [ ] 建设故障容灾降级、健康探测与兼容升级门禁
-```
+研发接续从[团队交接入口](docs/project/handoff/README.md)开始，按[实施总览](docs/development/plans/2026-09-05-implementation-roadmap.md)、[工作项队列](docs/development/plans/2026-09-05-work-item-sequence.md)和[状态账本](docs/project/handoff/state.json)推进。2026-09-05 交接时产品仍为脚手架，运行门禁尚未完成，不能据文档或单元测试勾选生产能力。
 
 ---
 
