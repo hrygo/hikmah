@@ -2,6 +2,8 @@
 
 > 🎯 **指令声明**：本文件是所有 AI Coding Agents（包括 Antigravity、Claude Code、Cursor 等）在 `hikmah` Monorepo 开展架构设计、代码编写、重构、测试与文档维护的**最高事实源与执行准则**。
 
+> 📌 **项目状态与事实边界**：正式产品终态以 [`docs/product/overview.md`](docs/product/overview.md) 和 Accepted ADR 为准；精确目标版本以 [`docs/architecture/version-baseline.md`](docs/architecture/version-baseline.md) 为准。截至审查基线 `0d45229`，现有代码是架构脚手架，不代表真实联调、安全、升级或生产门禁已经通过。差距、证据与未授权代码工作统一见 [`docs/project/prd-architecture-review-tracker.md`](docs/project/prd-architecture-review-tracker.md)。
+
 ---
 
 ## 🏛️ 项目定位与三大基石 (Core Foundation & Fact Sources)
@@ -10,7 +12,7 @@ Hikmah 是面向 3–20 人私有团队的**轻量人机协作治理与编排层
 
 ```
                     ┌──────────────────────────────────────────┐
-                    │      Mattermost v11.10+ (协作通信底座)     │
+                    │       Mattermost（目标版本见基线）          │
                     │  (组织/团队/频道/消息/权限/Web App Plugin 宿主) │
                     └─────────────────────┬────────────────────┘
                                           │ Events / Plugin API
@@ -29,7 +31,7 @@ Hikmah 是面向 3–20 人私有团队的**轻量人机协作治理与编排层
 
 | 系统基石 | 选型与定位 | 事实源归属 (Source of Truth) |
 |---|---|---|
-| 🏢 **协作底座 (Collaboration Foundation)** | **Mattermost (`v11.10.x+`)** | **协作与通信事实源** · 组织/团队/频道/消息/文件/权限与 UI 宿主 |
+| 🏢 **协作底座 (Collaboration Foundation)** | **Mattermost**（精确版本见目标基线） | **协作与通信事实源** · 组织/团队/频道/消息/文件/权限与 UI 宿主 |
 | 🧠 **专家与个人 Agent 运行时** | **QwenPaw** | **专家与个人 Agent 运行事实源** · 驱动团队共享专家席位与个人专属助理 |
 | 🤖 **团队多智能体协同框架** | **AgentScope** | **多 Agent 协同与协调事实源** · 驱动频道 Coordinator Sidecar 与协同流 |
 | 🛡️ **Hikmah 控制层 (Control Plane)** | **Python FastAPI + React Plugin** | **治理与编排事实源** · 席位映射/静默规则/人审知识晋升/关联审计 |
@@ -82,7 +84,8 @@ Hikmah 是面向 3–20 人私有团队的**轻量人机协作治理与编排层
 
 | 领域模型 | 对应类/契约 | 核心作用与说明 |
 |---|---|---|
-| 🪑 **ExpertSeat** | `hikmah.models.seat.ExpertSeat` | 专家席位绑定（将 QwenPaw/AgentScope 运行时映射为 Mattermost Bot 用户） |
+| 🪑 **ExpertSeatBinding** | 目标契约；当前脚手架为 `hikmah.models.seat.ExpertSeat` | 团队共享专家席位，将 QwenPaw Workspace 映射为 Mattermost Bot；不得承载 Personal Agent |
+| 🔒 **PersonalAgentBinding** | 目标独立契约；见 ADR-0004 | 唯一 Member 的 owner-only QwenPaw Runtime 绑定，不注册公共 Mattermost Bot |
 | 🛡️ **SidecarRuleProfile** | `hikmah.models.rule.SidecarRuleProfile` | 频道级协调规则（显式提及静默、未提及策略、置信度阈值、写操作审核要求） |
 | 📚 **KnowledgeCandidate** | `hikmah.models.knowledge.KnowledgeCandidate` | 知识晋升提议单（群聊高价值结论沉淀的人审流水线与作用域圈定） |
 | 🔍 **CorrelationRecord** | `hikmah.models.trace.CorrelationRecord` | 跨系统关联审计追踪（串联 Post、Runtime Session 与 Tool Call，零私密正文复制） |
@@ -94,7 +97,7 @@ Hikmah 是面向 3–20 人私有团队的**轻量人机协作治理与编排层
 ```
 hikmah/
 ├── apps/
-│   ├── api/                     # 后端：Python 3.14+ · FastAPI · SQLAlchemy 2.x · Pydantic v2
+│   ├── api/                     # 后端目标：Python 3.14.x · FastAPI · SQLAlchemy 2.x · Pydantic v2
 │   │   ├── src/hikmah/
 │   │   │   ├── main.py          # FastAPI 启动入口、CORS 与统一异常拦截
 │   │   │   ├── core/            # 配置 (Pydantic Settings)、领域异常
@@ -103,7 +106,7 @@ hikmah/
 │   │   │   ├── services/        # Mattermost/QwenPaw/AgentScope 桥接服务
 │   │   │   └── api/v1/          # Health, Seats, Rules, Knowledge, Traces REST 接口
 │   │   └── tests/               # pytest 单元与集成测试 (conftest 自动初始化表结构)
-│   └── web/                     # 前端：React 19.2+ · TypeScript 6.0+ · Vite 8+
+│   └── web/                     # 前端目标：React 19.2 · TypeScript 6.0 · Vite 8
 │       ├── src/
 │       │   ├── plugin.tsx       # Mattermost Web App Plugin 入口 (RHS, Custom Post)
 │       │   ├── App.tsx          # 独立治理控制台主界面
@@ -111,7 +114,7 @@ hikmah/
 │       └── tests/               # Vitest 组件测试
 ├── packages/
 │   └── api-client/              # 共享 TypeScript 类型定义与基于 OpenAPI 的 API Client
-├── infra/                       # Docker Compose (Mattermost v11.10 + Postgres 16 + Hikmah API)
+├── infra/                       # 目标部署：Mattermost + 独立 PostgreSQL 16 治理库 + Hikmah API
 ├── docs/                        # 官方文档中心 (产品规范、架构导航、ADRs、研究报告)
 ├── .github/workflows/ci.yml     # 2026 最佳实践 GitHub Actions CI 流水线
 ├── pyproject.toml               # Python 根配置与 uv 工作区 (Ruff, Mypy Strict, Pytest)
@@ -119,6 +122,8 @@ hikmah/
 ├── package.json                 # 根工作区 package.json ("name": "hikmah")
 └── AGENTS.md                    # 本文件
 ```
+
+目录中的类名和模块表示当前脚手架位置；如果与终态契约不一致，先依据审查跟踪表创建明确任务，不得把脚手架结构反向升级为产品事实源。
 
 ---
 
@@ -202,4 +207,3 @@ pnpm run build
      - `Area`（推荐）：涉及的技术模块标签；
      - `Size`（按需）：由变更行数确定（`size: XS` ~ `size: XL`）；
      - `PR 状态`：如草稿/进行中打上 `pr: work-in-progress`。
-

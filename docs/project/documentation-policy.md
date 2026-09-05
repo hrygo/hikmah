@@ -17,6 +17,8 @@ tags:
 canonical: true
 related:
   - ../README.md
+  - ../architecture/version-baseline.md
+  - prd-architecture-review-tracker.md
 ---
 
 # Hikmah 文档治理与 Metadata 规范
@@ -146,6 +148,15 @@ ADR 遵循 `proposed → accepted → superseded/deprecated`；不删除旧 ADR�
 - 研究报告提供证据，不自动把建议升级为已接受决策。
 - ADR 记录“为什么决定”，产品规范记录“系统应当怎样表现”。两者冲突时，更新较新的 Accepted ADR 和产品事实源必须在同一个变更中对齐。
 - 内部引用使用相对路径；不引用本机绝对路径作为读者入口。
+
+### 6.1 终态规范与交付证据
+
+- 产品规范、架构导航和 Accepted ADR 使用确定性的规范语言描述目标终态，不因当前脚手架缺失而降低要求。
+- `Accepted` 表示决定已接受；`active` 表示文档当前有效。二者都不自动表示代码已经实现、运行门禁已经通过或 release 已受支持。
+- 当前实现、授权、运行、升级、恢复、许可证/品牌和 NFR 证据由[审查跟踪表](prd-architecture-review-tracker.md)管理。
+- 正式文档不得使用“已合规”“无缝升级”“生产就绪”等需要外部证据的完成态语言，除非同段链接适用范围明确的验证记录。
+- 研究报告保留快照时点的建议与候选语言；后续决定用顶部“后续决议”说明关联 ADR，不静默改写原始证据。
+- 历史归档保持原文，不参与当前状态统计；入口必须明确其非事实源地位。
 
 ## 7. 变更维护
 

@@ -2,7 +2,7 @@
 title: Hikmah WebUI 与协作底座整合深度调研
 description: 基于固定 Release 源码评估 Mattermost、Zulip、AgentScope、QwenPaw 与 Hikmah WebUI 的整合路线。
 document_type: research-report
-status: active
+status: completed
 created: 2026-08-28
 updated: 2026-08-28
 
@@ -21,6 +21,10 @@ canonical: false
 related:
   - ../product/overview.md
   - ../decisions/0002-collaboration-foundation-spike.md
+  - ../decisions/0003-adopt-mattermost-as-collaboration-foundation.md
+  - ../decisions/0004-trusted-identity-and-personal-agent-isolation.md
+  - ../decisions/0005-public-integration-contracts-and-fail-closed-semantics.md
+  - ../project/prd-architecture-review-tracker.md
 ---
 
 # Hikmah WebUI 与协作底座整合深度调研
@@ -28,6 +32,8 @@ related:
 > 范围：Mattermost、Zulip、AgentScope、QwenPaw 及 Mattermost Agents 的代码级整合评估。
 >
 > 原则：复用优先、不修改上游核心、不依赖未合并的上游补丁。
+>
+> 后续决议：本报告提出的 Mattermost 宿主、OAuth/BFF、owner-only Personal Agent 与公开适配边界已由 ADR-0003～ADR-0005 接受。本报告保留调研快照；正式终态以产品规范和 Accepted ADR 为准，尚缺运行/法律证据的事项以审查跟踪表为准。
 
 ## 1. 执行结论
 
@@ -419,9 +425,9 @@ hikmah/
 - 停止 Hikmah 控制面后，聊天数据不丢失；自定义帖子有文本降级。
 - QwenPaw/AgentScope 不可用时，控制面显示退化状态而不是阻塞人类交流。
 
-## 11. 待批准的正式决策
+## 11. 后续正式决议
 
-本报告建议把 ADR-0002 从“选协作底座”收敛为以下候选决定，但在批准前不改其状态：
+本报告形成下列建议后，用户已通过 ADR-0003～ADR-0005 将其接受为正式目标架构：
 
 1. Mattermost 为首选协作 Foundation 和 MVP UI 宿主；Zulip 为首要备选。
 2. Hikmah MVP 不建设独立完整 WebUI，而建设嵌入 Mattermost 的 TS 产品层。

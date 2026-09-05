@@ -6,8 +6,8 @@
 
 <p align="center">
   <a href="LICENSE"><img src="https://img.shields.io/badge/License-Apache--2.0-blue.svg" alt="License"></a>
-  <img src="https://img.shields.io/badge/Foundation-Mattermost_v11.10%2B-0058CC?logo=mattermost" alt="Foundation">
-  <img src="https://img.shields.io/badge/Stage-MVP_Architecture_%26_Implementation-brightgreen.svg" alt="Stage">
+  <img src="https://img.shields.io/badge/Target-Mattermost_v11.10.1-0058CC?logo=mattermost" alt="Target foundation">
+  <img src="https://img.shields.io/badge/Stage-Architecture_Scaffold-yellow.svg" alt="Stage">
   <img src="https://img.shields.io/badge/Python-3.14%2B-blue?logo=python" alt="Python">
   <img src="https://img.shields.io/badge/React-19.2%2B-61DAFB?logo=react" alt="React">
   <img src="https://img.shields.io/badge/TypeScript-6.0%2B-3178C6?logo=typescript" alt="TypeScript">
@@ -19,8 +19,8 @@
 > **💡 核心愿景**  
 > Hikmah（群贤）旨在为小型私有团队提供**轻量级人机协作治理层**：让人类团队成员与专业 Agent 在清晰的**身份、权限、上下文、审批和审计边界**内高效共同工作。
 
-> **📌 当前项目状态：已选定 Mattermost 底座，进入 MVP 控制层与 Web App Plugin 实现阶段**  
-> 团队已正式通过 [ADR-0003](docs/decisions/0003-adopt-mattermost-as-collaboration-foundation.md) 选定 **Mattermost (`v11.10.x+`)** 作为协作数据面与 UI 宿主。当前正推进 Hikmah 薄治理控制层 (Python FastAPI) 与 Mattermost Web App Plugin (React 19 / TypeScript) 的 MVP 落地。
+> **📌 当前项目状态：目标架构已选型，现有代码为架构脚手架**
+> 团队已通过 [ADR-0003](docs/decisions/0003-adopt-mattermost-as-collaboration-foundation.md) 选择 **Mattermost** 作为目标协作数据面与 UI 宿主；精确版本见[目标版本基线](docs/architecture/version-baseline.md)。仓库中的 FastAPI、React Plugin 和集成服务仅用于表达设计边界，不代表真实联调、生产安全或运行门禁已经通过；未闭环事项见 [PRD 与技术架构方案审查跟踪表](docs/project/prd-architecture-review-tracker.md)。
 
 ---
 
@@ -56,7 +56,7 @@ flowchart TD
   end
 
   subgraph Foundation[" 协作基础设施 (Collaboration Foundation) "]
-    F[Mattermost v11.10+<br/>Channel / Thread / Team / Org / File / Permission]
+    F[Mattermost target baseline<br/>Channel / Thread / Team / Org / File / Permission]
   end
 
   subgraph Agents[" Agent 运行与执行层 (Agent Runtimes) "]
@@ -103,11 +103,11 @@ Hikmah 严格保持职责单一与事实源唯一，不把各方状态复制成�
 
 ---
 
-## 🎯 六大核心治理能力
+## 🎯 六大目标治理能力
 
 | 维度 | 能力特性 | 解决的核心痛点 |
 |---|---|---|
-| 🪑 **Expert Seat Binding** | 专家席位与运行时绑定 | 将 QwenPaw 专家 Agent 与 AgentScope 协同体无缝投影为 Mattermost 专属 Bot 席位，保持人机身份对等清晰 |
+| 🪑 **Expert Seat Binding** | 专家席位与运行时绑定 | 将团队共享 QwenPaw Workspace 映射为 Mattermost 专属 Bot 席位，保持身份边界与审计关联清晰 |
 | 🤖 **Coordinator Sidecar** | 智能协调与消息抑制 | 支持频道静默观察、显式 @ 抑制策略、未 @ 单主答规则，杜绝群聊刷屏 |
 | 🔒 **Personal Agent Isolation** | 个人助理隐私安全 | 坚持 Owner-only 专属绑定，执行最小上下文流转，未经用户显式授权绝不向外暴露 |
 | 📚 **Knowledge Promotion** | 知识人审晋升机制 | 将群聊对话沉淀为团队资产，具备清晰的来源溯源、作用域隔离、版本管理与撤回能力 |
@@ -118,14 +118,14 @@ Hikmah 严格保持职责单一与事实源唯一，不把各方状态复制成�
 
 ## 🏢 协作底座选型：Mattermost (ADR-0003)
 
-经过架构调研与可行性 Spike 评估，Hikmah 正式选定 **Mattermost (`v11.10.x+`)** 作为标准协作底座：
+经过架构与源码调研，Hikmah 选定 **Mattermost** 作为目标协作底座。运行态 Spike、升级及许可证/品牌门禁仍按 [AR-001 与 AR-007](docs/project/prd-architecture-review-tracker.md) 跟踪：
 
 | 选型考量 | 决议依据与方案 |
 |---|---|
 | **UI 宿主模式** | 采用 **Mattermost Web App Plugin** 嵌入 React 19 组件（RHS 右侧面板、自定义 Post 渲染），无需从头开发全套聊天客户端。 |
 | **通信与事件** | 通过 Mattermost 官方 REST API (v4) 与 WebSocket 事件流实现双向消息编排与 Sidecar 监听。 |
 | **个人 Agent 隔离** | 不将 Personal Agent 暴露为公共 Bot，通过 Hikmah Owner 专属工作台保护私有上下文。 |
-| **合规与演进** | Hikmah 独立服务采用 Apache-2.0，通过标准扩展点与 AGPL-3.0 底座解耦，支持 Mattermost 官方平滑滚动升级。 |
+| **合规与演进** | 进程/接口隔离是工程边界；每种分发方式必须完成许可证/品牌复核，每个目标版本必须通过兼容升级与回退门禁。 |
 
 > 📋 完整决议内容请参阅 [ADR-0003：选定 Mattermost 作为协作底座](docs/decisions/0003-adopt-mattermost-as-collaboration-foundation.md) 与 [WebUI 整合深度调研报告](docs/research/2026-08-28-mattermost-zulip-webui-integration.md)。
 
@@ -133,16 +133,16 @@ Hikmah 严格保持职责单一与事实源唯一，不把各方状态复制成�
 
 ## 🛠️ 技术基线 (Technology Baseline)
 
-未来产品实现全面采用类型安全、异步优先、高内聚低耦合的现代技术栈：
+正式实现采用类型安全、异步优先、高内聚低耦合的技术栈。精确版本、支持语义和发布证据由[目标版本与发布基线](docs/architecture/version-baseline.md)唯一维护；下列内容是目标摘要，不代表脚手架 manifest 已经对齐：
 
 ### 🖥️ 后端架构 (Backend)
-- **Runtime & Framework**: [Python 3.14+](https://www.python.org/downloads/) · [FastAPI](https://fastapi.tiangolo.com/) · [Pydantic v2](https://docs.pydantic.dev/)
+- **Runtime & Framework**: [Python 3.14.x](https://www.python.org/downloads/) · [FastAPI](https://fastapi.tiangolo.com/) · [Pydantic v2](https://docs.pydantic.dev/)
 - **ORM & Database**: [SQLAlchemy 2.x](https://docs.sqlalchemy.org/) · [Alembic](https://alembic.sqlalchemy.org/)（专注于 Hikmah 自有薄层数据与迁移）
 - **Package & Environment**: [uv](https://docs.astral.sh/uv/)（统一管理 Python 版本、虚拟环境与依赖锁）
 - **Code Quality**: [Ruff](https://docs.astral.sh/ruff/)（Lint & Format）· `mypy --strict`（严格类型门禁）· [pytest](https://pytest.org/)（单元与集成测试）
 
 ### 🌐 前端架构 (Frontend)
-- **Core & Framework**: [React 19.2+](https://react.dev/) · [TypeScript 6.0+](https://www.typescriptlang.org/) · [Vite 8+](https://vite.dev/)
+- **Core & Framework**: [React 19.2.x](https://react.dev/) · [TypeScript 6.0.x](https://www.typescriptlang.org/) · [Vite 8.x](https://vite.dev/)
 - **Runtime & Tools**: [Node.js 24 LTS](https://nodejs.org/) · [pnpm](https://pnpm.io/)
 - **Host Integration**: Mattermost Web App Plugin API（向 Mattermost 注入 RHS、Custom Post、Header 控件）
 - **State & Routing**: [TanStack Query](https://tanstack.com/query)（服务端状态管理）· [React Router](https://reactrouter.com/)
@@ -157,15 +157,18 @@ Hikmah 严格保持职责单一与事实源唯一，不把各方状态复制成�
 
 ## 🗺️ 路线图 (Roadmap)
 
+下列条目描述目标交付顺序。除明确附有运行证据的事项外，现有代码只视为脚手架，不据此勾选完成状态。
+
 ```markdown
 - [x] Phase 1: 概念与规范设计
   - [x] 完成产品愿景、边界定义、Sidecar 协调逻辑与知识晋升机制
   - [x] 完成复用优先调研与轻量治理控制层设计 (ADR-0001)
   - [x] 完成全套设计册与视觉交互定义
 
-- [x] Phase 2: Spike 验证与选型决议
+- [ ] Phase 2: 选型决议与运行证据闭环
   - [x] 完成 Mattermost / Zulip / Open WebUI 的协作底座深度调研与集成评估
-  - [x] 产出 Accepted 状态的 ADR-0003，正式确立 Mattermost v11.10.x 选型决议
+  - [x] 产出 Accepted 状态的 ADR-0003，正式确立 Mattermost 选型决议
+  - [ ] 补齐 Foundation 运行态 Spike、升级及许可证/品牌门禁证据（AR-001、AR-007）
 
 - [ ] Phase 3: MVP 核心治理层与 Web App Plugin 实现
   - [ ] 实现 Expert Seat 席位绑定与 Mattermost Bot API 联动
@@ -194,17 +197,22 @@ docs/
 ├── research/         # 外部复用调研、源码分析与 Spike 评估报告
 ├── design/           # HTML 交互设计册与设计批准修订记录
 ├── development/      # 开发规范、环境搭建与质量标准
-└── project/          # 文档治理规则与 Metadata 规范
+└── project/          # 文档治理规则、Metadata 规范与架构审查跟踪
 ```
 
 ### 🌟 核心文档直达
 
 - 📑 **产品总览**：[产品与技术架构设计说明书](docs/product/overview.md)
 - 🗺️ **系统架构**：[架构导航与事实源地图](docs/architecture/README.md)
+- 📦 **目标版本**：[目标版本与发布基线](docs/architecture/version-baseline.md)
+- 🧭 **审查跟踪**：[PRD 与技术架构方案审查跟踪表](docs/project/prd-architecture-review-tracker.md)
 - ⚖️ **架构决策**：
   - [ADR-0001：复用优先的轻量治理控制层](docs/decisions/0001-reuse-first-thin-control-plane.md)
   - [ADR-0002：Foundation Reuse Spike 评测计划](docs/decisions/0002-collaboration-foundation-spike.md)
   - [ADR-0003：选定 Mattermost 作为协作底座](docs/decisions/0003-adopt-mattermost-as-collaboration-foundation.md)
+  - [ADR-0004：可信身份与 Personal Agent 隔离](docs/decisions/0004-trusted-identity-and-personal-agent-isolation.md)
+  - [ADR-0005：公开集成契约与 fail-closed 语义](docs/decisions/0005-public-integration-contracts-and-fail-closed-semantics.md)
+  - [ADR-0006：治理元数据持久化与 schema 生命周期](docs/decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md)
 - 🔍 **前沿调研**：
   - [GitHub 开源生态复用调研与组件决策矩阵](docs/research/2026-08-28-github-reuse-landscape.md)
   - [Mattermost、Zulip 与 WebUI 整合可行性深度调研](docs/research/2026-08-28-mattermost-zulip-webui-integration.md)
@@ -243,4 +251,3 @@ Hikmah 坚持以非侵入方式与上游系统集成：
   <img src="assets/hikmah-developer-recruitment-card.png" alt="Hikmah Developer Card Front" width="48%">
   <img src="assets/hikmah-developer-recruitment-card-back.png" alt="Hikmah Developer Card Back" width="48%">
 </p>
-

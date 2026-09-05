@@ -2,7 +2,7 @@
 
 ## Project status
 
-Hikmah（群贤）当前处于设计与 Foundation Reuse Spike 阶段，尚未进入产品代码实现。安全边界、身份作用域、Personal Agent 隔离、审批和审计要求以产品规范及 Accepted ADR 为准。
+Hikmah（群贤）已形成正式目标架构，现有代码仍是未通过生产安全门禁的脚手架。身份、授权与 Personal Agent 隔离以 [ADR-0004](docs/decisions/0004-trusted-identity-and-personal-agent-isolation.md) 为准；外部集成与失败语义以 [ADR-0005](docs/decisions/0005-public-integration-contracts-and-fail-closed-semantics.md) 为准；当前实现与验证差距见[审查跟踪表](docs/project/prd-architecture-review-tracker.md)。在相关证据归档前，不对外声明 production-ready 或已完成安全验证。
 
 ## Reporting a vulnerability
 
@@ -41,4 +41,3 @@ Hikmah（群贤）当前处于设计与 Foundation Reuse Spike 阶段，尚未�
 - 在系统边界校验外部输入和第三方响应；
 - 不记录密钥、令牌、完整环境变量或模型私有推理；
 - 为高影响路径提供可验证的权限、审批、审计和失败处理证据。
-

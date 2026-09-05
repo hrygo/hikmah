@@ -16,6 +16,7 @@ tags:
 canonical: false
 related:
   - ../decisions/README.md
+  - ../project/prd-architecture-review-tracker.md
 ---
 
 # Hikmah 研究报告索引
@@ -24,8 +25,8 @@ related:
 
 | 报告 | 状态 | 作用 |
 |---|---|---|
-| [GitHub 复用调研与组件决策矩阵](2026-08-28-github-reuse-landscape.md) | Active | 建立“不重复造轮子”的候选长名单和持续门禁 |
-| [Mattermost、Zulip 与 WebUI 整合调研](2026-08-28-mattermost-zulip-webui-integration.md) | Active | 固定最新 Release，比较 UI、认证、Bot 权限和整合路线 |
+| [GitHub 复用调研与组件决策矩阵](2026-08-28-github-reuse-landscape.md) | Completed snapshot | 建立“不重复造轮子”的候选长名单；后续决定以 ADR 为准 |
+| [Mattermost、Zulip 与 WebUI 整合调研](2026-08-28-mattermost-zulip-webui-integration.md) | Completed snapshot | 固定调研时点版本并形成已由 ADR-0003～ADR-0005 落地的建议 |
 
 
-引用研究结论时应同时记录快照日期、版本和证据边界。版本或许可发生变化后，优先更新原报告或新增带日期的后续报告，不静默覆盖历史判断。
+引用研究结论时应同时记录快照日期、版本和证据边界。研究中的“建议”“候选”和“待批准”只反映当时状态；正式终态以产品规范和 Accepted ADR 为准，当前证据状态以审查跟踪表为准。版本或许可发生变化后新增带日期的后续报告，不静默改写历史证据。

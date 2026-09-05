@@ -17,14 +17,16 @@ tags:
 canonical: false
 related:
   - ../product/overview.md
+  - ../architecture/version-baseline.md
+  - ../decisions/README.md
+  - ../project/prd-architecture-review-tracker.md
   - ../archive/design-sources/README.md
 ---
 
 # Hikmah 设计资料
 
-- [Hikmah 产品与技术架构设计册](hikmah-design-book.html)：可独立阅读和打印的 HTML 设计册。
+- [Hikmah 产品与技术架构设计册](hikmah-design-book.html)：与正式终态规范同步、可独立阅读和打印的 HTML 设计册。
 - [设计批准与修订记录](approval-record.md)：记录交互式产品设计阶段的批准结果和修订边界。
 - [历史画布源材料](../archive/design-sources/README.md)：用于追溯设计演进，不作为当前事实源。
 
-正式产品要求以[产品与技术架构](../product/overview.md)和 Accepted ADR（如 [ADR-0001](../decisions/0001-reuse-first-thin-control-plane.md)、[ADR-0003](../decisions/0003-adopt-mattermost-as-collaboration-foundation.md)）为准。
-
+正式产品要求以[产品与技术架构](../product/overview.md)、[目标版本基线](../architecture/version-baseline.md)和 [Accepted ADR](../decisions/README.md) 为准；实现与验证状态以[审查跟踪表](../project/prd-architecture-review-tracker.md)为准。
