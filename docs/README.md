@@ -4,7 +4,7 @@ description: Hikmah 产品、架构、决策、研究、设计、开发和历史
 document_type: documentation-index
 status: active
 created: 2026-08-28
-updated: 2026-08-28
+updated: 2026-09-05
 owners:
   - hikmah-maintainers
 audience:
@@ -54,9 +54,10 @@ canonical: false
 | 身份与 Personal Agent 隔离 | Accepted | [ADR-0004](decisions/0004-trusted-identity-and-personal-agent-isolation.md) |
 | 集成与 fail-closed 语义 | Accepted | [ADR-0005](decisions/0005-public-integration-contracts-and-fail-closed-semantics.md) |
 | 治理元数据持久化 | Accepted | [ADR-0006](decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md) |
+| 知识协作试点与运行边界 | Accepted / 运行证据待补 | [ADR-0007](decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md) |
 | 产品与技术架构 | Active | [产品与技术架构](product/overview.md) |
 | 目标版本与发布基线 | Active | [版本基线](architecture/version-baseline.md) |
-| HTML 设计册 | Active | [设计册](design/hikmah-design-book.html) |
-| PRD 与技术架构审查 | Active / 5 design-resolved / 3 evidence-needed | [审查跟踪表](project/prd-architecture-review-tracker.md) |
+| HTML 设计册 | Active / 待同步本轮试点补充 | [设计资料](design/README.md) |
+| PRD 与技术架构审查 | Active / 设计与证据分项跟踪 | [审查跟踪表](project/prd-architecture-review-tracker.md) |
 
 状态与 metadata 的唯一规范见[文档治理规则](project/documentation-policy.md)。

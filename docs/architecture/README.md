@@ -4,7 +4,7 @@ description: 提供 Hikmah 系统边界、组件关系、事实源和当前架�
 document_type: architecture-overview
 status: active
 created: 2026-08-28
-updated: 2026-08-28
+updated: 2026-09-05
 owners:
   - hikmah-maintainers
 audience:
@@ -49,6 +49,7 @@ Mattermost Foundation ── 用户、团队、频道、消息、文件、搜索
 - 身份与 Personal Agent 隔离遵守 [ADR-0004](../decisions/0004-trusted-identity-and-personal-agent-isolation.md)。
 - 集成、Plugin 交付和失败语义遵守 [ADR-0005](../decisions/0005-public-integration-contracts-and-fail-closed-semantics.md)。
 - 治理元数据、迁移与恢复遵守 [ADR-0006](../decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md)。
+- 2026-09-05 已批准[知识协作试点方案（ADR-0007）](../decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md)：先验证显式 @、引用与人工知识晋升，运行隔离和请求准入随试点一同验收，再开放自动协作及独立高级能力；完整终态保持有效。
 - 架构形态为 **Mattermost 宿主壳 + Hikmah Web App Plugin + Python OAuth/BFF + PostgreSQL + QwenPaw + AgentScope**。
 - “已选定”不等于“已完成运行验证”；当前开放项及关闭条件见[架构审查跟踪表](../project/prd-architecture-review-tracker.md)。
 

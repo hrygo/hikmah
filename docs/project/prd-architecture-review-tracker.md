@@ -4,7 +4,7 @@ description: 跟踪 PRD、架构决策、研究结论与代码脚手架之间尚
 document_type: design-record
 status: active
 created: 2026-08-28
-updated: 2026-08-28
+updated: 2026-09-05
 owners:
   - hikmah-maintainers
 audience:
@@ -22,6 +22,8 @@ related:
   - ../architecture/README.md
   - ../decisions/0002-collaboration-foundation-spike.md
   - ../decisions/0003-adopt-mattermost-as-collaboration-foundation.md
+  - ../decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md
+  - ../research/2026-09-05-knowledge-collaboration-feasibility.md
   - ../research/2026-08-28-mattermost-zulip-webui-integration.md
 ---
 
@@ -29,6 +31,8 @@ related:
 
 > 审查基线：Git commit `0d45229`，2026-08-28。
 > 当前定位：仓库中的 API、Web、服务适配器、数据模型和测试均按**架构脚手架**理解，不代表生产实现、真实联调或安全验收已经完成。
+>
+> 2026-09-05 增量复核：Hikmah `8ea48c2`，QwenPaw `v2.2.0-beta.1`；本轮仅文档、源码核验和函数级实验。用户批准 ADR-0007 的试点方案，新增 AR-009～AR-012；不把设计批准升级为运行验证。
 
 ## 1. 目的与边界
 
@@ -66,6 +70,10 @@ related:
 | AR-006 | 持久化、迁移、测试隔离与恢复终态 | 数据架构 | P1 | `design-resolved` | 实现仍需独立授权与恢复验证 |
 | AR-007 | 版本基线、许可证与品牌结论缺少统一证据 | 依赖/合规 | P0 | `evidence-needed` | 对外版本兼容与分发合规声明 |
 | AR-008 | NFR 与运行验收指标 | 质量属性 | P1 | `design-resolved` | 测量证据仍由 release qualification 产生 |
+| AR-009 | 共享 Runtime 隔离与托管隐私边界 | 安全/证据 | P0 | `evidence-needed` | 真实频道数据与后续 Personal Agent 开放 |
+| AR-010 | 专家请求准入、准确提及与循环预算 | 集成/证据 | P0 | `evidence-needed` | 专家直达及有限自动协作开放 |
+| AR-011 | 知识受众、引用与撤回传播 | 数据/证据 | P0 | `evidence-needed` | Pilot 1 知识发布与受控回答 |
+| AR-012 | 知识协作试点效果与阶段资格 | 产品/证据 | P1 | `evidence-needed` | 扩大试点及价值结论 |
 
 ## 4. 详细跟踪项
 
@@ -75,7 +83,7 @@ related:
 
 - [ADR-0002](../decisions/0002-collaboration-foundation-spike.md) 要求在选型前完成统一场景、硬门禁和可复现输出。
 - [ADR-0003](../decisions/0003-adopt-mattermost-as-collaboration-foundation.md) 已接受 Mattermost 为目标协作底座。
-- [产品规范](../product/overview.md)的验证体系和 Slice 0、[WebUI 整合调研](../research/2026-08-28-mattermost-zulip-webui-integration.md)仍把真实垂直 Spike 作为待执行门禁。
+- [产品规范](../product/overview.md)的验证体系与第 17 节阶段资格、[WebUI 整合调研](../research/2026-08-28-mattermost-zulip-webui-integration.md)仍把真实垂直 Spike 作为待执行门禁。
 - 当前仓库未归档一套覆盖 ADR-0002 Required scenarios、Hard gates 和 Output 的可复现运行证据。
 
 **终态决议与待证事项**
@@ -106,6 +114,8 @@ related:
 2. Shared Expert Seat 与 Personal Agent Binding 是独立领域/API 契约；Personal Agent 不注册公共 Mattermost Bot。
 3. Secret 使用服务端受控存储与 allowlist 响应，不进入普通 API、帖子 props 或 Correlation 正文。
 4. 越权、分享、撤销、治理角色误读和跨 Channel 用例是 release security gate。
+
+2026-09-05 复核补充：ADR-0004/0007 已明确产品治理角色与基础设施运维角色的区别，托管 owner-only 不承诺防主机管理员读取。运行隔离证据单独由 AR-009 跟踪，原 `design-resolved` 不表示这一安全边界已通过。
 
 **关闭条件**
 
@@ -166,8 +176,10 @@ related:
 **终态决议**
 
 1. [产品规范 9.3](../product/overview.md)已定义重复事件、Agent loop、显式 @、闲聊、单候选、默认专家、低置信度与无候选的有序判定表。
-2. 每个原始事件最多一名主答、两名一层补充专家；低于阈值只问一个澄清问题。
+2. 自动路由每个原始事件最多一名主答、两名一层补充专家；低于阈值只问一个澄清问题。人类显式 @多名专家按原目标执行，不被单主答预算改写，且不自动追加邀请。
 3. 理由码、不变量、资格检查与循环预算构成实现无关的验收输入。
+
+2026-09-05 复核补充：产品规范已补齐多候选唯一高匹配、并列、仅 @人类、无法判定和已关联 Agent 事件分支；原生 Channel 函数级实验与目标专家入口预算的待证项见 AR-010。
 
 **关闭条件**
 
@@ -235,6 +247,73 @@ related:
 - 交付关闭：未来 Spike/release 报告逐项提供测量证据；
 - 对应代码记录：CR-010 保持 `not-authorized`。
 
+### AR-009：共享 Runtime 隔离与托管隐私边界
+
+**证据与决议**
+
+- [本轮核验报告](../research/2026-09-05-knowledge-collaboration-feasibility.md)记录 QwenPaw 共享实例信任模型、Workspace 长期记忆及 Hub 运维可见性；它们不构成按用户/频道隔离已验证的证据。
+- ADR-0004/0007 和产品规范第 8 节要求试点每席位单 Channel，隔离配置、数据、凭据及执行环境，区分产品 owner-only 与可信基础设施管理员。
+
+**关闭条件**
+
+- Pilot 1 前证明不同频道的文件、自动记忆、检索、工具和凭据不能交叉访问，覆盖成员移除与权限收窄；明确哪些同频道成员共享哪些业务能力；
+- 后续 Personal Agent 阶段分别证明产品角色授权、本机/托管数据路径及日志/备份边界；明确可信运维方，不宣称未实现的防运维读取；
+- 记录环境、BOM、用例、结果、失败项和复核人；部分阶段通过不能提前关闭剩余范围。
+
+状态为 `evidence-needed`；对应 CR-011。
+
+### AR-010：专家请求准入、准确提及与循环预算
+
+**证据与决议**
+
+- 原始 `_is_triggered` 的六个函数级输入中，其他 Bot 提及、用户名子串和代码示例均可触发；不能据此断言完整链路已执行或已形成循环。
+- 公开 `register_runtime_hook`、`PRE_DISPATCH` 和短路语义已由源码核验，但 Hook 位于 Channel 取上下文之后。
+- ADR-0005/0007 采用原生 Channel + 待验证准入扩展方向，完整规则在产品规范第 9 节。
+
+**关闭条件**
+
+- 真实人类精确提及仅唤醒指定专家；用户名碰撞、引用/代码示例、伪造角色和 correlation 不取得调用资格；
+- 专家入口核验权威 Post、发送者、Channel 与预算；去重/预算原子占用覆盖并发、重放、重启和迟到事件；
+- Hook 未注册、故障、超时、重载时不能进入未治理执行；覆盖命令、Console、后台及实际开放的所有入口；
+- 分别验证前置读取隔离和 Hook 短路输出；Sidecar 停止时显式 @仍可通过独立准入路径工作；
+- 自动路由最多一名主答、两名一层补充专家；人类显式多专家目标不被改写，补充专家不能递归邀请。
+
+Pilot 1 前验证准确提及、独立准入和受控回帖；自动邀请部分在 Pilot 2 开放前完成。未完成全范围前维持 `evidence-needed`；对应 CR-012，并补充 CR-006/007/010。
+
+### AR-011：知识受众、引用与撤回传播
+
+**证据与决议**
+
+- 产品规范第 11 节与 ADR-0006/0007 已要求权威知识版本、受众授权、来源溯源、撤回传播和外部已披露内容边界。
+- 本轮没有检索、缓存、会话或真实发帖实验，不能标记已验证。
+
+**关闭条件**
+
+- 证明知识发布者有来源处理与目标发布权限，频道答案不泄漏仅提问者可见的内容、链接或标题；
+- 引用可定位有效知识版本，能够支持对应断言；区分模型推断，证据不足可见；
+- 覆盖生成途中撤回、范围收窄、成员变化、旧会话续问、缓存和自动记忆残留；无法确认状态时停止相关输出；
+- 记录检查与外部发送的竞态处理及限制，不能宣称已发送内容可原子撤回；
+- 规范对象与重建投影的迁移/恢复后仍保持撤回和权限状态。
+
+这是 Pilot 1 开放知识发布的必要条件；状态为 `evidence-needed`，对应 CR-013。
+
+### AR-012：知识协作试点效果与阶段资格
+
+**决议与待证事项**
+
+- 用户于 2026-09-05 选择知识问答与方案协作，并批准方案 A 的文档更新；批准记录见[设计修订记录](../design/approval-record.md)。
+- 产品规范第 17 节定义 Pilot 0/1/2、后续独立能力及完整发布资格；原 Slice 0～4 能力保留，最小知识闭环提前。
+- 至少 30 个真实任务的可用率、引用准确性、人工返工和每个采纳答案成本尚未测量。
+
+**关闭条件**
+
+- 评估前固定任务分布、来源、目标受众、评分和 BOM；评估材料经授权且受控；
+- 归档逐项结果、样本量、失败/重试成本、无采纳情况和原有流程对照；由产品负责人记录扩大或停止试点的依据；
+- 实际开放能力的安全、数据恢复、插件与目标使用方式的许可证/品牌门禁通过；未开放能力明确保持关闭；
+- 完整 MVP 仍逐项满足第 2.3/14.1/16 节，不能用局部试点或单元测试代替。
+
+状态为 `evidence-needed`；对应 CR-014。该条的批准不授权执行真实评估或部署。
+
 ## 5. 未来代码变更记录（本次不实施）
 
 下表只把审查中暴露的潜在代码工作持久化，防止后续遗漏。对应终态设计已经由产品规范和 Accepted ADR 批准，但本表不是实施计划，也不授权修改列出的文件。每项仍须满足所列证据或执行条件，并由独立任务明确授权后方可实施。
@@ -251,6 +330,10 @@ related:
 | CR-008 | AR-006 | `models/base.py`、`tests/conftest.py`、`infra/`、未来 Alembic 文件 | 隔离测试数据库，引入迁移生命周期和持久化部署；禁止测试误连非测试库 | ADR-0006 已接受；须由独立实现任务授权并提供目标环境 | `not-authorized` |
 | CR-009 | AR-007 | Python/Node manifests、lockfile、容器镜像和 CI | 将解析依赖与批准 BOM 对齐，增加版本/许可证/SBOM/兼容性检查 | 目标 BOM 已确定；须先完成许可证/品牌复核，再由独立任务授权 | `not-authorized` |
 | CR-010 | AR-002、AR-004、AR-008 | API/Web/integration/e2e/security tests、CI | 增加隐私越权、契约、端到端、升级、恢复和量化 NFR 门禁 | 安全/NFR 终态已确定；须由独立验证任务授权并建立可重复环境 | `not-authorized` |
+| CR-011 | AR-009 | 未来 Runtime 部署/凭据/记忆配置与隔离测试 | 按频道信任域隔离共享专家，证明文件/工具/检索边界；明确托管隐私范围 | ADR-0004/0007 已接受；需独立任务授权与隔离环境 | `not-authorized` |
+| CR-012 | AR-010 | 未来 QwenPaw 公开插件、准入与契约测试 | 验证 PRE_DISPATCH 准入、真实 Post 核验、准确提及、并发预算及故障拒绝 | ADR-0005/0007 已接受；需独立 Spike 授权，公开扩展不足时另行决策 | `not-authorized` |
+| CR-013 | AR-011 | Knowledge API/models、Runtime 投影、API Client/Web 与测试 | 受众授权、版本引用、发送前复核、缓存/会话撤回与恢复验证 | ADR-0006/0007 已接受；需独立实现任务授权 | `not-authorized` |
+| CR-014 | AR-012 | 未来试点评估资料、契约/E2E 验证与报告 | 建立至少 30 个真实任务基准，记录质量、返工、成本和能力开放证据 | 需独立评估授权、数据使用许可及已通过的相关安全门禁 | `not-authorized` |
 
 若未来批准其中一项，应创建独立 Issue/计划并关联对应 `AR-*` 与 `CR-*`；不得直接把本表状态改为 `validated` 作为实现证据。
 

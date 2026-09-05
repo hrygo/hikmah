@@ -4,7 +4,7 @@ description: Hikmah Architecture Decision Records 的状态索引和维护入口
 document_type: documentation-index
 status: active
 created: 2026-08-28
-updated: 2026-08-28
+updated: 2026-09-05
 owners:
   - hikmah-maintainers
 audience:
@@ -31,6 +31,7 @@ ADR 记录成本高、难以逆转的技术决定及其理由。旧 ADR 不删�
 | [ADR-0004](0004-trusted-identity-and-personal-agent-isolation.md) | Accepted | 使用 Mattermost 可信身份并严格隔离 Personal Agent |
 | [ADR-0005](0005-public-integration-contracts-and-fail-closed-semantics.md) | Accepted | 只采用公开集成契约并统一 fail-closed 失败语义 |
 | [ADR-0006](0006-governance-metadata-persistence-and-schema-lifecycle.md) | Accepted | 使用 PostgreSQL 与 Alembic 管理治理元数据生命周期 |
+| [ADR-0007](0007-knowledge-collaboration-pilot-and-runtime-boundaries.md) | Accepted | 保留完整终态，以知识协作试点验证运行隔离、准入与分阶段开放 |
 
 状态生命周期和 metadata 规则见[文档治理规范](../project/documentation-policy.md)。
 

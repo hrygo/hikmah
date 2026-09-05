@@ -4,7 +4,7 @@ description: Hikmah 的产品愿景、系统边界、领域模型、Agent 协作
 document_type: product-spec
 status: active
 created: 2026-08-28
-updated: 2026-08-28
+updated: 2026-09-05
 owners:
   - hikmah-maintainers
 audience:
@@ -26,6 +26,7 @@ related:
   - ../decisions/0005-public-integration-contracts-and-fail-closed-semantics.md
   - ../decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md
   - ../architecture/version-baseline.md
+  - ../decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md
   - ../project/prd-architecture-review-tracker.md
 ---
 
@@ -94,6 +95,12 @@ Hikmah 的核心不是重新实现聊天平台，也不是让 Agent 多说话，
 8. 人类可以把有价值的结论审阅、定范围、脱敏并晋升为团队知识；
 9. 成员本机 Personal QwenPaw 仅本人可用，不能读取共享 Channel，结果由本人确认后分享；
 10. Foundation 的兼容升级不需要核心补丁，契约测试仍通过。
+
+### 2.4 首批试点：团队知识问答与方案协作
+
+首批价值验证面向可信内部团队，先验证带来源的知识问答、方案比较、人工知识晋升和同 Thread 协作。完整 MVP 成功标准保持不变；试点能力、开放顺序及独立验收见第 17 节与 [ADR-0007](../decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md)。试点通过只能证明声明范围内的能力，不能替代完整 MVP 或生产发布验收。
+
+首批治理界面支持 Web/Desktop；原生移动客户端保留 Mattermost 聊天和文本降级，治理操作引导至受支持的 Web 入口，不承诺原生 RHS 或 Custom Post 交互等价。
 
 ## 3. 核心设计原则
 
@@ -263,7 +270,7 @@ Team Space 关联一个 AgentScope 构建的 Team Coordinator Sidecar。它在�
 允许介入：
 
 - 未显式 @且通过协作意图门控时选择一名主答专家；
-- 请求长期无人响应时提醒或改派一次；
+- 未显式 @请求长期无人响应时提醒；只有取得人类新的授权后才改派一次，不因超时猜测原任务未执行；
 - 多位专家竞争主答时指定单一主答，并让补充者留在 Thread；
 - 发现结论冲突时提示主答整合；
 - 展示审批、硬规则、定时总结和 Knowledge Candidate。
@@ -316,6 +323,10 @@ Channel Expert Membership 至少分别声明：是否可被 @、是否可被 Sid
 
 Shared Expert Seat 是 Team 资源，不包含 `is_personal` 变体；公开读取契约不返回 Runtime Secret 或原始配置。
 
+试点每个 Expert Seat 只服务一个 Channel。不同 Channel 的对话、自动记忆、文件、索引、凭据与运行环境独立，不混入成员个人账户或数据。Workspace 名称和 session id 不能作为安全隔离证明；按信任域使用独立配置及受限容器、OS 用户或更强边界，并验证文件与工具实际权限。
+
+同一专业能力可复用经审查的配置、技能版本和已发布知识，不共享未经审阅的对话记忆。扩大席位的跨 Channel 绑定前，必须证明存储、检索、文件工具及成员权限变动后的隔离；不得仅靠提示词约束。
+
 ### 8.5 Personal Agent
 
 Personal Agent Binding 只绑定一个 Member，可由该成员本机 QwenPaw 提供。此处 Owner 指绑定该 Agent 的 Member，不等同于 Team Owner。
@@ -332,6 +343,8 @@ Personal Agent Binding 只绑定一个 Member，可由该成员本机 QwenPaw �
 
 服务端对无权访问者返回 `404` 以隐藏绑定存在性。无法由权威 ACL 与运行时 owner/tenant 隔离证明这些约束时，Personal Agent 功能保持关闭。
 
+owner-only 指产品 API、界面及运行时访问授权，不承诺有主机、数据库或备份权限的基础设施管理员无法读取托管数据。中心托管模式须明确可信运维方；若需求包含防范基础设施管理员读取，必须另行完成数据路径与加密威胁模型决策，不能用 Hub 登录隔离代替。本机模式仍需核验代理、日志和备份的数据边界。
+
 ### 8.6 Coordinator Sidecar
 
 Team / Channel Coordinator Sidecar 是系统级协调身份，不是 Expert Seat，不拥有专业业务工具权限。其 Foundation Bot 身份必须可被人类识别，并与专业专家在头像、标签或角色上区分。
@@ -341,7 +354,7 @@ Team / Channel Coordinator Sidecar 是系统级协调身份，不是 Expert Seat
 ### 9.1 路径 A：明确 @专家
 
 1. Member 在 Foundation Thread 中明确 @一名或多名 Expert Seat；
-2. Foundation 验证空间可见性、成员关系与 Bot 权限，并把原始事件直达对应 QwenPaw Channel；
+2. Foundation 验证空间可见性、成员关系与 Bot 权限，并把原始事件直达对应 QwenPaw Channel；专家入口按第 9.5 节执行确定性准入检查，不改变人类指定目标；
 3. 被 @的每位专家在同一 Thread 独立响应；
 4. Channel Sidecar 可以收到事件，但确定性规则立即进入 observe-only，产生 **0 次**重路由、总结、调停或邀请；
 5. 专家提出副作用工具调用时，由其 QwenPaw/AgentScope 权限与 HITL 机制处理；这不构成 Sidecar 介入；
@@ -353,7 +366,7 @@ Team / Channel Coordinator Sidecar 是系统级协调身份，不是 Expert Seat
 2. 按 Channel 规则、Expert Seat 专长和可用性选择一名主答；
 3. 规则无法消除歧义时才使用轻量模型，必要时只问一个澄清问题；
 4. Sidecar 通过 Foundation 原生 @或 Bot 事件唤醒主答 QwenPaw；
-5. 主答可以在同一 Thread 通过原生 @邀请最多两名补充专家，自动邀请深度为一层；
+5. 自动协作通过门禁后，主答可以在同一 Thread 通过原生 @邀请最多两名补充专家，自动邀请深度为一层；每次邀请都须在目标专家入口通过可核验的 correlation 与预算检查，帖子正文不能自行授予邀请资格；
 6. 补充者把证据留在同一 Thread，主答负责统一结论；
 7. 副作用进入运行时原生权限/审批流程；
 8. 结束时可提出带来源的 Knowledge Candidate，但不能自动发布。
@@ -365,16 +378,21 @@ Team / Channel Coordinator Sidecar 是系统级协调身份，不是 Expert Seat
 | 优先级 | 输入条件 | Sidecar 动作 | 不变量/理由码 |
 |---:|---|---|---|
 | 1 | 重复或已处理的 event id | 静默丢弃，不产生新副作用 | `duplicate_event` |
-| 2 | Bot/Expert/Sidecar 生成且无等待中的 correlation | 静默丢弃 | `agent_loop_suppressed` |
+| 2 | Bot/Expert/Sidecar 生成事件 | 仅接收与已登记工作匹配、来源和预算校验通过的回复或邀请；其他静默丢弃，不作为新的人类请求路由 | `correlated_agent_event` / `agent_loop_suppressed` |
 | 3 | 人类显式 @一名或多名 Expert Seat | `observe-only`，不路由、不总结、不邀请、不代答 | `explicit_expert_mention`；介入次数必须为 0 |
 | 4 | 人类只显式 @Coordinator | 只回答治理/路由说明或提出一个澄清问题，不给专业结论 | `coordinator_addressed` |
-| 5 | 无 @且为闲聊、广播、通知或纯人类讨论 | 静默 | `no_collaboration_intent` |
-| 6 | 无 @、协作意图成立且只有一名符合 Channel/capability/availability 的专家 | 选择该专家为唯一主答 | `single_eligible_expert` |
-| 7 | 无 @、规则指定的默认专家当前符合资格且置信度达到阈值 | 选择默认专家为唯一主答 | `eligible_default_expert` |
-| 8 | 多名候选且规则/轻量分类仍低于阈值 | 只提出一个澄清问题，不唤醒专家 | `clarification_required` |
-| 9 | 无符合资格或目标离线 | 显示不可用，不擅自替换 | `no_eligible_expert` |
+| 5 | 消息含提及，但仅 @人类、群体或无法确认的目标 | 静默，不推断对 Agent 的授权 | `human_addressed` |
+| 6 | 无 @且为闲聊、广播、通知或纯人类讨论 | 静默 | `no_collaboration_intent` |
+| 7 | 无 @、协作意图成立但没有符合资格的专家 | 显示不可用，不唤醒不合格专家 | `no_eligible_expert` |
+| 8 | 无 @、协作意图成立且只有一名符合 Channel/capability/availability 的专家 | 选择该专家为唯一主答 | `single_eligible_expert` |
+| 9 | 无 @、规则指定的默认专家当前符合资格且置信度达到阈值 | 选择默认专家为唯一主答 | `eligible_default_expert` |
+| 10 | 无 @、多名合格候选、无可用默认选择，规则或轻量分类得出唯一最高匹配且达到阈值 | 选择唯一最高匹配专家 | `unique_best_expert` |
+| 11 | 无 @、存在候选但最高匹配并列、低于阈值或无法可靠判断 | 只提出一个澄清问题，不唤醒专家 | `clarification_required` |
+| 12 | 其他未覆盖或输入不可判定情形 | 静默并记录理由，不猜测目标 | `unsupported_input` |
 
-资格检查至少包含：Team/Channel 成员关系、Shared Expert 类型、启用状态、可路由标志、capability、上下文作用域、运行时 readiness 与循环预算。每个原始人类事件最多产生一名主答、两名一层补充专家和三个自动参与的 Agent；超过预算必须等待人类继续。
+提及依据经过权威核验的原始 Post 及明确语义识别；用户名子串、代码示例和引用文本不自动视为当前调用。不能可靠确认时不触发专家，并按输入情形澄清或静默。
+
+资格检查至少包含：Team/Channel 成员关系、Shared Expert 类型、启用状态、可路由标志、capability、上下文作用域、运行时 readiness 与循环预算。无显式专家目标的自动路由，每个原始人类事件最多一名主答和两名一层补充专家；Coordinator 另受最多一次澄清或治理提示预算约束。人类显式 @多名专家按路径 A 执行，不被单主答预算改写，被指定专家不自动追加邀请。补充专家不能递归邀请；目标选定后离线或状态未知，不因重放另选主答。
 
 ### 9.4 Correlation Record，不是 TaskRun 引擎
 
@@ -388,6 +406,14 @@ Hikmah 不再建设权威 TaskRun 状态机。一个 Correlation Record 只保�
 - 供 UI 使用的派生阶段与最后已知状态。
 
 持久执行状态由实际运行者拥有。派生状态不能驱动重放或越过运行时审批；状态不一致时显示“待核验”，不猜测成功。
+
+### 9.5 专家入口准入与故障边界
+
+优先通过 QwenPaw 公开 `register_runtime_hook` 的 `PRE_DISPATCH` 验证窄范围准入扩展：在命令分发、模型构建和工具执行前，核验真实 Post、发送者、Channel、指定目标、重复事件以及自动邀请预算。`post_id`、correlation 或角色字段本身不构成授权，必须与权威对象及服务身份核对。
+
+该扩展不承担专长选择，不调用模型，不拥有运行时审批或 TaskRun 状态机。显式 @路径独立于 AgentScope Sidecar；Sidecar 故障不阻止合格专家直达。准入扩展缺失、未注册、校验超时或依赖状态不明时，对应专家停止接收新工作，不能回落到未治理执行。登记事件/预算须具备原子性与重启恢复证据，结果未知不重放副作用。
+
+Hook 位于 Channel 上下文读取之后，不能作为读取隔离边界；前置 Bot ACL、专用运行环境与最小上下文获取必须分别验证。短路的用户可见状态、命令路径、直接 Console 入口、后台路径及插件重载都须纳入契约测试，未受保护的入口关闭。公开 Hook 的源码可用不表示这一方案已通过真实联调；若不能满足门禁，保持对应能力关闭，再以新的 ADR 决定上游改进或窄适配方案，不采用私有覆盖或 monkey patch。
 
 ## 10. 接口与协议边界
 
@@ -440,7 +466,7 @@ Hikmah 不再建设权威 TaskRun 状态机。一个 Correlation Record 只保�
 | Thread / Channel 对话 | Foundation | 默认不跨 Channel |
 | Expert Stable Memory | QwenPaw ReMe；必要时 AgentScope ReMe/Mem0 | 仅身份、能力、技能版本和经批准的专业记忆 |
 | Team Knowledge | Hikmah PostgreSQL 保存已审阅规范对象；QwenPaw/AgentScope 索引是可重建投影 | 只有已审阅对象可按发布范围检索 |
-| Personal Agent Memory | 成员本机 QwenPaw | 留在本机，不注入 Shared Expert |
+| Personal Agent Memory | Owner 的本机或隔离托管 QwenPaw | 本机模式留在本机；托管模式留在明确的 owner 环境，不注入 Shared Expert |
 
 Agent 只读取当前任务需要的授权消息引用或片段。不得为了“可能有用”抓取整个 Channel、其他 Channel 或 Personal Agent 历史。
 
@@ -460,6 +486,12 @@ Knowledge Candidate
 每个 Team Knowledge 对象保存来源、提出者、审阅者、适用范围、敏感级别、版本和状态。
 
 硬规则：模型不能自动发布 Team Knowledge；总结不等于发布；没有明确人类确认时内容留在原作用域；撤回后不得注入新会话，历史关联仍保留。
+
+发布授权同时覆盖可分享的来源内容和目标受众。频道可见回答只能使用对该频道受众获准发布的知识；仅提问者有权读取不足以支持向全频道公开。受限来源的引用使用获准发布的知识版本，不能把原始私有链接或标题泄漏给无权者。成员、来源权限或发布范围变动必须触发重新授权核验。
+
+引用至少可追溯至知识 ID、版本、来源与发布范围，区分来源事实和模型推断；无有效证据时明确说明证据不足。检索和发送前均核验权威发布状态；生成期间撤回或收窄权限时停止发送受影响结果。检查与发送之间的竞态、缓存失效和状态未知处理须提供验收证据，不能宣称跨系统原子撤回。
+
+撤回还须阻止旧缓存、已有会话、自动记忆和可重建索引再次注入该版本；无法确定影响范围时暂停相关会话并重新建立受控上下文。已发布到 Mattermost、被用户读到或另行复制的内容不承诺被收回；后续删除或更正由有权限的人按 Foundation 策略处理，并保留最小审计引用。
 
 ### 11.3 Personal Agent 数据
 
@@ -484,6 +516,8 @@ Hikmah 不建设独立 Policy / Approval 决策服务。职责拆分为：
 | 只读、分析、草稿、无外部副作用计算 | 可自动执行；运行时仍记录工具和输入范围 |
 | 写文件、发消息、修改任务、调用业务系统等副作用 | 请求人类审批；Admin 只可预先放行边界清晰、可撤销的低风险动作 |
 | 越权、目标含糊、参数漂移、凭据缺失、策略冲突或审批系统不可用 | 默认拒绝 / fail closed |
+
+试点的“只读”指业务能力：仅开放受限知识读取、分析与草稿工具，不授予任意 Shell、任意文件写入或业务系统写权限。正常回答回写原 Thread 可作为管理员预先限定的服务动作，绑定 Bot、Channel、Thread、内容范围和次数预算；这不是通用发消息授权。知识发布、撤回仍由有权人明确确认。原生通道回帖和工具副作用分别校验，不因工具被限制而假定消息发送已受治理。
 
 ### 12.2 Execution Card 投影
 
@@ -618,43 +652,39 @@ Member Device
 - 备份/恢复、版本升级、Webhook 重放和部分失败端到端测试；
 - 使用 promptfoo/garak 等现成工具维护回归集，不自建通用评测框架。
 
-## 17. MVP 交付切片
+## 17. 试点与完整 MVP 交付顺序
 
-### Slice 0：Mattermost 资格验证与退出门禁
+2026-09-05 依据 [ADR-0007](../decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md)采用方案 A：保留完整终态，在完整发布资格之前增加受限试点。原 Slice 0～4 的能力要求全部保留，Knowledge Promotion 的最小闭环提前进入首批价值验证，身份、数据保护和恢复要求随能力一同交付。
 
-- 在目标版本基线部署 Mattermost、Hikmah Plugin/BFF、一个 Shared QwenPaw Expert 与一个 AgentScope Sidecar；
-- 完成 OAuth、显式 @、未 @、owner-only、Correlation、Plugin 降级、备份恢复和兼容升级验收；
-- 完成目标分发模式的许可证/品牌复核；
-- 任一硬门禁失败时依据 ADR-0003 重新评估 Zulip/独立 UI，不修改上游核心或降低隐私要求。
+### 17.1 分阶段开放
 
-### Slice 1：Foundation + Shared Expert 直达
+| 阶段 | 开放范围 | 进入下一阶段所需证据 |
+|---|---|---|
+| Pilot 0：隔离资格实验 | 隔离环境中的 Mattermost、Plugin/BFF、一个 Shared Expert 与请求准入；使用合成数据验证边界 | 固定 BOM、OAuth、插件安装/禁用、准确提及、去重、准入缺失/故障、频道隔离、受控回帖、治理库迁移和恢复通过；失败则停止试点准入 |
+| Pilot 1：知识协作试点 | 可信内部团队；Web/Desktop；每席位单 Channel；显式 @问答、方案比较、人类邀请补充专家、引用、人审知识发布与撤回、Correlation | 第 17.2 节真实任务基准及全部安全用例；覆盖目标受众、来源权限变化、旧会话和缓存；仅开启验证过的知识/草稿能力 |
+| Pilot 2：有限自动协作 | 加入 AgentScope Team/Channel Sidecar，未 @规则门控、单主答和一层邀请 | 路由完整判定表、并发去重、重放/重启、循环预算、故障降级、Sidecar 停止后显式 @直达通过；不回退到未治理路径 |
+| 后续独立能力阶段 | Personal Agent 本机/托管连接与显式分享；业务副作用审批及执行治理 | 各自的 owner-only、可信运维、连接/撤销、审批身份、精确参数绑定、超时、重放和未知状态验证；每项独立授权与开放 |
+| 完整 MVP 发布资格 | 第 2.3 节全部成功标准、原 Slice 0～4 全部能力及生产加固 | 第 16 节完整契约、隐私、升级/回退、许可证/品牌、SBOM、备份恢复与量化 NFR；逐项证据通过后才进入支持矩阵 |
 
-- 部署已选 Foundation；
-- Team/Channel/Thread、邀请和权限；
-- Expert Seat Binding；
-- 一个服务端 QwenPaw Expert 的明确 @直达；
-- 基础 Correlation 与契约测试。
+Pilot 0 不接入真实用户数据。Pilot 1 进入真实团队前，必须完成其实际启用能力的身份/隔离、知识范围与撤回、数据保护/恢复、目标使用方式的许可证与品牌复核，以及明确的试点运维责任。暂未启用的能力记为“未验证且关闭”，不是发布门禁豁免；不能把试点标为完整 MVP 或生产支持版本。
 
-### Slice 2：轻量 Sidecar 与多专家协作
+原生移动端只验证聊天与文本降级。Pilot 1 不开放未 @自动主答、自动专家邀请、业务写工具或 Personal Agent 连接；这些功能的终态目标继续有效。递归邀请及任意工具权限在完整终态中也不允许。每次扩大范围先补对应证据；任一硬门禁失败时停止相关能力，按 ADR-0003 评估公开扩展点或退出路径。
 
-- Team/Channel Sidecar；
-- 显式 @零介入；
-- 未 @规则门控、单主答和有限邀请；
-- 无人响应、冲突和失败可见性。
+### 17.2 首批真实任务基准
 
-### Slice 3：Personal Agent 与执行治理
+建立至少 30 个经团队授权的真实任务，覆盖知识问答和方案协作；问题、可用来源、目标频道、期望结果、评分口径及模型/BOM 在评估前固定。加入无答案、冲突证据和过期知识用例；敏感评估材料留在受控环境，报告只保存脱敏摘要或受控引用。
 
-- 本机 QwenPaw owner-only 连接；
-- 最小上下文和显式分享；
-- Policy Binding、Execution Card 投影与副作用审批关联。
+| 指标 | 记录口径 |
+|---|---|
+| 答案可用率 | 人类按预先固定的正确性、完整性和可行动性标准判定；同时报告通过数、总数和两类任务的分项结果 |
+| 引用准确性 | 分别统计引用是否真实存在、版本是否有效、是否支持对应断言、是否对目标受众可用；无答案时是否正确说明证据不足 |
+| 人工返工 | 从收到结果到可用于团队讨论/决策的人工修改时间；与同类任务原有流程比较，注明测量差异 |
+| 成本 | 所有尝试的模型调用成本及失败/重试成本，除以被采纳答案数；采纳数为 0 时记为不可计算，不记为零成本；运维投入单独记录 |
+| 安全与治理 | 固定的越权、误提及、去重/重放、知识撤回及循环用例全部达到预期；报告用例范围，不外推为绝对安全证明 |
 
-### Slice 4：Knowledge Promotion 与生产加固
+30 个任务是首批学习样本，不是统计充分性或市场需求证明。业务指标先产生基线，不凭空声明效果已达标；是否扩大试点由产品负责人依据结果、成本和返工决定，记录接受标准与理由。安全门禁不能用平均业务收益抵消，完整发布仍需满足第 14.1 节 NFR。
 
-- Knowledge Candidate、人审、范围、版本和撤回；
-- 安全回归、可观测性、备份恢复和升级门禁；
-- 依赖许可证/SBOM 和运营手册。
-
-以上 Slice 仅定义目标交付顺序；是否以及何时进入代码实现必须由独立任务明确授权。当前代码脚手架不构成任何 Slice 已完成的证据；开放设计与验证项见[架构审查跟踪表](../project/prd-architecture-review-tracker.md)。
+以上只定义获批的文档方案。代码、部署、真实联调和评估执行须由独立任务明确授权；当前脚手架及本轮函数级实验不构成任何试点阶段已完成的证据。开放项见[审查跟踪表](../project/prd-architecture-review-tracker.md)。
 
 ## 18. 决策记录
 
@@ -680,6 +710,7 @@ Member Device
 - [ADR-0004](../decisions/0004-trusted-identity-and-personal-agent-isolation.md)：Accepted；Mattermost 信任身份、角色授权和 Personal Agent owner-only 隔离；
 - [ADR-0005](../decisions/0005-public-integration-contracts-and-fail-closed-semantics.md)：Accepted；公开集成契约、Plugin 交付与 fail-closed 状态；
 - [ADR-0006](../decisions/0006-governance-metadata-persistence-and-schema-lifecycle.md)：Accepted；PostgreSQL、Alembic、数据保留和恢复；
+- [ADR-0007](../decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md)：Accepted；知识协作试点、运行隔离、请求准入与分阶段开放；
 - 架构定力：深耕 Mattermost + QwenPaw + AgentScope，不自建通用聊天全栈或多余 Agent 运行时。
 
 

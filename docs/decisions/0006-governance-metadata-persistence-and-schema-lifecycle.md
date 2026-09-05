@@ -4,7 +4,7 @@ description: 规定 Hikmah 薄治理数据的生产持久化、迁移、测试�
 document_type: architecture-decision
 status: accepted
 created: 2026-08-28
-updated: 2026-08-28
+updated: 2026-09-05
 owners:
   - hikmah-maintainers
 audience:
@@ -19,6 +19,7 @@ canonical: true
 related:
   - 0001-reuse-first-thin-control-plane.md
   - 0004-trusted-identity-and-personal-agent-isolation.md
+  - 0007-knowledge-collaboration-pilot-and-runtime-boundaries.md
   - ../architecture/version-baseline.md
   - ../product/overview.md
   - ../project/prd-architecture-review-tracker.md
@@ -67,6 +68,10 @@ Hikmah 只持久化 Expert/Personal Binding、Sidecar Rule、Knowledge Candidate
 | Correlation 与治理审计元数据 | 180 天，可由 Team policy 在 30–365 天内调整 |
 
 数据库不保存 Secret 值、Mattermost/QwenPaw 私密正文、模型私有推理或 Personal Agent 请求/结果。外部对象只保存最小 ID、digest、状态、时间和必要审计元数据。
+
+2026-09-05 补充：知识候选及已审阅规范对象可以保存其获准处理的内容、来源引用、版本、发布范围和审核记录；这不授权复制原始私密对话。试点评估集留在经授权的受控位置，仓库报告仅保存脱敏摘要或受控引用。
+
+撤回以规范对象状态为权威，检索和发送前重新校验；索引、缓存、会话及自动记忆中的派生副本须失效或隔离。不能界定受影响会话时暂停并重建受控上下文。生成期间撤回、范围收窄、检查与发送之间的竞态均须测试；外部已发送内容不承诺被收回。该机制在 Pilot 1 启用知识发布时一并验收，不延至生产加固阶段。
 
 ### 2.4 事务与并发
 

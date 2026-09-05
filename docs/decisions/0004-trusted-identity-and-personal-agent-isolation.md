@@ -4,7 +4,7 @@ description: 规定 Hikmah 的认证、授权、角色映射、服务身份和 P
 document_type: architecture-decision
 status: accepted
 created: 2026-08-28
-updated: 2026-08-28
+updated: 2026-09-05
 owners:
   - hikmah-maintainers
 audience:
@@ -19,6 +19,7 @@ canonical: true
 related:
   - 0001-reuse-first-thin-control-plane.md
   - 0003-adopt-mattermost-as-collaboration-foundation.md
+  - 0007-knowledge-collaboration-pilot-and-runtime-boundaries.md
   - ../product/overview.md
   - ../research/2026-08-28-mattermost-zulip-webui-integration.md
   - ../project/prd-architecture-review-tracker.md
@@ -35,6 +36,8 @@ related:
 Mattermost 是 Hikmah 的协作身份、Team 成员关系、Channel ACL 与用户会话事实源。Hikmah 需要在不复制用户系统和通用 RBAC 的前提下提供 Expert Seat、Sidecar、Knowledge Promotion 与 Correlation 等产品能力。
 
 Personal Agent 的隐私边界比普通 Mattermost Bot 私聊更严格：它只能由唯一绑定 Member 调用，不能被其他成员发现、私聊、拉入共享空间或由 Team Owner/Admin 读取正文。UI 隐藏和客户端自报身份都不能构成安全边界。
+
+2026-09-05 补充：此处 Team Owner/Admin 指产品治理角色，不含对主机、数据库或备份有运维权限的基础设施管理员。中心托管须明确可信运维方，不承诺防基础设施管理员读取；若需要该威胁模型，另行决策数据路径和加密方案。本机部署也需核验代理、日志和备份边界。依据见 [ADR-0007](0007-knowledge-collaboration-pilot-and-runtime-boundaries.md)。
 
 ## 2. 决策
 
@@ -85,6 +88,10 @@ Team Owner 与 Admin 的治理权限不继承 Personal Agent owner 权限。知�
 - 中心托管模式通过 QwenPaw Hub 的 owner/tenant 隔离与代理边界连接；成员本机模式只允许经安全连接 Spike 验证的出站连接器；
 - Personal Agent 私有请求、结果、长期记忆、技能与本地资源不进入 Hikmah 团队数据库、Correlation 正文或共享检索；
 - Owner 执行“分享到 Channel”时，系统重新校验目标 Channel 发帖权限，并创建只含 Owner 明确选择内容的新 Mattermost Post。共享快照不能反向读取个人会话。
+
+Shared Expert 的调用者共享该运行环境被授予的业务能力，因此试点每席位仅服务一个 Channel，并以独立配置、凭据、记忆和受限运行环境隔离信任域。QwenPaw session/Workspace 名称不是用户授权边界。不同 Channel 只能共享专业配置及经审阅发布的知识；跨频道席位绑定须先验证文件、检索、工具和权限变动的隔离。
+
+知识问答在检索与发送前同时校验发起者和目标受众；提问者能读不等于整个频道可以接收。产品角色、知识发布范围与 Runtime 工具身份必须分别核验，不能继承 Bot/实例的全部权限作为人类授权。
 
 ### 2.6 敏感字段
 

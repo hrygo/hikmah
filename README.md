@@ -28,7 +28,7 @@
 
 - [✨ 什么是 Hikmah？](#-什么是-hikmah)
 - [🏛️ 核心架构与事实源](#️-核心架构与事实源)
-- [🎯 六大核心治理能力](#-六大核心治理能力)
+- [🎯 六大目标治理能力](#-六大目标治理能力)
 - [🏢 协作底座选型：Mattermost (ADR-0003)](#-协作底座选型mattermost-adr-0003)
 - [🛠️ 技术基线 (Technology Baseline)](#️-技术基线-technology-baseline)
 - [🗺️ 路线图 (Roadmap)](#️-路线图-roadmap)
@@ -157,7 +157,7 @@ Hikmah 严格保持职责单一与事实源唯一，不把各方状态复制成�
 
 ## 🗺️ 路线图 (Roadmap)
 
-下列条目描述目标交付顺序。除明确附有运行证据的事项外，现有代码只视为脚手架，不据此勾选完成状态。
+下列条目描述完整产品的能力范围。具体交付顺序以[产品规范第 17 节](docs/product/overview.md#17-试点与完整-mvp-交付顺序)为准：依据 [ADR-0007](docs/decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md)，先验证团队知识问答与方案协作，再逐项开放自动协作、Personal Agent 和业务执行。除明确附有运行证据的事项外，现有代码只视为脚手架，不据此勾选完成状态。
 
 ```markdown
 - [x] Phase 1: 概念与规范设计
