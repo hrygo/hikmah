@@ -26,6 +26,8 @@ related:
 
 > 执行者使用 `executing-plans`，默认单 Agent。本计划未执行。Pilot 1 的负责人评审及本阶段实施授权通过后才执行；自动协作仅在本阶段资格全部通过后开放。
 
+本文三项为工作包，按[工作项队列](2026-09-05-work-item-sequence.md#3-pilot-2在实际入口控制自动协作)分为九项；每项按[交付规范](../worker-delivery-protocol.md)冻结任务卡。AgentScope 公开邀请契约、并发事务和阶段资格由技术负责人核验，worker 不能用本地计数或猜测入口替代。
+
 **目标：** 无明确提及时按规则选择唯一主答、最多邀请两名一层补充专家，显式 @保持原生直达及 Sidecar 零介入。
 
 **架构：** Hikmah 确定性规则返回路由理由，AgentScope 负责公开事件映射与 Sidecar 协作。实际专家入口复用 P0 准入和 PostgreSQL 原子保留，不能只在协调器本地计数。

@@ -19,11 +19,15 @@ related:
   - 2026-09-05-pilot-1-knowledge.md
   - ../../decisions/0007-knowledge-collaboration-pilot-and-runtime-boundaries.md
   - ../../research/2026-09-05-knowledge-collaboration-feasibility.md
+  - 2026-09-05-work-item-sequence.md
+  - 2026-09-05-p0-01-worker-packet.md
 ---
 
 # Pilot 0：安全基础与隔离资格实施计划
 
 > 执行者使用 `executing-plans`，默认单 Agent。所有任务未执行；只有获得对应实施授权后才修改代码或操作实验环境。
+
+本文七项是集成工作包，按[工作项队列](2026-09-05-work-item-sequence.md)细化后分派；P0-01 使用[四张完整任务卡](2026-09-05-p0-01-worker-packet.md)。公开 Hook、认证选型、恢复与阶段资格由技术负责人判断，不要求 worker 自行完成未确定的安全设计。
 
 **目标：** 在合成数据环境证明一个 Shared Expert 能安全接收明确提及、受控回复原 Thread，并通过身份、隔离、持久化和故障门禁。
 
@@ -35,9 +39,11 @@ related:
 
 ## P0-01：测试误连保护与应用工厂
 
-**文件：** 新增 `apps/api/src/hikmah/core/database.py`、`core/test_database.py`；修改 `models/base.py`、`main.py`、`core/config.py`（这些短路径均位于 `apps/api/src/hikmah/`）；修改 `apps/api/tests/conftest.py`、`pyproject.toml`、`.github/workflows/ci.yml`；新增 `tests/unit/test_database_policy.py`、`apps/api/tests/test_app_factory.py`。
+**文件：** 精确分卡白名单见[首个工作包任务包](2026-09-05-p0-01-worker-packet.md)。新增测试 DB 保护/工厂及环境污染测试；修改 config/base/main、两个服务的配置构造、conftest、六个 API 测试及启动引用；CI 在最后一张卡接入。配置消除导入副作用必须与 app/fixture 接线一起完成，不能只传入 `_env_file=None` 就声称测试未读取 `.env`。
 
 **接口：** `require_unit_test_database(environment: str, url: str) -> None`；不导入 Settings 或 Engine。`Database` dataclass 持有 `engine: AsyncEngine`、`sessions: async_sessionmaker[AsyncSession]`；`create_database(url: str) -> Database`；`create_app(settings: Settings, database: Database) -> FastAPI`。`get_db_session(request: Request)` 从 `request.app.state.database` 取得会话，保持 commit/rollback 语义。`Base` 仅持有 ORM metadata，不创建 Engine。
+
+配置与入口增加 `load_settings() -> Settings`、`create_default_app() -> FastAPI`，加载配置仅发生在显式默认启动。移除 `config.py` 的模块级 Settings、服务默认参数绑定和模块级单例，测试使用注入 app；生产启动迁移资格在 P0-04 解锁前明确停止，不隐式 `create_all`。
 
 - [ ] 在独立 `tests/unit/` 写安全测试，避免加载旧的 API autouse fixture：
 
@@ -183,7 +189,7 @@ async def test_claimed_identity_does_not_authenticate(client: AsyncClient) -> No
 
 **状态契约：** `services/adapter_status.py` 定义 ADR-0005 的全部状态：`unconfigured`、`connecting`、`ready`、`degraded`、`unreachable`、`rejected`、`in_progress`、`completed`、`verification_required`。`ready` 只在固定版本契约探测通过时成立，`completed` 只来自权威成功终态；模拟器只在显式 test/demo profile，响应/UI/Trace 均强制 `simulated` 标识，健康检查不计入就绪。外部写请求发出后超时为 `verification_required`，不能再 POST。UI 状态是投影，不启动重试。
 
-- [ ] 编写适配器负向测试；`FoundationService` 的实际构造签名在此任务改为显式注入 Settings 与 `httpx.AsyncClient`，测试使用 `MockTransport` 记录请求次数：
+- [ ] 编写适配器负向测试；`MattermostFoundationService` 在 P0-01 的显式构造基础上增加已冻结的 Settings/`httpx.AsyncClient` 注入契约，测试使用 `MockTransport` 记录请求次数：
 
 ```python
 def classify_post_failure(request_was_sent: bool) -> str:

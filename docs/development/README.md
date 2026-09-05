@@ -21,6 +21,9 @@ related:
   - ../decisions/README.md
   - ../project/prd-architecture-review-tracker.md
   - plans/2026-09-05-implementation-roadmap.md
+  - ../project/long-term-roadmap.md
+  - worker-delivery-protocol.md
+  - plans/2026-09-05-work-item-sequence.md
 ---
 
 # Hikmah 开发文档
@@ -38,4 +41,6 @@ Hikmah 当前仍处于产品与架构验证阶段。参与开发前请依次阅�
 
 已完成的仓库初始化计划保存在[历史归档](../archive/github-bootstrap/implementation-plan.md)。新的实施计划应围绕一个可独立验证的交付切片编写；完成后根据其长期价值标记为 `completed` 或移入 `archive/`。
 
-知识协作方向的[实施总览](plans/2026-09-05-implementation-roadmap.md)及 Pilot 0～2 三份子计划已形成，状态为 `review`、尚未执行。计划依次覆盖安全基础与隔离资格、知识生命周期及真实任务基线、有限自动协作，并保留个人代理、业务执行和完整发布资格的后续入口。生成计划不改变审查跟踪表中的代码授权和运行证据状态。
+长期研发先读[路线图与方向约束](../project/long-term-roadmap.md)，分派和接续任务读[受控任务交付规范](worker-delivery-protocol.md)。知识协作的[实施总览](plans/2026-09-05-implementation-roadmap.md)与 Pilot 0～2 子计划包含 14 个工作包，[工作项队列](plans/2026-09-05-work-item-sequence.md)进一步分解为 45 项；当前完整的[首个工作包任务卡](plans/2026-09-05-p0-01-worker-packet.md)覆盖四张卡。
+
+所有实施文档状态为 `review`、尚未执行；后继任务在前置证据成立后滚动冻结接口，不把简要工作项直接交给 worker 补设计。生成计划不改变代码授权、阶段资格或能力开放状态。

@@ -4,6 +4,8 @@
 
 > 📌 **项目状态与事实边界**：正式产品终态以 [`docs/product/overview.md`](docs/product/overview.md) 和 Accepted ADR 为准；精确目标版本以 [`docs/architecture/version-baseline.md`](docs/architecture/version-baseline.md) 为准。截至审查基线 `0d45229`，现有代码是架构脚手架，不代表真实联调、安全、升级或生产门禁已经通过。差距、证据与未授权代码工作统一见 [`docs/project/prd-architecture-review-tracker.md`](docs/project/prd-architecture-review-tracker.md)。
 
+> 📌 **长期方向与任务交付**：研发路线遵循[长期路线图](docs/project/long-term-roadmap.md)；实施分派遵循[受控任务交付规范](docs/development/worker-delivery-protocol.md)和[工作项队列](docs/development/plans/2026-09-05-work-item-sequence.md)。工作包不能直接作为单 worker 任务；先冻结任务卡，再在对应授权和前置证据满足时执行。
+
 ---
 
 ## 🏛️ 项目定位与三大基石 (Core Foundation & Fact Sources)
@@ -129,6 +131,8 @@ hikmah/
 
 ## 🛠️ 常用开发与验证命令
 
+> 当前脚手架的 API fixture 会复用应用数据库并清表。P0-01 的隔离接线通过前，不执行下列旧 API suite 或包含它的全量命令；先按[首个工作包任务卡](docs/development/plans/2026-09-05-p0-01-worker-packet.md)执行独立安全测试。纯文档修改执行文档校验，不以运行旧 suite 作为收尾动作。
+
 ### 1. 后端 (Python / uv)
 ```bash
 # 同步并安装全部工作区依赖
@@ -207,3 +211,9 @@ pnpm run build
      - `Area`（推荐）：涉及的技术模块标签；
      - `Size`（按需）：由变更行数确定（`size: XS` ~ `size: XL`）；
      - `PR 状态`：如草稿/进行中打上 `pr: work-in-progress`。
+6. **长期路线与执行型团队交付**：
+   - 任务必须能追溯到阶段、工作包、PRD/ADR 和验收证据；试点通过不能替代完整 MVP 或发布资格。
+   - 技术负责人负责上游契约、技术取舍、安全/持久化边界、任务拆分和验收；worker 只执行冻结卡片，不临场发明 API、升级版本或改变治理规则。
+   - 只有 `ready + authorized + 前置卡 verified` 的任务可领取。每卡明确基线、精确读写白名单、输入/输出、失败测试、验证命令、回退和停止条件。
+   - 发现公开扩展不足、权限/版本冲突、未知用户改动或目标环境不符时停止本卡并提交证据；不能靠降级测试、模拟成功、扩大作用域继续推进。
+   - 任务完成、工作包集成、阶段资格、能力开放分别验收；规划文档不作为执行证据。队列中的角色安排不构成启动多 Agent 或操作外部环境的授权。
